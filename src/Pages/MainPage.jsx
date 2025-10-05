@@ -381,7 +381,7 @@ const MainPage = () => {
     {/* QR Code Modal */}
     {showQRModal && (
       <div className="fixed inset-0 bg-white/5 backdrop-blur-sm flex items-center justify-center z-[200]">
-        <div className="bg-white rounded-xl shadow-lg p-10 flex flex-col items-center relative min-w-[25rem] max-w-xs">
+        <div className="bg-white rounded-xl shadow-lg p-10 flex flex-col items-center relative min-w-[20rem] max-w-xs">
           <button className="absolute top-2 right-2 text-xl text-gray-600 hover:text-red-500" onClick={()=>setShowQRModal("")}>×</button>
           <h4  className="text-md font-bold mb-2">{showQRModal === 'panipatti' ? 'Panipatti QR Code' : 'Gharpatti QR Code'}</h4>
           <img
