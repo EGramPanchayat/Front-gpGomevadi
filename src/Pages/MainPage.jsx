@@ -83,50 +83,38 @@ function DevelopmentSlideshow() {
 
   return (
     <div className="flex justify-center items-center w-full flex-grow">
-      <div className="bg-white rounded-xl shadow-lg flex flex-col items-center sm:p-3 animate-fadeUp w-full flex-grow mx-auto relative md:h-[30rem] h-[30rem] hover:shadow-2xl hover:-translate-y-1 transition">
-        
-        {/* Arrows */}
-        <button
-          onClick={goPrev}
-          className="absolute left-2 top-1/2 transform -translate-y-1/2 p-3 text-3xl text-green-700 hover:text-orange-500 bg-white rounded-full shadow-md z-10"
-        >
-          &#8592;
-        </button>
-        <button
-          onClick={goNext}
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 p-3 text-3xl text-green-700 hover:text-orange-500 bg-white rounded-full shadow-md z-10"
-        >
-          &#8594;
-        </button>
+     
+      <div className="w-full sm:w-[500px] md:w-[750px] lg:w-[900px] h-[380px] sm:h-[420px] flex flex-col shadow-lg rounded-xl overflow-hidden">
 
-        {/* Image */}
-        <div className="w-full px-5 md:px-5 md:py-5 h-[60%] md:h-[70%] flex-shrink-0 flex flex-col justify-center items-center mb-0">
+        {/* Image Section */}
+        <div className="h-[180px] sm:h-[220px] w-full flex justify-center items-center overflow-hidden bg-gray-100">
           <img
             src={item.image.url}
             alt={item.title}
-            className="w-full h-full object-cover rounded"
+            className="h-full w-full object-cover"
           />
         </div>
 
-        {/* Content */}
-        <div className="w-full sm:py-5 h-[40%] md:h-[30%] flex flex-col justify-between items-center bg-white px-2">
-          <div className="flex flex-col items-center text-center">
-            <h5 className="text-lg font-bold mb-1 mt-5 break-words">
+        {/* Info Section */}
+        <div className="w-full flex flex-col justify-between items-center bg-white px-3 py-3 h-[170px] sm:h-[180px]">
+          <div className="flex flex-col items-center text-center w-full px-2">
+            <h5 className="text-base sm:text-lg font-bold mb-1 mt-1 break-words line-clamp-2">
               {item.title}
             </h5>
-            <p className="mb-1 text-sm text-gray-700 break-words">
+            <p className="text-xs sm:text-sm text-gray-700 break-words line-clamp-3">
               {item.description}
             </p>
           </div>
 
           {/* Dots */}
-          <div className="flex gap-2 mt-2 sm:mt-1 mb-2 sm:mb-0">
+          <div className="flex gap-2 mt-2">
             {developmentItems.map((_, idx) => (
-              <span
+              <button
                 key={idx}
-                className={`w-3 h-3 rounded-full ${
+                onClick={() => setCurrent(idx)}
+                className={`w-3 h-3 rounded-full transition-colors duration-300 ${
                   idx === current ? "bg-green-600" : "bg-gray-300"
-                } inline-block`}
+                }`}
               />
             ))}
           </div>
@@ -135,6 +123,7 @@ function DevelopmentSlideshow() {
     </div>
   );
 }
+
 
 
 
