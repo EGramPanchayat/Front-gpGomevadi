@@ -206,32 +206,8 @@ export default function AdminDashboard() {
     }
   };
 
-  if (loading)
-    return (
-      <div className="p-6 flex flex-col items-center justify-center">
-        <svg
-          className="animate-spin -ml-1 mr-3 h-8 w-8 text-green-600"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-          ></path>
-        </svg>
-        <div className="mt-3 text-lg text-gray-700">कार्यकारी मंडळ लोड होत आहे…</div>
-      </div>
-    );
+  // don't block rendering the navbar/outer shell while loading data;
+  // show a localized loader inside the exec-section instead
 
   return (
     <>
@@ -327,10 +303,24 @@ export default function AdminDashboard() {
 
         {/* EXEC BOARD */}
         <section id="exec-section" className="max-w-7xl mx-auto mb-12">
-          <form
-            onSubmit={handleSubmit}
-            className="bg-gray-50 p-10 rounded-2xl shadow-2xl space-y-12 border border-green-200"
-          >
+          {loading ? (
+            <div className="bg-white p-10 rounded-2xl shadow text-center">
+              <svg
+                className="animate-spin -ml-1 mr-3 h-8 w-8 text-green-600 mx-auto"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+              </svg>
+              {/* spinner only - no text message */}
+            </div>
+          ) : (
+            <form
+              onSubmit={handleSubmit}
+              className="bg-gray-50 p-10 rounded-2xl shadow-2xl space-y-12 border border-green-200"
+            >
             <h2 className="text-3xl font-extrabold text-green-700 border-b pb-4 text-center">
               गाव कार्यकारिणी व्यवस्थापन
             </h2>
@@ -393,6 +383,7 @@ export default function AdminDashboard() {
               </button>
             </div>
           </form>
+          )}
         </section>
       </main>
 

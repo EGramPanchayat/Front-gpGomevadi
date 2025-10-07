@@ -40,7 +40,7 @@ const ExecutiveBoard = () => {
             d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
           ></path>
         </svg>
-        <div className="mt-3 text-lg text-gray-700">कार्यकारी मंडळ लोड होत आहे...</div>
+        {/* spinner only - no text message */}
       </div>
     );
 
