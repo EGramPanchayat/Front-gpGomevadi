@@ -80,7 +80,7 @@ const QRUploadModal = ({ open, onClose }) => {
   const qrFields = [
     { label: "Panipatti QR", preview: previewPanipatti, existing: existingPanipatti, setter: setPanipattiQR },
     { label: "GharPatti QR", preview: previewGharPatti, existing: existingGharPatti, setter: setGharPattiQR },
-    { label: "Payment QR", preview: previewPaymentQR, existing: existingPaymentQR, setter: setPaymentQR },
+    { label: "Dakhala payment", preview: previewPaymentQR, existing: existingPaymentQR, setter: setPaymentQR },
   ];
 
   return (
