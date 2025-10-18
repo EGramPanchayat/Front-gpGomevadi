@@ -48,7 +48,7 @@ function DakhalaModal({ open, onClose, data, onDelete, deleting }) {
           </>
         );
       case 'निराधार असल्याचा दाखला मागणी':
-        return <p><span className="font-semibold">नाव:</span> {safe(data.niradharName)}</p>;
+        return <p><span className="font-semibold">निराधाराचे नाव:</span> {safe(data.niradharName)}</p>;
       case 'दारिद्र्य रेषेखाली असल्याचा दाखला':
       case 'ग्रामपंचायत येणे बाकी दाखला':
         return (
