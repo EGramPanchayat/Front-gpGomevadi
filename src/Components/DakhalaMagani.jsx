@@ -156,22 +156,37 @@ export default function DakhalaMagani() {
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
 
+    // File input path with client-side validation
+    if (type === 'file') {
+      if (!files || files.length === 0) return; // no file selected
+      const file = files[0];
+
+      // Basic client-side validation
+      const maxSize = 5 * 1024 * 1024; // 5 MB
+      if (!file.type || !file.type.startsWith('image/')) {
+        toast.error('कृपया प्रतिमा फाइल (.jpg/.png/.webp) निवडा');
+        return;
+      }
+      if (file.size > maxSize) {
+        toast.error('फाइल खूप मोठी आहे — जास्तीत जास्त 5MB परवान्य आहे');
+        return;
+      }
+
+      setPaymentScreenshotPreview(URL.createObjectURL(file));
+      setForm((prev) => ({ ...prev, [name]: file }));
+      return;
+    }
+
+    // Non-file inputs
     setForm((prev) => {
       const updated = { ...prev };
+      updated[name] = value;
 
-      if (type === "file" && files.length > 0) {
-        const file = files[0];
-        setPaymentScreenshotPreview(URL.createObjectURL(file));
-        updated[name] = file;
-      } else {
-        updated[name] = value;
-
-        if (name === "type") {
-          const newTypeRequiresPayment = FEE_REQUIRED_TYPES.includes(value);
-          if (!newTypeRequiresPayment || !value) {
-            updated.paymentScreenshot = null;
-            setPaymentScreenshotPreview(null);
-          }
+      if (name === 'type') {
+        const newTypeRequiresPayment = FEE_REQUIRED_TYPES.includes(value);
+        if (!newTypeRequiresPayment || !value) {
+          updated.paymentScreenshot = null;
+          setPaymentScreenshotPreview(null);
         }
       }
 
@@ -520,9 +535,10 @@ export default function DakhalaMagani() {
                                 accept=".jpg,.png,image/*"
                                 name="paymentScreenshot"
                                 onChange={handleChange}
-                                required
                               />
                           </Button>
+                         
+                         
                         </Paper>
 
 
