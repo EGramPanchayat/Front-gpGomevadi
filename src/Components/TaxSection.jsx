@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const TaxSection = ({ panipattiQR, gharPattiQR }) => {
+const TaxSection = ({ panipattiQR="/images/no-image.png", gharPattiQR="/images/no-image.png" }) => {
   const [modalType, setModalType] = useState("");
 
   const handleOpenModal = (type) => setModalType(type);
