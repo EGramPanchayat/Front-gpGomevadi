@@ -1,13 +1,13 @@
 const CertificatesSection = () => (
   <section
     id="certificates"
-    className="flex flex-col items-center w-full bg-gray-50 pt-10 md:pt-20 md:pb-30"
+    className="flex flex-col items-center w-full bg-gray-50 pt-10 md:pt-20 md:pb-30 pb-15"
   >
     <div
       className="w-full mx-auto max-w-[1200px] rounded-3xl overflow-hidden bg-white shadow-lg p-6 md:p-10"
       style={{ borderRadius: '24px' }}
     >
-      <h2 className="text-2xl md:text-3xl font-bold text-green-700 text-center mb-6">
+      <h2 className="text-[2.8rem] font-bold text-green-700 text-center mb-6">
         प्रमाणपत्रे
       </h2>
 
