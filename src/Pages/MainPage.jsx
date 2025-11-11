@@ -12,6 +12,10 @@ import CertificatesSection from "../Components/CertificatesSection";
 import DakhalaMagani from "../Components/DakhalaMagani";
 import ServicesSection from "../Components/ServicesSection";
 import TaxSection from "../Components/TaxSection";
+import SamajSudharak from "../Components/SamajSudharak";
+import GovernmentOfficials from "../Components/GovernmentOfficials";
+import SloganTicker from "../Components/SloganTicker";
+
 
 // Executive members data for cards
 const executiveMembers = [
@@ -117,6 +121,8 @@ const MainPage = () => {
       </div>
     </section>
 
+    <SloganTicker />
+
     <div className="bottom-village-content flex flex-col items-center w-full px-1 md:px-0 lg:px-15">
       {/* Stats Cards */}
   <div className="flex flex-wrap justify-center px-2 gap-4 sm:gap-8 mt-8 mb-8 w-full">
@@ -169,7 +175,7 @@ const MainPage = () => {
       </div>
 
 
-    
+<SamajSudharak />
 <NewsSection />
 
     <section id="development" className="pt-0 md:py-10 w-full flex flex-col items-center bg-gray-50 ">
@@ -210,7 +216,10 @@ const MainPage = () => {
       {/* कार्यकारी मंडळ Section  k*/}
       <ExecutiveBoard />
 
-            {/* Places Section */}
+      {/* Government Officials Section */}
+      <GovernmentOfficials />
+
+      {/* Places Section */}
       <PlacesSection />
 
       {/* Contact Section */}
