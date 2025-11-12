@@ -21,8 +21,8 @@ const FooterSection = () => (
             <h5 className="mb-3 flex items-center gap-2 font-bold text-xl"><svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="4" y="8" width="16" height="8" rx="2"/></svg>उपयुक्त दुवे</h5>
             <div className="flex flex-col gap-2">
               <a href="https://rdd.maharashtra.gov.in/" target="_blank" className="text-white hover:underline flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M18 13v6a2 2 0 01-2 2H8a2 2 0 01-2-2v-6"/><path d="M15 10l5-5m0 0l-5-5m5 5H9"/></svg>महाराष्ट्र सरकार</a>
-              <a href="https://nagarzp.gov.in/" target="_blank" className="text-white hover:underline flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M18 13v6a2 2 0 01-2 2H8a2 2 0 01-2-2v-6"/><path d="M15 10l5-5m0 0l-5-5m5 5H9"/></svg>जिल्हा परिषद सांगली</a>
-              <a href="https://mahapanchayats.in" target="_blank" className="text-white hover:underline flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M18 13v6a2 2 0 01-2 2H8a2 2 0 01-2-2v-6"/><path d="M15 10l5-5m0 0l-5-5m5 5H9"/></svg>MahaPanchyats.in</a>
+              <a href="https://zpsangli.maharashtra.gov.in/" target="_blank" className="text-white hover:underline flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M18 13v6a2 2 0 01-2 2H8a2 2 0 01-2-2v-6"/><path d="M15 10l5-5m0 0l-5-5m5 5H9"/></svg>जिल्हा परिषद सांगली</a>
+              
             </div>
           </div>
         </div>
