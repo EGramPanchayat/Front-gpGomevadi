@@ -41,7 +41,7 @@ const EmergencyContact = () => {
     <section
       id="emergency"
       ref={sectionRef}
-      className="w-full py-14 pb-20  overflow-x-hidden bg-gray-50"
+      className="w-full py-14 pb-20  overflow-x-hidden bg-white"
     >
       <div className="w-full mx-auto max-w-[1200px] px-4 overflow-x-hidden">
         {/* Header */}
