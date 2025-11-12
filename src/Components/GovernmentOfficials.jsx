@@ -1,4 +1,4 @@
-
+import React from "react";
 
 const GovernmentOfficials = () => {
   const officials = [
@@ -35,7 +35,7 @@ const GovernmentOfficials = () => {
     {
       id: 6,
       name: "प्रधान सचिव, ग्रामविकास व पंचायतराज विभाग",
-      subtitle: "श्री. एकनाथ डुबळे",
+      subtitle: "श्री. एकनाथ डवळे ",
       image: "/images/yeknathDwale.png",
     },
   ];
@@ -43,44 +43,42 @@ const GovernmentOfficials = () => {
   return (
     <section
       id="officials"
-      className="w-full flex justify-center items-center bg-white pt-25 md:p-20"
+      className="w-full flex justify-center items-center bg-white py-16 px-5 md:px-20"
     >
-      <section className="py-8 px-5 mx-0 w-full  to-blue-50 flex flex-col md:flex-row justify-center items-center md:mx-40 rounded-3xl">
-        <div className="max-w-6xl w-full flex flex-col justify-between items-center gap-6 md:gap-10 py-5 sm:px-4">
-          {/* Heading */}
-          <h2 className="text-[2rem] font-bold text-green-700 text-center mb-8 w-full relative">
-            ग्राम विकास व पंचायतराज विभाग, महाराष्ट्र राज्य 
-            <span className="block w-24 h-1 bg-orange-400 rounded absolute left-1/2 -translate-x-1/2 -bottom-3"></span>
-          </h2>
+      <div className="max-w-6xl w-full flex flex-col justify-between items-center gap-10">
+        {/* Heading */}
+        <h2 className="text-[1.8rem] sm:text-[2rem] font-bold text-green-700 text-center mb-8 w-full relative">
+          ग्राम विकास व पंचायतराज विभाग, महाराष्ट्र राज्य
+          <span className="block w-24 h-1 bg-orange-400 rounded absolute left-1/2 -translate-x-1/2 -bottom-3"></span>
+        </h2>
 
-          {/* Grid of officials */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 md:gap-6 w-full">
-            {officials.map((official) => (
-              <div
-                key={official.id}
-                className="flex flex-col items-center text-center"
-              >
-                {/* Image */}
-                <div className="w-32 h-32 md:w-40 md:h-40 mb-3 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 bg-gray-200 border border-gray-300">
-                  <img
-                    src={official.image}
-                    alt={official.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+        {/* Officials Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6 place-items-center">
+          {officials.map((official) => (
+            <div
+              key={official.id}
+              className="flex flex-col items-center text-center bg-green-900 rounded-xl shadow-xl p-4 sm:p-5 w-36 sm:w-56 md:w-64 border-b-4 border-green-500 hover:translate-x-1 transition-transform duration-300 ease-in-out"
+            >
+              {/* Role */}
+              <span className="block w-full bg-green-700 text-white text-[0.7rem] sm:text-sm font-bold py-2 rounded-md mb-3 leading-tight text-center">
+                {official.name}
+              </span>
 
-                {/* Name */}
-                <h5 className="text-s md:text-sm font-bold text-green-700 mb-1">
-                  {official.subtitle}
-                </h5>
+              {/* Image */}
+              <img
+                src={official.image}
+                alt={official.subtitle}
+                className="w-16 h-16 sm:w-24 sm:h-24 rounded-full object-cover mb-3 mt-1"
+              />
 
-                {/* Subtitle */}
-                <p className="text-s text-orange-600">{official.name}</p>
-              </div>
-            ))}
-          </div>
+              {/* Name */}
+              <h6 className="text-xs sm:text-base font-normal mb-1 text-white">
+                {official.subtitle}
+              </h6>
+            </div>
+          ))}
         </div>
-      </section>
+      </div>
     </section>
   );
 };

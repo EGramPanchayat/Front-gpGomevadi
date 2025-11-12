@@ -5,6 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DevelopementWorkAdmin from "../AdminComponents/DevelopementWorkAdmin";
 import NewsUpload from "../AdminComponents/NewsUpload";
+import NoticeUploadModal from "../AdminComponents/NoticeUploadModal";
 import QRUploadModal from "../AdminComponents/QRUploadModal";
 import DakhalaSubmissions from "../AdminComponents/DakhalaSubmissions";
 import ExecutiveBoardAdmin from "../AdminComponents/ExecutiveBoardAdmin";
@@ -89,6 +90,7 @@ export default function AdminDashboard() {
   const [members, setMembers] = useState([]);
   const [officers, setOfficers] = useState([]);
   const [qrModalOpen, setQrModalOpen] = useState(false);
+  const [noticeModalOpen, setNoticeModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -228,6 +230,7 @@ export default function AdminDashboard() {
   return (
     <>
       <QRUploadModal open={qrModalOpen} onClose={() => setQrModalOpen(false)} />
+      <NoticeUploadModal open={noticeModalOpen} onClose={() => setNoticeModalOpen(false)} />
       {/* NAVBAR */}
       <nav className="bg-green-700 text-white shadow-md fixed top-0 left-0 right-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -284,6 +287,13 @@ export default function AdminDashboard() {
               </button>
               <div className="flex flex-col md:flex-row w-full items-start md:items-center justify-start md:justify-end gap-6 md:gap-8 mt-8 md:mt-0">
                 <Link to="news-section" smooth duration={500} onClick={() => { closeMobileMenu(); setQrModalOpen(false); }} className="cursor-pointer text-gray-300 hover:text-green-300">बातम्या</Link>
+                <button
+                  className="cursor-pointer text-gray-300 hover:text-green-300 text-base font-semibold bg-transparent border-none p-0 m-0"
+                  onClick={() => { setNoticeModalOpen(true); closeMobileMenu(); }}
+                  style={{ fontWeight: "inherit" }}
+                >
+                  सूचना
+                </button>
                 <Link to="devworks-section" smooth duration={500} onClick={() => { closeMobileMenu(); setQrModalOpen(false); }} className="cursor-pointer text-gray-300 hover:text-green-300">विकास कामे</Link>
                 <Link to="exec-section" smooth duration={500} onClick={() => { closeMobileMenu(); setQrModalOpen(false); }} className="cursor-pointer text-gray-300 hover:text-green-300">कार्यकारिणी</Link>
                 <button

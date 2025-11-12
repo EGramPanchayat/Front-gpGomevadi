@@ -53,14 +53,14 @@ const SamajSudharak = () => {
         </h2>
 
         {/* Grid of reformers - 6 cols on desktop, 3 cols on tablet, 3 cols on mobile */}
-        <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+        <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-1 md:gap-6">
           {reformers.map((reformer) => (
             <div
               key={reformer.id}
               className="flex flex-col items-center text-center"
             >
               {/* Framed Image */}
-              <div className="w-full aspect-square mb-3 border-4 border-orange-400 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-gray-100">
+              <div className="w-full aspect-square mb-3 border-2 border-orange-400 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-gray-100">
                 <img
                   src={reformer.image}
                   alt={reformer.name}
@@ -69,12 +69,8 @@ const SamajSudharak = () => {
               </div>
 
               {/* Name and Description */}
-              <h5 className="text-sm md:text-base font-bold text-green-700 mb-1">
-                {reformer.name}
-              </h5>
-              <p className="text-xs md:text-sm text-gray-600">
-                {reformer.description}
-              </p>
+              
+            
             </div>
           ))}
         </div>
