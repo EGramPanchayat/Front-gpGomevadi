@@ -41,7 +41,7 @@ const EmergencyContact = () => {
     <section
       id="emergency"
       ref={sectionRef}
-      className="w-full py-14 bg-gradient-to-b from-green-50 to-orange-50 pb-20  overflow-x-hidden"
+      className="w-full py-14 pb-20  overflow-x-hidden bg-gray-50"
     >
       <div className="w-full mx-auto max-w-[1200px] px-4 overflow-x-hidden">
         {/* Header */}
@@ -60,7 +60,7 @@ const EmergencyContact = () => {
               onClick={() =>
                 (window.location.href = `tel:${item.number.replace(/\D/g, "")}`)
               }
-              className={`flex justify-between items-center bg-green-50 border border-green-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-500 px-4 py-3 cursor-pointer transform ${
+              className={`flex justify-between items-center bg-white border border-green-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-500 px-4 py-3 mx-3 cursor-pointer transform ${
                 visibleCards.includes(index)
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-4"
