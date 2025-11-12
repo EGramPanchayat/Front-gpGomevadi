@@ -42,6 +42,9 @@ const AamchyaSeva = () => {
   const [showNoticesModal, setShowNoticesModal] = useState(false);
   const sectionRef = useRef(null);
 
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  // Animate cards on scroll
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -65,6 +68,7 @@ const AamchyaSeva = () => {
     return () => sectionEl && observer.unobserve(sectionEl);
   }, []);
 
+  // Handle card click
   const handleCardClick = async (service) => {
     if (service.type === "dynamic") {
       try {
@@ -146,6 +150,7 @@ const AamchyaSeva = () => {
       {selectedPdf && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4 backdrop-blur-sm overflow-x-hidden">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col animate-fadeIn overflow-hidden">
+            {/* Header */}
             <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-green-700 rounded-t-2xl">
               <h3 className="text-2xl font-bold text-white break-all">
                 {selectedPdf.title}
@@ -157,31 +162,53 @@ const AamchyaSeva = () => {
                 ×
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto bg-gray-50">
-              <iframe
-                src={`${selectedPdf.pdfPath}#toolbar=1`}
-                width="100%"
-                height="100%"
-                style={{ border: "none", minHeight: "70vh" }}
-                title={selectedPdf.title}
-              />
+
+            {/* Conditional PDF view */}
+            <div className="flex-1 overflow-y-auto bg-gray-50 flex flex-col items-center justify-center p-4">
+              {isMobile ? (
+                <>
+                  <p className="text-gray-700 text-center mb-4">
+                    खालील बटणावर क्लिक करून PDF डाउनलोड करा 👇
+                  </p>
+                  <button
+                    onClick={() =>
+                      handleDownload(selectedPdf.pdfPath, selectedPdf.title)
+                    }
+                    className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition"
+                  >
+                    ⬇️ डाउनलोड करा
+                  </button>
+                </>
+              ) : (
+                <iframe
+                  src={`${selectedPdf.pdfPath}#toolbar=1`}
+                  width="100%"
+                  height="100%"
+                  style={{ border: "none", minHeight: "70vh" }}
+                  title={selectedPdf.title}
+                />
+              )}
             </div>
-            <div className="flex gap-4 p-6 border-t border-gray-200 bg-gray-100">
-              <button
-                onClick={() =>
-                  handleDownload(selectedPdf.pdfPath, selectedPdf.title)
-                }
-                className="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
-              >
-                ⬇️ डाउनलोड करा
-              </button>
-              <button
-                onClick={handleCloseModal}
-                className="flex-1 bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition"
-              >
-                बंद करा
-              </button>
-            </div>
+
+            {/* Footer buttons for desktop */}
+            {!isMobile && (
+              <div className="flex gap-4 p-6 border-t border-gray-200 bg-gray-100">
+                <button
+                  onClick={() =>
+                    handleDownload(selectedPdf.pdfPath, selectedPdf.title)
+                  }
+                  className="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
+                >
+                  ⬇️ डाउनलोड करा
+                </button>
+                <button
+                  onClick={handleCloseModal}
+                  className="flex-1 bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition"
+                >
+                  बंद करा
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
