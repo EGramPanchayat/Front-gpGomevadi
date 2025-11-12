@@ -5,11 +5,12 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DevelopementWorkAdmin from "../AdminComponents/DevelopementWorkAdmin";
 import NewsUpload from "../AdminComponents/NewsUpload";
-import NoticeUploadModal from "../AdminComponents/NoticeUploadModal";
+
 import QRUploadModal from "../AdminComponents/QRUploadModal";
 import DakhalaSubmissions from "../AdminComponents/DakhalaSubmissions";
 import ExecutiveBoardAdmin from "../AdminComponents/ExecutiveBoardAdmin";
 import { Link } from "react-scroll";
+import NoticeUploadModal from "../AdminComponents/NoticeUploadModal";
 
 // ---------- Helpers ----------
 const newMember = (data = {}) => ({
