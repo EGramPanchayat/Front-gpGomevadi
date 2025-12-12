@@ -104,18 +104,18 @@ const AamchyaSeva = () => {
       <section
         id="services"
         ref={sectionRef}
-        className="w-full py-14 bg-gradient-to-b from-green-50 to-orange-50 overflow-x-hidden"
+        className="w-full pt-14  bg-gradient-to-b from-green-50 to-orange-50 overflow-x-hidden"
       >
         <div className="w-full mx-auto max-w-[1200px] px-4 overflow-x-hidden">
           <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-green-800 relative inline-block">
+            <h2 className="text-3xl md:text-4xl pt-5 font-extrabold text-green-800 relative inline-block">
               आमच्या सेवा
               <span className="block w-24 h-1 bg-orange-500 rounded mx-auto mt-2"></span>
             </h2>
           </div>
 
           {/* Services Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8 overflow-hidden">
+          <div className="grid grid-cols-1 pb-30 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8 overflow-hidden">
             {services.map((service, index) => (
               <div
                 key={index}
@@ -164,7 +164,8 @@ const AamchyaSeva = () => {
             </div>
 
             {/* Conditional PDF view */}
-            <div className="flex-1 overflow-y-auto bg-gray-50 flex flex-col items-center justify-center p-4">
+            <div className="flex-1 bg-gray-50 flex flex-col items-center justify-center p-4 overflow-hidden">
+
               {isMobile ? (
                 <>
                   <p className="text-gray-700 text-center mb-4">
@@ -238,7 +239,8 @@ const AamchyaSeva = () => {
                 notices.map((notice, idx) => (
                   <div
                     key={idx}
-                    className="border border-green-200 bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition break-all whitespace-pre-wrap"
+                    className="bg-white border border-green-200 rounded-2xl shadow-xs p-6 text-center
+"
                   >
                     <div className="flex items-start gap-3 break-all">
                       <BiBookmarkAlt className="text-green-700 text-xl flex-shrink-0 mt-1" />
