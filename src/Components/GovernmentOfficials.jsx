@@ -14,11 +14,11 @@ const GovernmentOfficials = () => {
       subtitle: "श्री. एकनाथ शिंदे",
       image: "/images/yeknathShinde.jpeg",
     },
-    {
+      {
       id: 3,
       name: "माननीय उपमुख्यमंत्री",
-      subtitle: "श्री. अजित पवार",
-      image: "/images/ajitPawar.jpeg",
+      subtitle: "श्रीमती सुनेत्रा अजित पवार",
+      image: "/images/SUNETRA-PAWAR.jpg",
     },
     {
       id: 4,
