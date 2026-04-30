@@ -42,7 +42,7 @@ const DevelopementWorkAdmin = () => {
       if (w.image) fd.append(`works[${idx}][image]`, w.image);
     });
     try {
-      await axioesInstance.post("/devworks", fd, {
+      await axioesInstance.post("/admin/devworks", fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       const { data } = await axioesInstance.get("/devworks");
@@ -55,7 +55,7 @@ const DevelopementWorkAdmin = () => {
   };
 
   const handleDelete = async id => {
-    await axioesInstance.delete(`/devworks/${id}`);
+    await axioesInstance.delete(`/admin/devworks/${id}`);
     setSavedWorks(list => list.filter(item => item._id !== id));
   };
 

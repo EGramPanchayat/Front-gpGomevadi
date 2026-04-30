@@ -85,7 +85,7 @@ export default function ExecutiveBoardAdmin() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axioesInstance.get("/exboard-karyakari-mandal");
+        const { data } = await axioesInstance.get("/executive-board");
         setSarpanch({
           name: data.sarpanch?.name || "",
           mobile: data.sarpanch?.mobile || "",
@@ -191,7 +191,7 @@ export default function ExecutiveBoardAdmin() {
     });
 
     try {
-      await axioesInstance.post("/exboard-karyakari-mandal", fd, {
+      await axioesInstance.post("/admin/executive-board", fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       toast.success("कार्यकारिणी यशस्वीरित्या जतन झाली!");

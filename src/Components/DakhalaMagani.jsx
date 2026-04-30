@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 
 // --- MEMOIZED REUSABLE INPUT FIELD COMPONENT ---
 const InputField = React.memo(function InputField({
@@ -227,7 +227,7 @@ export default function DakhalaMagani() {
 
 
       const res = await axioesInstance.post(
-        "/dakhala-magani",
+        "/certificate-request",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" }

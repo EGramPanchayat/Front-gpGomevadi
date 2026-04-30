@@ -20,7 +20,7 @@ export default function LoginCard() {
     setLoading(true);
     try {
       const res = await axiosInstance.post(
-        "/login", // baseURL already includes /api/admin
+        "/admin/login", // admin auth route
         { email, password }
       );
 

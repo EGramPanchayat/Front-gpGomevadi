@@ -21,7 +21,7 @@ const NewsUpload = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axioesInstance.post("/news", { text });
+      await axioesInstance.post("/admin/news", { text });
       setText("");
       await fetchNews();
   toast.success("News uploaded successfully");
@@ -31,7 +31,7 @@ const NewsUpload = () => {
   };
 
   const handleDelete = async id => {
-    await axioesInstance.delete(`/news/${id}`);
+    await axioesInstance.delete(`/admin/news/${id}`);
     await fetchNews();
   };
 

@@ -37,7 +37,7 @@ const QRUploadModal = ({ open, onClose }) => {
     if (gharPattiQR) fd.append("gharPattiQR", gharPattiQR);
     if (paymentQR) fd.append("paymentQR", paymentQR);
     try {
-      await axioesInstance.post("/upload-qr", fd, {
+      await axioesInstance.post("/admin/upload-qr", fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       try {

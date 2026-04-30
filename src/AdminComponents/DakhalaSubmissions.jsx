@@ -149,7 +149,7 @@ export default function DakhalaSubmissions() {
   const fetchSubs = async () => {
     setLoading(true);
     try {
-      const { data } = await axiosInstance.get('/dakhala');
+      const { data } = await axiosInstance.get('/admin/submissions');
       setSubs(data);
     } catch (err) {
       console.error(err);
@@ -165,7 +165,7 @@ export default function DakhalaSubmissions() {
   const handleDelete = async (id) => {
     setDeleting(true);
     try {
-      await axiosInstance.delete(`/dakhala/${id}`);
+      await axiosInstance.delete(`/admin/submissions/${id}`);
       setSubs((s) => s.filter((x) => x._id !== id));
       setModalOpen(false);
       setModalData(null);

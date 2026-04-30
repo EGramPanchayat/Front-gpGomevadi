@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import axioesInstance from "../utils/axioesInstance";
 import { PiPhoneCallLight } from "react-icons/pi";
 
@@ -7,7 +7,7 @@ const ExecutiveBoard = () => {
 
   useEffect(() => {
     axioesInstance
-      .get("/exboard-karyakari-mandal")
+      .get("/executive-board")
       .then((res) => {
         if (res?.data) setBoard(res.data);
       })

@@ -31,7 +31,7 @@ const NoticeUploadModal = ({ open, onClose }) => {
       fd.append("description", description.trim());
       if (pdfFile) fd.append("pdfFile", pdfFile);
 
-      await axioesInstance.post("/notices", fd, {
+      await axioesInstance.post("/admin/notices", fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -50,7 +50,7 @@ const NoticeUploadModal = ({ open, onClose }) => {
   const handleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this notice?")) return;
     try {
-      await axioesInstance.delete(`/notices/${id}`);
+      await axioesInstance.delete(`/admin/notices/${id}`);
       toast.success("Deleted");
       await fetchList();
     } catch (err) {
