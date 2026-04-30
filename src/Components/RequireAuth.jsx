@@ -14,3 +14,4 @@ export default function RequireAuth({ children }) {
   if (allowed === null) return <div>Loading...</div>;
   return allowed ? children : <Navigate to="/login" replace />;
 }
+
