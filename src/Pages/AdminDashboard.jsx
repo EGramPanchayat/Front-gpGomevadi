@@ -305,11 +305,15 @@ export default function AdminDashboard() {
                   कर
                 </button>
                 <button
-                  onClick={() => {
+                  onClick={async () => {
                     // close mobile menu and any open modals before logout
                     closeMobileMenu();
                     setQrModalOpen(false);
-                    localStorage.removeItem("adminToken");
+                    try {
+                      await axioesInstance.post("/admin/logout");
+                    } catch (e) {
+                      // ignore — redirect to login regardless
+                    }
                     window.location.href = "/login";
                   }}
                   className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow font-bold transition"
