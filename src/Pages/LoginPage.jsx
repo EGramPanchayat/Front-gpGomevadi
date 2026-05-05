@@ -1,27 +1,32 @@
 import React, { useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import axiosInstance from "../utils/axioesInstance"; // import your custom instance
+import axiosInstance from "../utils/axioesInstance";
 import { useNavigate } from "react-router-dom";
+import Spinner from "../Components/Spinner";
 
 export default function LoginCard() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [checking, setChecking] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if already authenticated on mount
     axiosInstance.get("/admin/check")
       .then((res) => {
         if (res.data.ok) {
           toast.success("Welcome back!");
           navigate("/admin");
+        } else {
+          setChecking(false);
         }
       })
-      .catch((err) => {
-        // Not authenticated, stay on login page
+      .catch(() => {
+        setChecking(false);
       });
   }, [navigate]);
+
+  if (checking) return <Spinner />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
