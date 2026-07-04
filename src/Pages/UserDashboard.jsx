@@ -783,7 +783,9 @@ export default function UserDashboard() {
 
               {/* Left part: Welcome message */}
               <div className="space-y-2 relative z-10 pr-28 md:pr-36">
-                <h1 className="text-xl md:text-2xl font-black tracking-tight">
+                <h1 className={`text-xl md:text-2xl font-black tracking-tight transition-colors duration-300 ${
+                  isDarkMode ? "text-green-400" : "text-green-700"
+                }`}>
                   नमस्कार, {family?.mainMemberName || "नागरिक"}! <span className="inline-block hover:animate-bounce cursor-default select-none">👋</span>
                 </h1>
                 <p className={`text-sm leading-relaxed font-semibold ${isDarkMode ? "text-slate-300" : "text-gray-600"}`}>
