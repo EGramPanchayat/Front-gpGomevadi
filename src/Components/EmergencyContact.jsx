@@ -1,20 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FiPhoneCall } from "react-icons/fi";
-
-const emergencyContacts = [
-  { emoji: "🚓", title: "पोलीस", number: "१००" },
-  { emoji: "🚑", title: "रूग्णवाहिका", number: "१०८" },
-  { emoji: "🔥", title: "अग्निशमन", number: "१०१" },
-  { emoji: "💉", title: "रक्तपेढी", number: "१०४" },
-  { emoji: "⚡", title: "महापरीषण", number: "१९१२" },
-];
+import { useSiteConfig } from "../utils/SiteConfigContext";
 
 const EmergencyContact = () => {
+  const { config } = useSiteConfig();
+  const emergencyContacts = config?.emergencyContacts || [];
+
   const [visibleCards, setVisibleCards] = useState([]);
   const sectionRef = useRef(null);
 
   // Animation trigger
   useEffect(() => {
+    if (!emergencyContacts.length) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -35,7 +33,9 @@ const EmergencyContact = () => {
     const sectionEl = sectionRef.current;
     if (sectionEl) observer.observe(sectionEl);
     return () => sectionEl && observer.unobserve(sectionEl);
-  }, []);
+  }, [emergencyContacts]);
+
+  if (!emergencyContacts.length) return null;
 
   return (
     <section
@@ -52,7 +52,7 @@ const EmergencyContact = () => {
           </h2>
         </div>
 
-        {/* --- MOBILE VIEW (simple list) --- */}
+        {/* MOBILE VIEW (simple list) */}
         <div className="block md:hidden space-y-4 overflow-hidden">
           {emergencyContacts.map((item, index) => (
             <div
@@ -85,7 +85,7 @@ const EmergencyContact = () => {
           ))}
         </div>
 
-        {/* --- DESKTOP VIEW (fancy grid like AamchyaSeva) --- */}
+     
         <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 md:pb-15 lg:grid-cols-5 gap-8 overflow-hidden">
           {emergencyContacts.map((item, index) => (
             <div
@@ -121,7 +121,7 @@ const EmergencyContact = () => {
                 {item.number}
               </p>
 
-              {/* Orange underline */}
+          
               <div className="w-12 h-1 bg-orange-400 mx-auto rounded-full transition-all duration-300 group-hover:w-20"></div>
             </div>
           ))}

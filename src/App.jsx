@@ -4,25 +4,29 @@ import MainPage from './Pages/MainPage.jsx';
 import LoginPage from './Pages/LoginPage.jsx';
 import AdminDashboard from './Pages/AdminDashboard.jsx';
 import RequireAuth from './Components/RequireAuth.jsx';
+import { SiteConfigProvider } from './utils/SiteConfigContext.jsx';
 import './App.css';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-  <Route path="/login" element={<LoginPage />} />
-        <Route
-          path="/admin"
-          element={
-            <RequireAuth>
-              <AdminDashboard />
-            </RequireAuth>
-          }
-        />
-      </Routes>
-    </Router>
+    <SiteConfigProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/admin"
+            element={
+              <RequireAuth>
+                <AdminDashboard />
+              </RequireAuth>
+            }
+          />
+        </Routes>
+      </Router>
+    </SiteConfigProvider>
   );
 }
 
 export default App;
+

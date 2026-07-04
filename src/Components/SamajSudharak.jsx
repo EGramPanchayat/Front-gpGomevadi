@@ -1,44 +1,11 @@
 import React from "react";
+import { useSiteConfig } from "../utils/SiteConfigContext";
 
 const SamajSudharak = () => {
-  const reformers = [
-    {
-      id: 1,
-      name: "शिवाजी महाराज",
-      image: "/images/shivajiMaharaj.webp",
-      description: "महान मराठा वीर"
-    },
-    {
-      id: 2,
-      name: "शाहू महाराज",
-      image: "/images/shahumaharaj.jpeg",
-      description: "सामाजिक सुधारक"
-    },
-    {
-      id: 3,
-      name: "सावित्रीबाई फुले",
-      image: "/images/savitribai.png",
-      description: "महिला शिक्षा प्रणेता"
-    },
-    {
-      id: 4,
-      name: "लोकमान्य तिळक",
-      image: "/images/lokmanya.jpeg",
-      description: "स्वातंत्र्य सेनानी"
-    },
-    {
-      id: 5,
-      name: "डॉ. बाबासाहेब आंबेडकर",
-      image: "/images/babasaheb.webp",
-      description: "संविधान निर्माता"
-    },
-    {
-      id: 6,
-      name: "ज्योतिबा फुले",
-      image: "/images/jotiba.jpg",
-      description: "समाज सुधारक"
-    }
-  ];
+  const { config } = useSiteConfig();
+  const reformers = config?.reformers || [];
+
+  if (!reformers.length) return null;
 
   return (
     <section
@@ -54,9 +21,9 @@ const SamajSudharak = () => {
 
         {/* Grid of reformers - 6 cols on desktop, 3 cols on tablet, 3 cols on mobile */}
         <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-1 md:gap-6">
-          {reformers.map((reformer) => (
+          {reformers.map((reformer, idx) => (
             <div
-              key={reformer.id}
+              key={idx}
               className="flex flex-col items-center text-center"
             >
               {/* Framed Image */}

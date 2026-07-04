@@ -1,15 +1,13 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { GrEmptyCircle } from "react-icons/gr";
+import { useSiteConfig } from "../utils/SiteConfigContext";
 
 const SloganTicker = () => {
-  const slogans = [
-    "एकच ध्येय, स्वच्छ आणि समृद्ध गाव!",
-    "चला, एकत्र येऊया, गाव सुंदर बनवूया!",
-    "ग्रामपंचायत: गाव विकासाचे केंद्र!",
-    "आपला ग्रामविकास, आपले योगदान!",
-    "पंचायत राज, स्वयंपूर्ण महाराष्ट्र.",
-  ];
+  const { config } = useSiteConfig();
+  const slogans = config?.slogans || [];
+
+  if (!slogans.length) return null;
 
   // Render slogans with icon in front
   const text = slogans.map((slogan, index) => (

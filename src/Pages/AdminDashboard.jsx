@@ -11,6 +11,7 @@ import DakhalaSubmissions from "../AdminComponents/DakhalaSubmissions";
 import ExecutiveBoardAdmin from "../AdminComponents/ExecutiveBoardAdmin";
 import { Link } from "react-scroll";
 import NoticeUploadModal from "../AdminComponents/NoticeUploadModal";
+import GovOfficialsAdmin from "../AdminComponents/GovOfficialsAdmin";
 
 // ---------- Helpers ----------
 const newMember = (data = {}) => ({
@@ -297,6 +298,7 @@ export default function AdminDashboard() {
                 </button>
                 <Link to="devworks-section" smooth duration={500} onClick={() => { closeMobileMenu(); setQrModalOpen(false); }} className="cursor-pointer text-gray-300 hover:text-green-300">विकास कामे</Link>
                 <Link to="exec-section" smooth duration={500} onClick={() => { closeMobileMenu(); setQrModalOpen(false); }} className="cursor-pointer text-gray-300 hover:text-green-300">कार्यकारिणी</Link>
+                <Link to="gov-officials-section" smooth duration={500} onClick={() => { closeMobileMenu(); setQrModalOpen(false); }} className="cursor-pointer text-gray-300 hover:text-green-300">शासकीय अधिकारी</Link>
                 <button
                   className="cursor-pointer text-gray-300 hover:text-green-300 text-base font-semibold bg-transparent border-none p-0 m-0"
                   onClick={() => { setQrModalOpen(true); closeMobileMenu(); }}
@@ -342,6 +344,10 @@ export default function AdminDashboard() {
         {/* EXEC BOARD ADMIN (moved to AdminComponents) */}
         <section id="exec-section" className="max-w-7xl mx-auto mb-12">
           <ExecutiveBoardAdmin />
+        </section>
+
+        <section id="gov-officials-section" className="max-w-7xl mx-auto mb-12">
+          <GovOfficialsAdmin />
         </section>
       </main>
 

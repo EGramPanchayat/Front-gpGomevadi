@@ -1,13 +1,20 @@
 import React from "react";
+import { useSiteConfig } from "../utils/SiteConfigContext";
 
-const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => (
+const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => {
+  const { config } = useSiteConfig();
+
+  const gpName = config?.gpName || "ग्रामपंचायत";
+  const subtitle = config ? `ता. ${config.taluka}, जि. ${config.district}` : "";
+
+  return (
   <nav className="sticky top-0 bg-green-700 shadow text-white z-50">
     <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-4">
       <div className="flex items-center gap-3">
         <img src="/images/satya.png" alt="Logo" className="h-10 w-10 rounded-full object-cover border-2 border-white shadow mr-2" />
         <div className="flex flex-col">
-          <span className="text-xl font-bold">ग्रामपंचायत गोमेवाडी</span>
-          <span className="text-sm font-semibold text-green-100 leading-tight">ता. आटपाडी, जि. सांगली</span>
+          <span className="text-xl font-bold">{gpName}</span>
+          <span className="text-sm font-semibold text-green-100 leading-tight">{subtitle}</span>
         </div>
       </div>
       {/* Hamburger for mobile only, hidden when menu open */}
@@ -22,6 +29,7 @@ const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => (
           <span className="block w-7 h-0.5 bg-white rounded"></span>
         </button>
       )}
+
       {/* Desktop nav */}
       <ul className="hidden md:flex gap-4 text-base font-medium">
         <li><a href="#home" className={activeSection==="home"?"text-orange-500 font-bold underline":"hover:text-orange-400"}>मुख्यपृष्ठ</a></li>
@@ -36,10 +44,13 @@ const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => (
         <li><a href="#contact" className={activeSection==="contact"?"text-orange-500 font-bold underline":"hover:text-orange-400"}>संपर्क</a></li>
       </ul>
     </div>
+
     {/* Mobile nav dropdown below navbar */}
     {mobileNavOpen && (
       <div className="absolute left-0 right-0 top-full bg-green-700 bg-opacity-95 z-[100] rounded-b-xl shadow-2xl md:hidden">
-        {/* Cross button at top right, white color */}
+       
+       
+  
         <button
           className="absolute top-3 right-4 text-white text-3xl bg-transparent rounded-full p-2 shadow-none"
           aria-label="Close menu"
@@ -63,6 +74,7 @@ const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => (
       </div>
     )}
   </nav>
-);
+  );
+};
 
 export default Navbar;
