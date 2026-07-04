@@ -42,6 +42,7 @@ const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => {
         <li><a href="#officials" className={activeSection==="officials"?"text-orange-500 font-bold underline":"hover:text-orange-400"}>कर्मचारी</a></li>
         <li><a href="#places" className={activeSection==="places"?"text-orange-500 font-bold underline":"hover:text-orange-400"}>पर्यटन</a></li>
         <li><a href="#contact" className={activeSection==="contact"?"text-orange-500 font-bold underline":"hover:text-orange-400"}>संपर्क</a></li>
+        <li><a href="/user-login" className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-3.5 py-1.5 rounded-xl ml-2 shadow transition text-sm">नागरिक लॉगिन</a></li>
       </ul>
     </div>
 
@@ -70,6 +71,7 @@ const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => {
           <a href="#officials" className={activeSection==="officials"?"text-orange-500 font-bold underline text-lg":"hover:text-orange-400 text-lg"} onClick={()=>setMobileNavOpen(false)}>कर्मचारी</a>
           <a href="#places" className={activeSection==="places"?"text-orange-500 font-bold underline text-lg":"hover:text-orange-400 text-lg"} onClick={()=>setMobileNavOpen(false)}>पर्यटन</a>
           <a href="#contact" className={activeSection==="contact"?"text-orange-500 font-bold underline text-lg":"hover:text-orange-400 text-lg"} onClick={()=>setMobileNavOpen(false)}>संपर्क</a>
+          <a href="/user-login" className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-center py-2.5 rounded-xl text-lg mt-2 shadow transition" onClick={()=>setMobileNavOpen(false)}>नागरिक लॉगिन</a>
         </div>
       </div>
     )}

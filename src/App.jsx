@@ -7,6 +7,11 @@ import RequireAuth from './Components/RequireAuth.jsx';
 import { SiteConfigProvider } from './utils/SiteConfigContext.jsx';
 import './App.css';
 
+// New VMS pages
+import UserLoginPage from './Pages/UserLoginPage.jsx';
+import PublicFamilyQRPage from './Pages/PublicFamilyQRPage.jsx';
+import UserDashboard from './Pages/UserDashboard.jsx';
+
 function App() {
   return (
     <SiteConfigProvider>
@@ -22,6 +27,9 @@ function App() {
               </RequireAuth>
             }
           />
+          <Route path="/user-login" element={<UserLoginPage />} />
+          <Route path="/family/:familyId" element={<PublicFamilyQRPage />} />
+          <Route path="/user/dashboard" element={<UserDashboard />} />
         </Routes>
       </Router>
     </SiteConfigProvider>
