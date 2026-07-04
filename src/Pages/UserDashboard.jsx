@@ -771,7 +771,7 @@ export default function UserDashboard() {
           <div className="space-y-6">
 
             {/* Welcome Greeting Banner (Restricted to dashboard tab) */}
-            <div className={`relative rounded-3xl py-4 px-5 md:py-5 md:px-8 border shadow-sm overflow-hidden transition-colors duration-300 ${
+            <div className={`relative rounded-3xl py-5 px-6 md:py-6 md:px-8 border shadow-sm overflow-hidden transition-colors duration-300 ${
               isDarkMode
                 ? "bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/20 border-slate-850 text-white"
                 : "bg-gradient-to-br from-green-50/50 via-emerald-50/25 to-white border-green-100/70 text-gray-800"
@@ -788,7 +788,7 @@ export default function UserDashboard() {
                 }`}>
                   नमस्कार, {family?.mainMemberName || "नागरिक"}! <span className="inline-block hover:animate-bounce cursor-default select-none">👋</span>
                 </h1>
-                <p className={`text-sm leading-relaxed font-semibold ${isDarkMode ? "text-slate-300" : "text-gray-600"}`}>
+                <p className={`text-sm leading-relaxed font-semibold transition-colors duration-300 ${isDarkMode ? "text-slate-400" : "text-gray-500"}`}>
                   आपल्या डिजिटल ग्रामपंचायत पोर्टलवर आपले सहर्ष स्वागत आहे. येथून आपण विविध दाखल्यांचे अर्ज करू शकता, घरपट्टी, पाणीपट्टी आणि इतर कर विनासायास भरून शासकीय पावत्या प्राप्त करू शकता.
                 </p>
                 {/* Family head info at bottom */}
