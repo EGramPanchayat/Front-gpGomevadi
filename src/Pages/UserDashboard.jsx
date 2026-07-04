@@ -614,72 +614,99 @@ export default function UserDashboard() {
       </aside>
 
       {/* MAIN CONTAINER */}
-      <main className="flex-1 p-6 md:p-10 pb-28 md:pb-10 space-y-6 overflow-y-auto">
+      <main className="flex-1 p-6 md:p-10 pb-28 md:pb-10 space-y-6 overflow-y-auto relative">
 
-        {/* Welcome Greeting Banner (Global at top of main container) */}
-        <div className={`relative rounded-3xl p-6 md:p-8 border shadow-sm overflow-hidden transition duration-300 ${isDarkMode ? "bg-slate-900 border-slate-800 text-white" : "bg-white border-green-100 text-gray-800"
-          }`}>
-          {/* Subtle designer background circle */}
-          <div className={`absolute -top-24 -left-24 w-48 h-48 rounded-full opacity-5 ${isDarkMode ? "bg-green-500" : "bg-green-400"}`}></div>
-
-          {/* Right part: Language switcher & Dark Mode Toggle inside a cylinder-like capsule badge positioned absolute top-right */}
-          <div className={`absolute top-6 right-6 flex items-center gap-3 p-1 rounded-full border transition z-20 shadow-sm ${isDarkMode ? "border-slate-800 bg-slate-950/80" : "border-green-150 bg-green-50/80"
-            }`}>
-            {/* Cylinder language buttons */}
-            <div className="flex items-center">
-              <button
-                onClick={() => setLanguage("mr")}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition duration-200 ${language === "mr"
-                  ? "bg-green-700 text-white shadow-sm"
-                  : isDarkMode ? "text-slate-400 hover:text-slate-200" : "text-gray-500 hover:text-gray-800"
-                  }`}
-              >
-                मराठी
-              </button>
-              <button
-                onClick={() => setLanguage("en")}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition duration-200 ${language === "en"
-                  ? "bg-green-700 text-white shadow-sm"
-                  : isDarkMode ? "text-slate-400 hover:text-slate-200" : "text-gray-500 hover:text-gray-800"
-                  }`}
-              >
-                En
-              </button>
-            </div>
-
-            {/* Divider line */}
-            <div className={`h-4 w-px ${isDarkMode ? "bg-slate-800" : "bg-green-200"}`}></div>
-
-            {/* Dark Mode toggle button */}
+        {/* Floating Settings capsule - Available globally across all tabs */}
+        <div className={`absolute top-6 right-6 md:top-8 md:right-10 flex items-center gap-3 p-1 rounded-full border transition z-30 shadow-[0_4px_20px_rgba(0,0,0,0.06)] ${
+          isDarkMode 
+            ? "border-slate-800 bg-slate-950/95 backdrop-blur-md" 
+            : "border-green-200/80 bg-white/95 backdrop-blur-md"
+        }`}>
+          {/* Cylinder language buttons */}
+          <div className="flex items-center">
             <button
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              className={`w-7 h-7 rounded-full flex items-center justify-center transition hover:scale-105 ${isDarkMode ? "text-yellow-400" : "text-slate-600"
-                }`}
-              title={isDarkMode ? "Light Mode" : "Dark Mode"}
+              onClick={() => setLanguage("mr")}
+              className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${
+                language === "mr"
+                  ? "bg-gradient-to-r from-green-700 to-emerald-800 text-white shadow scale-105"
+                  : isDarkMode 
+                    ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50" 
+                    : "text-green-800/85 hover:text-green-950 hover:bg-green-50"
+              }`}
             >
-              {isDarkMode ? "☀️" : "🌙"}
+              मराठी
+            </button>
+            <button
+              onClick={() => setLanguage("en")}
+              className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${
+                language === "en"
+                  ? "bg-gradient-to-r from-green-700 to-emerald-800 text-white shadow scale-105"
+                  : isDarkMode 
+                    ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50" 
+                    : "text-green-800/85 hover:text-green-905 hover:bg-green-50"
+              }`}
+            >
+              En
             </button>
           </div>
+          
+          {/* Divider line */}
+          <div className={`h-4 w-px ${isDarkMode ? "bg-slate-800" : "bg-green-200"}`}></div>
 
-          {/* Left part: Welcome message */}
-          <div className="space-y-2 relative z-10 pr-28 md:pr-36">
-            <h1 className="text-xl md:text-2xl font-black tracking-tight">
-              नमस्कार, {family?.mainMemberName || "नागरिक"}! 👋
-            </h1>
-            <p className={`text-sm leading-relaxed font-semibold ${isDarkMode ? "text-slate-300" : "text-gray-600"}`}>
-              आपल्या डिजिटल ग्रामपंचायत पोर्टलवर आपले सहर्ष स्वागत आहे. येथून आपण विविध दाखल्यांचे अर्ज करू शकता, घरपट्टी, पाणीपट्टी आणि इतर कर विनासायास भरून शासकीय पावत्या प्राप्त करू शकता.
-            </p>
-            {/* Family head info at bottom */}
-            <p className="text-xs text-gray-400 font-bold mt-2">
-              {t.headOfFamily}: <span className="text-green-600 font-extrabold">{family?.mainMemberName}</span> | ID: <span className="text-orange-600 font-extrabold">{family?.familyId}</span>
-            </p>
-          </div>
-
+          {/* Dark Mode toggle button */}
+          <button
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group ${
+              isDarkMode ? "hover:bg-slate-800 text-yellow-300" : "hover:bg-green-50 text-amber-500"
+            }`}
+            title={isDarkMode ? "Light Mode" : "Dark Mode"}
+          >
+            {isDarkMode ? (
+              <div className="relative w-5 h-5 flex items-center justify-center">
+                <svg className="w-4 h-4 text-yellow-300 drop-shadow-[0_0_5px_rgba(253,224,71,0.6)] transition-all duration-300 transform group-hover:rotate-12 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                </svg>
+                <span className="absolute -top-1 -right-0.5 text-[8px] text-yellow-200 animate-pulse select-none">✦</span>
+              </div>
+            ) : (
+              <div className="relative w-5 h-5 flex items-center justify-center">
+                <svg className="w-4 h-4 text-amber-500 drop-shadow-[0_0_4px_rgba(245,158,11,0.4)] transition-all duration-300 transform group-hover:rotate-45 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m0 13.5V21M4.93 4.93l1.59 1.59m10.96 10.96l1.59 1.59M3 12h2.25m13.5 0H21m-16.07 7.07l1.59-1.59M16.93 7.07l1.59-1.59M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                </svg>
+              </div>
+            )}
+          </button>
         </div>
 
         {/* ──────── TAB 1: OVERVIEW ──────── */}
         {activeTab === "overview" && (
           <div className="space-y-6">
+
+            {/* Welcome Greeting Banner (Restricted to dashboard tab) */}
+            <div className={`relative rounded-3xl p-6 md:p-8 border shadow-sm overflow-hidden transition-colors duration-300 ${
+              isDarkMode
+                ? "bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/20 border-slate-850 text-white"
+                : "bg-gradient-to-br from-green-50/50 via-emerald-50/25 to-white border-green-100/70 text-gray-800"
+            }`}>
+              {/* Multi-angle Designer Circles */}
+              <div className="absolute -top-24 -left-24 w-48 h-48 rounded-full bg-green-500/5 blur-sm pointer-events-none"></div>
+              <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-green-400/10 blur-xl pointer-events-none"></div>
+              <div className="absolute top-1/2 -translate-y-1/2 -right-16 w-36 h-36 rounded-full bg-emerald-400/15 blur-xl pointer-events-none"></div>
+
+              {/* Left part: Welcome message */}
+              <div className="space-y-2 relative z-10 pr-28 md:pr-36">
+                <h1 className="text-xl md:text-2xl font-black tracking-tight">
+                  नमस्कार, {family?.mainMemberName || "नागरिक"}! <span className="inline-block hover:animate-bounce cursor-default select-none">👋</span>
+                </h1>
+                <p className={`text-sm leading-relaxed font-semibold ${isDarkMode ? "text-slate-300" : "text-gray-600"}`}>
+                  आपल्या डिजिटल ग्रामपंचायत पोर्टलवर आपले सहर्ष स्वागत आहे. येथून आपण विविध दाखल्यांचे अर्ज करू शकता, घरपट्टी, पाणीपट्टी आणि इतर कर विनासायास भरून शासकीय पावत्या प्राप्त करू शकता.
+                </p>
+                {/* Family head info at bottom */}
+                <p className="text-xs text-gray-400 font-bold mt-2">
+                  {t.headOfFamily}: <span className="text-green-600 font-extrabold">{family?.mainMemberName}</span> | ID: <span className="text-orange-600 font-extrabold">{family?.familyId}</span>
+                </p>
+              </div>
+            </div>
 
             {/* STATS METERS */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
