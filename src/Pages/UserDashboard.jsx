@@ -12,9 +12,21 @@ export default function UserDashboard() {
   const [activeTab, setActiveTab] = useState("overview"); // 'overview', 'taxes', 'applications'
 
   // Application form states
-  const [appType, setAppType] = useState("birth");
-  const [applicantName, setApplicantName] = useState("");
-  const [appDetails, setAppDetails] = useState("");
+  const [form, setForm] = useState({
+    forName: "",
+    whatsappNo: "",
+    email: "",
+    type: "जन्म नोंद",
+    dob: "",
+    childName: "",
+    deathName: "",
+    deathDate: "",
+    coupleName: "",
+    marriageYear: "",
+    propertyNo: "",
+    certificateName: "",
+    niradharName: "",
+  });
   const [submittingApp, setSubmittingApp] = useState(false);
 
   // Razorpay payment state
@@ -30,9 +42,15 @@ export default function UserDashboard() {
           window.location.href = "/user-login";
           return;
         }
-        setFamily(res.data.family);
+        const familyData = res.data.family;
+        setFamily(familyData);
+        setForm((prev) => ({
+          ...prev,
+          forName: familyData?.mainMemberName || "",
+          whatsappNo: familyData?.whatsappNumber || familyData?.mobileNumber || "",
+        }));
         return Promise.all([
-          axioesInstance.get(`/taxes/${res.data.family.familyId}`),
+          axioesInstance.get(`/taxes/${familyData.familyId}`),
           axioesInstance.get("/user/applications"),
         ]);
       })
@@ -170,29 +188,171 @@ export default function UserDashboard() {
     }
   };
 
-  const handleApplyCertificate = async (e) => {
-    e.preventDefault();
-    if (!applicantName.trim()) {
-      return toast.error("कृपया अर्जदाराचे नाव प्रविष्ट करा");
-    }
-
-    setSubmittingApp(true);
+  const submitApplicationRequest = async (transactionId) => {
     try {
       await axioesInstance.post("/user/applications", {
-        applicantName,
-        type: appType,
-        details: { description: appDetails },
+        applicantName: form.forName,
+        type: form.type,
+        details: {
+          whatsappNo: form.whatsappNo,
+          email: form.email,
+          transactionId,
+          dob: form.dob,
+          childName: form.childName,
+          deathName: form.deathName,
+          deathDate: form.deathDate,
+          coupleName: form.coupleName,
+          marriageYear: form.marriageYear,
+          propertyNo: form.propertyNo,
+          certificateName: form.certificateName,
+          niradharName: form.niradharName,
+        },
       });
-      toast.success("अर्ज यशस्वीरित्या सादर केला गेला आहे!");
-      setApplicantName("");
-      setAppDetails("");
-      // Refresh list
-      const { data } = await axioesInstance.get("/user/applications");
-      setApplications(data.applications || []);
+
+      toast.success("अर्ज आणि शुल्क यशस्वीरित्या सादर झाले!");
+      
+      // Reset form (keeping user identity fields)
+      setForm({
+        forName: family?.mainMemberName || "",
+        whatsappNo: family?.whatsappNumber || family?.mobileNumber || "",
+        email: "",
+        type: "जन्म नोंद",
+        dob: "",
+        childName: "",
+        deathName: "",
+        deathDate: "",
+        coupleName: "",
+        marriageYear: "",
+        propertyNo: "",
+        certificateName: "",
+        niradharName: "",
+      });
+
+      // Refresh applications list
+      const appRes = await axioesInstance.get("/user/applications");
+      setApplications(appRes.data.applications || []);
     } catch (err) {
-      toast.error("अर्ज सादर करताना त्रुटी आली");
+      toast.error("अर्ज जतन करताना त्रुटी आली");
     } finally {
       setSubmittingApp(false);
+    }
+  };
+
+  const handleApplyCertificate = async (e) => {
+    e.preventDefault();
+
+    if (!form.forName || !form.email || !form.type) {
+      return toast.error("कृपया आपले नाव, ईमेल आणि दाखला प्रकार प्रविष्ट करा.");
+    }
+
+    if (form.whatsappNo && !/^[0-9]{10}$/.test(form.whatsappNo)) {
+      return toast.error("व्हॉट्सऍप क्रमांक १० अंकांचा असावा");
+    }
+
+    // Type field-specific validations
+    switch (form.type) {
+      case 'जन्म नोंद':
+        if (!form.childName || !form.dob) return toast.error("जन्माचे नाव आणि जन्मतारीख आवश्यक आहे.");
+        break;
+      case 'मृत्यू नोंद':
+        if (!form.deathName || !form.deathDate) return toast.error("नाव आणि मृत्यूची तारीख आवश्यक आहे.");
+        break;
+      case 'विवाह नोंदणी दाखला':
+        if (!form.coupleName || !form.marriageYear) return toast.error("दांपत्याचे नाव आणि नोंदणी वर्ष आवश्यक आहे.");
+        break;
+      case '८ अ उतारा':
+        if (!form.propertyNo) return toast.error("मिळकत नंबर आवश्यक आहे.");
+        break;
+      case 'निराधार असल्याचा दाखला मागणी':
+        if (!form.niradharName) return toast.error("निराधार व्यक्तीचे नाव आवश्यक आहे.");
+        break;
+      case 'दारिद्र्य रेषेखाली असल्याचा दाखला':
+      case 'ग्रामपंचायत येणे बाकी दाखला':
+        if (!form.certificateName) return toast.error("नाव आवश्यक आहे.");
+        break;
+    }
+
+    const isFeeRequired = ['जन्म नोंद', 'मृत्यू नोंद', 'विवाह नोंदणी दाखला', '८ अ उतारा', 'ग्रामपंचायत येणे बाकी दाखला'].includes(form.type);
+
+    if (isFeeRequired) {
+      setSubmittingApp(true);
+      try {
+        const scriptLoaded = await loadRazorpayScript();
+        if (!scriptLoaded) throw new Error("Razorpay script load failed");
+
+        const { data: orderData } = await axioesInstance.post("/payments/order", {
+          billId: "CERTIFICATE_FEE",
+          amount: 20, // Rs 20 certificate application fee
+        });
+
+        if (orderData.mock) {
+          toast.info("Sandbox Mode: Simulating secure fee checkout...");
+          setTimeout(async () => {
+            try {
+              const { data: verifyData } = await axioesInstance.post("/payments/verify", {
+                billId: "CERTIFICATE_FEE",
+                amount: 20,
+                razorpayOrderId: orderData.orderId,
+                razorpayPaymentId: `pay_mock_${Math.random().toString(36).substring(7)}`,
+                mock: true,
+              });
+
+              await submitApplicationRequest(verifyData.transactionId || `MOCK_TX_${Date.now()}`);
+            } catch (err) {
+              toast.error("पेमेंट पडताळणी अयशस्वी");
+              setSubmittingApp(false);
+            }
+          }, 1500);
+          return;
+        }
+
+        // Real checkout
+        const options = {
+          key: orderData.keyId,
+          amount: orderData.amount * 100,
+          currency: orderData.currency,
+          name: "ग्रामपंचायत गोमेवाडी",
+          description: `शुल्क: ${form.type} अर्ज`,
+          image: "/images/satyamev.jpg",
+          order_id: orderData.orderId,
+          handler: async function (response) {
+            try {
+              await axioesInstance.post("/payments/verify", {
+                billId: "CERTIFICATE_FEE",
+                amount: 20,
+                razorpayOrderId: response.razorpay_order_id,
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpaySignature: response.razorpay_signature,
+              });
+              await submitApplicationRequest(response.razorpay_payment_id);
+            } catch (e) {
+              toast.error("पेमेंट पडताळणी अयशस्वी");
+              setSubmittingApp(false);
+            }
+          },
+          prefill: {
+            name: form.forName,
+            contact: form.whatsappNo,
+          },
+          theme: {
+            color: "#15803d",
+          },
+        };
+
+        const paymentObject = new window.Razorpay(options);
+        paymentObject.open();
+      } catch (err) {
+        toast.error(err.message || "पेमेंट प्रक्रिया सुरू करण्यात अक्षम");
+        setSubmittingApp(false);
+      }
+    } else {
+      setSubmittingApp(true);
+      try {
+        await submitApplicationRequest("FREE_EXEMPT");
+      } catch (err) {
+        toast.error("अर्ज सादर करताना त्रुटी");
+        setSubmittingApp(false);
+      }
     }
   };
 
@@ -320,6 +480,56 @@ export default function UserDashboard() {
                 <button onClick={() => setActiveTab("applications")} className="text-xs font-bold text-green-700 hover:underline mt-4 text-left">
                   डाऊनलोड करा →
                 </button>
+              </div>
+            </div>
+
+            {/* FAMILY PROFILE DATA CARD */}
+            <div className="bg-white rounded-3xl p-6 shadow border border-green-100 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-green-50 rounded-bl-full flex items-center justify-center opacity-70">
+                <span className="text-2xl">🏠</span>
+              </div>
+              <h3 className="text-lg font-extrabold text-green-800 mb-4 border-b pb-2 flex items-center gap-2">
+                कुटुंबाची सविस्तर माहिती (Household Profile)
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 text-sm">
+                <div>
+                  <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">कुटुंब प्रमुख (Head of Family)</p>
+                  <p className="font-extrabold text-gray-800 text-base mt-0.5">{family?.mainMemberName}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">घर क्रमांक (House Number)</p>
+                  <p className="font-extrabold text-gray-800 text-base mt-0.5">{family?.houseNumber}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">मोबाईल नंबर (Registered Phone)</p>
+                  <p className="font-extrabold text-gray-800 text-base mt-0.5">{family?.mobileNumber}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">व्हॉट्सॲप नंबर (WhatsApp Contact)</p>
+                  <p className="font-extrabold text-gray-800 text-base mt-0.5">{family?.whatsappNumber || "उपलब्ध नाही"}</p>
+                </div>
+                <div className="md:col-span-2">
+                  <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">पत्ता (Registered Address)</p>
+                  <p className="font-extrabold text-gray-800 text-base mt-0.5">{family?.address || "गोमेवाडी, महाराष्ट्र"}</p>
+                </div>
+                <div className="md:col-span-2 grid grid-cols-4 gap-2 text-center bg-green-50/40 p-4 rounded-2xl border border-green-100">
+                  <div>
+                    <span className="text-[10px] text-gray-400 font-extrabold block">पुरुष (Men)</span>
+                    <span className="font-extrabold text-gray-800 text-lg">{family?.menCount ?? 0}</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-gray-400 font-extrabold block">महिला (Women)</span>
+                    <span className="font-extrabold text-gray-800 text-lg">{family?.womenCount ?? 0}</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-gray-400 font-extrabold block">ज्येष्ठ (Seniors)</span>
+                    <span className="font-extrabold text-gray-800 text-lg">{family?.seniorCount ?? 0}</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-gray-400 font-extrabold block">बालके (Children)</span>
+                    <span className="font-extrabold text-gray-800 text-lg">{family?.childrenCount ?? 0}</span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -472,52 +682,197 @@ export default function UserDashboard() {
             {/* Application request form (1/3 width) */}
             <div className="space-y-6">
               <div className="bg-white rounded-3xl shadow p-6 border border-green-100">
-                <h3 className="text-lg font-bold text-gray-800 mb-4 border-b pb-2">नवीन दाखला अर्ज (Apply)</h3>
+                <h3 className="text-lg font-bold text-gray-800 mb-4 border-b pb-2">नवीन दाखला अर्ज (Apply for Certificate)</h3>
                 <form onSubmit={handleApplyCertificate} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">दाखला प्रकार</label>
+                    <label className="block text-xs font-bold text-gray-700 mb-1">दाखल्याचा प्रकार (Select Type)</label>
                     <select
-                      value={appType}
-                      onChange={(e) => setAppType(e.target.value)}
-                      className="border border-green-600 p-2.5 rounded-xl w-full text-sm outline-none"
+                      value={form.type}
+                      onChange={(e) => setForm({ ...form, type: e.target.value })}
+                      className="border border-green-600 p-2.5 rounded-xl w-full text-xs font-bold outline-none"
                     >
-                      <option value="birth">जन्म दाखला (Birth Certificate)</option>
-                      <option value="death">मृत्यू दाखला (Death Certificate)</option>
-                      <option value="income">उत्पन्न दाखला (Income Certificate)</option>
-                      <option value="marriage">विवाह दाखला (Marriage Certificate)</option>
-                      <option value="residence">रहिवासी दाखला (Residence Certificate)</option>
+                      <option value="जन्म नोंद">जन्म नोंद (Birth Registration) - ₹20</option>
+                      <option value="मृत्यू नोंद">मृत्यू नोंद (Death Registration) - ₹20</option>
+                      <option value="विवाह नोंदणी दाखला">विवाह नोंदणी दाखला (Marriage Certificate) - ₹20</option>
+                      <option value="८ अ उतारा">८ अ उतारा (8A Transcript) - ₹20</option>
+                      <option value="ग्रामपंचायत येणे बाकी दाखला">ग्रामपंचायत येणे बाकी दाखला (No Dues Certificate) - ₹20</option>
+                      <option value="दारिद्र्य रेषेखाली असल्याचा दाखला">दारिद्र्य रेषेखाली असल्याचा दाखला (BPL Certificate) - मोफत</option>
+                      <option value="निराधार असल्याचा दाखला मागणी">निराधार असल्याचा दाखला मागणी (Destitute Certificate) - मोफत</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">अर्जदाराचे नाव</label>
+                    <label className="block text-xs font-bold text-gray-700 mb-1">अर्जदाराचे नाव (Applicant Name)</label>
                     <input
                       type="text"
                       required
-                      placeholder="उदा. राहुल विकास शेटे"
-                      value={applicantName}
-                      onChange={(e) => setApplicantName(e.target.value)}
-                      className="border border-green-600 p-2.5 rounded-xl w-full text-sm outline-none"
+                      placeholder="उदा. राहुल शेटे"
+                      value={form.forName}
+                      onChange={(e) => setForm({ ...form, forName: e.target.value })}
+                      className="border border-green-200 p-2.5 rounded-xl w-full text-xs outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">इतर सविस्तर माहिती / कारण</label>
-                    <textarea
-                      rows={3}
-                      placeholder="अर्ज करण्यासाठी लागणारी कारणे किंवा संदर्भ माहिती..."
-                      value={appDetails}
-                      onChange={(e) => setAppDetails(e.target.value)}
-                      className="border border-green-600 p-2.5 rounded-xl w-full text-sm outline-none"
+                    <label className="block text-xs font-bold text-gray-700 mb-1">व्हॉट्सॲप नंबर (WhatsApp Number)</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="उदा. ९८७६५४३२१०"
+                      value={form.whatsappNo}
+                      onChange={(e) => setForm({ ...form, whatsappNo: e.target.value })}
+                      className="border border-green-200 p-2.5 rounded-xl w-full text-xs outline-none"
                     />
                   </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-1">ईमेल पत्ता (Email Address)</label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="उदा. name@example.com"
+                      value={form.email}
+                      onChange={(e) => setForm({ ...form, email: e.target.value })}
+                      className="border border-green-200 p-2.5 rounded-xl w-full text-xs outline-none"
+                    />
+                  </div>
+
+                  {/* DYNAMIC FORMS STACK */}
+                  {form.type === "जन्म नोंद" && (
+                    <div className="bg-green-50/50 p-4 rounded-2xl border border-green-100 space-y-3">
+                      <p className="text-[10px] font-bold text-green-700 uppercase">👶 जन्म नोंद तपशील:</p>
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-500 mb-1">बाळाचे नाव (Child Name)</label>
+                        <input
+                          type="text"
+                          required
+                          value={form.childName}
+                          onChange={(e) => setForm({ ...form, childName: e.target.value })}
+                          className="border border-green-200 p-2 rounded-xl w-full text-xs outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-500 mb-1">जन्मतारीख (Date of Birth)</label>
+                        <input
+                          type="date"
+                          required
+                          value={form.dob}
+                          onChange={(e) => setForm({ ...form, dob: e.target.value })}
+                          className="border border-green-200 p-2 rounded-xl w-full text-xs outline-none"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {form.type === "मृत्यू नोंद" && (
+                    <div className="bg-green-50/50 p-4 rounded-2xl border border-green-100 space-y-3">
+                      <p className="text-[10px] font-bold text-green-700 uppercase">🪦 मृत्यू नोंद तपशील:</p>
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-500 mb-1">मृत व्यक्तीचे नाव (Deceased Name)</label>
+                        <input
+                          type="text"
+                          required
+                          value={form.deathName}
+                          onChange={(e) => setForm({ ...form, deathName: e.target.value })}
+                          className="border border-green-200 p-2 rounded-xl w-full text-xs outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-500 mb-1">मृत्यूची तारीख (Date of Death)</label>
+                        <input
+                          type="date"
+                          required
+                          value={form.deathDate}
+                          onChange={(e) => setForm({ ...form, deathDate: e.target.value })}
+                          className="border border-green-200 p-2 rounded-xl w-full text-xs outline-none"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {form.type === "विवाह नोंदणी दाखला" && (
+                    <div className="bg-green-50/50 p-4 rounded-2xl border border-green-100 space-y-3">
+                      <p className="text-[10px] font-bold text-green-700 uppercase">💍 विवाह नोंदणी तपशील:</p>
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-500 mb-1">दांपत्याचे नाव (Husband & Wife Names)</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="उदा. पती व पत्नी"
+                          value={form.coupleName}
+                          onChange={(e) => setForm({ ...form, coupleName: e.target.value })}
+                          className="border border-green-200 p-2 rounded-xl w-full text-xs outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-500 mb-1">नोंदणी वर्ष (Marriage Year)</label>
+                        <input
+                          type="number"
+                          required
+                          placeholder="उदा. २०२४"
+                          value={form.marriageYear}
+                          onChange={(e) => setForm({ ...form, marriageYear: e.target.value })}
+                          className="border border-green-200 p-2 rounded-xl w-full text-xs outline-none"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {form.type === "८ अ उतारा" && (
+                    <div className="bg-green-50/50 p-4 rounded-2xl border border-green-100 space-y-3">
+                      <p className="text-[10px] font-bold text-green-700 uppercase">📄 ८ अ उतारा तपशील:</p>
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-500 mb-1">मिळकत नंबर (Property Account No)</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="उदा. १८२"
+                          value={form.propertyNo}
+                          onChange={(e) => setForm({ ...form, propertyNo: e.target.value })}
+                          className="border border-green-200 p-2 rounded-xl w-full text-xs outline-none"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {form.type === "निराधार असल्याचा दाखला मागणी" && (
+                    <div className="bg-green-50/50 p-4 rounded-2xl border border-green-100 space-y-3">
+                      <p className="text-[10px] font-bold text-green-700 uppercase">🤝 निराधार दाखला तपशील:</p>
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-500 mb-1">निराधार व्यक्तीचे संपूर्ण नाव</label>
+                        <input
+                          type="text"
+                          required
+                          value={form.niradharName}
+                          onChange={(e) => setForm({ ...form, niradharName: e.target.value })}
+                          className="border border-green-200 p-2 rounded-xl w-full text-xs outline-none"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {(form.type === "दारिद्र्य रेषेखाली असल्याचा दाखला" || form.type === "ग्रामपंचायत येणे बाकी दाखला") && (
+                    <div className="bg-green-50/50 p-4 rounded-2xl border border-green-100 space-y-3">
+                      <p className="text-[10px] font-bold text-green-700 uppercase">📑 दाखला तपशील:</p>
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-500 mb-1">दाखला ज्यांच्या नावे हवा आहे त्यांचे नाव</label>
+                        <input
+                          type="text"
+                          required
+                          value={form.certificateName}
+                          onChange={(e) => setForm({ ...form, certificateName: e.target.value })}
+                          className="border border-green-200 p-2 rounded-xl w-full text-xs outline-none"
+                        />
+                      </div>
+                    </div>
+                  )}
 
                   <button
                     type="submit"
                     disabled={submittingApp}
                     className="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 rounded-xl shadow transition"
                   >
-                    {submittingApp ? "सादर होत आहे..." : "अर्ज सादर करा"}
+                    {submittingApp ? "सादर होत आहे..." : ['जन्म नोंद', 'मृत्यू नोंद', 'विवाह नोंदणी दाखला', '८ अ उतारा', 'ग्रामपंचायत येणे बाकी दाखला'].includes(form.type) ? "₹20 भरा आणि सबमिट करा" : "मोफत सबमिट करा"}
                   </button>
                 </form>
               </div>
@@ -533,17 +888,13 @@ export default function UserDashboard() {
                 ) : (
                   <div className="space-y-6 max-h-[500px] overflow-y-auto pr-1">
                     {applications.map((app) => (
-                      <div key={app._id} className="border border-green-100 rounded-3xl p-5 flex flex-col justify-between">
+                      <div key={app._id} className="border border-green-100 rounded-3xl p-5 flex flex-col justify-between hover:shadow transition duration-200">
                         <div className="flex justify-between items-start mb-3">
                           <div>
-                            <h4 className="font-bold text-lg text-gray-800 capitalize">
-                              {app.type === "birth" ? "जन्म दाखला अर्ज" : 
-                               app.type === "death" ? "मृत्यू दाखला अर्ज" : 
-                               app.type === "income" ? "उत्पन्न दाखला अर्ज" : 
-                               app.type === "marriage" ? "विवाह दाखला अर्ज" : 
-                               "रहिवासी दाखला अर्ज"}
+                            <h4 className="font-extrabold text-lg text-gray-800">
+                              {app.type}
                             </h4>
-                            <p className="text-xs text-gray-400">अर्जदार: {app.applicantName}</p>
+                            <p className="text-xs text-gray-400 font-bold">अर्जदार: {app.applicantName}</p>
                             <p className="text-[10px] text-gray-400 mt-1">तारीख: {new Date(app.createdAt).toLocaleDateString()}</p>
                           </div>
                           
@@ -558,10 +909,18 @@ export default function UserDashboard() {
                           </span>
                         </div>
 
-                        {app.details?.description && (
-                          <p className="text-sm text-gray-600 bg-gray-50 p-2.5 rounded-xl border border-gray-100 mb-3 font-medium">
-                            तपशील: {app.details.description}
-                          </p>
+                        {app.details && (
+                          <div className="text-xs text-gray-600 bg-gray-50 p-4 rounded-2xl border border-gray-100 mb-3 space-y-1 font-medium">
+                            {app.details.whatsappNo && <p>💬 व्हॉट्सॲप: <span className="font-bold text-gray-800">{app.details.whatsappNo}</span></p>}
+                            {app.details.email && <p>✉️ ईमेल: <span className="font-bold text-gray-800">{app.details.email}</span></p>}
+                            {app.details.transactionId && <p className="font-mono text-[10px]">💳 पेमेंट ID: <span className="text-green-700 font-bold">{app.details.transactionId}</span></p>}
+                            {app.details.childName && <p>👶 बाळाचे नाव: <span className="font-bold text-gray-800">{app.details.childName}</span> | जन्मतारीख: <span className="font-bold text-gray-800">{app.details.dob}</span></p>}
+                            {app.details.deathName && <p>🪦 मयत व्यक्ती: <span className="font-bold text-gray-800">{app.details.deathName}</span> | तारीख: <span className="font-bold text-gray-800">{app.details.deathDate}</span></p>}
+                            {app.details.coupleName && <p>💍 दांपत्य: <span className="font-bold text-gray-800">{app.details.coupleName}</span> | विवाह वर्ष: <span className="font-bold text-gray-800">{app.details.marriageYear}</span></p>}
+                            {app.details.propertyNo && <p>🏠 मिळकत क्रमांक: <span className="font-bold text-gray-800">{app.details.propertyNo}</span></p>}
+                            {app.details.niradharName && <p>🤝 निराधार व्यक्ती: <span className="font-bold text-gray-800">{app.details.niradharName}</span></p>}
+                            {app.details.certificateName && <p>📑 दाखला नावे: <span className="font-bold text-gray-800">{app.details.certificateName}</span></p>}
+                          </div>
                         )}
 
                         {/* Admin remarks if any */}
