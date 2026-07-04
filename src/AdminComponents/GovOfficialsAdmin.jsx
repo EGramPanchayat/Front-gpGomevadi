@@ -11,7 +11,7 @@ const newOfficial = (data = {}) => ({
   imageUrl: data.image || "",
 });
 
-function OfficialCard({ data, onChange, allowRemove, onRemove, onMoveUp, onMoveDown, isFirst, isLast }) {
+function OfficialCard({ data, onChange, onMoveUp, onMoveDown, isFirst, isLast }) {
   return (
     <div className="flex flex-col items-center bg-white p-4 sm:p-6 rounded-2xl shadow w-full max-w-xs sm:w-64 text-center mx-auto">
       <div className="relative mb-3">
@@ -72,16 +72,6 @@ function OfficialCard({ data, onChange, allowRemove, onRemove, onMoveUp, onMoveD
           </button>
         )}
       </div>
-
-      {allowRemove && (
-        <button
-          type="button"
-          onClick={onRemove}
-          className="mt-3 bg-red-500 text-white px-3 py-1 rounded shadow"
-        >
-          हटवा
-        </button>
-      )}
     </div>
   );
 }
@@ -197,8 +187,6 @@ export default function GovOfficialsAdmin() {
             key={o._id}
             data={o}
             onChange={(k, v) => updateOfficial(o._id, k, v)}
-            allowRemove={officials.length > 1}
-            onRemove={() => removeOfficial(o._id)}
             onMoveUp={() => moveUp(idx)}
             onMoveDown={() => moveDown(idx)}
             isFirst={idx === 0}

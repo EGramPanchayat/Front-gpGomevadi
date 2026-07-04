@@ -74,7 +74,7 @@ const Card = memo(function Card({ title, data, onChange, allowRemove, onRemove }
   );
 });
 
-export default function ExecutiveBoardAdmin() {
+export default function ExecutiveBoardAdmin({ mode = "all" }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [sarpanch, setSarpanch] = useState({ name: "", mobile: "", image: null, imageUrl: "" });
@@ -98,7 +98,7 @@ export default function ExecutiveBoardAdmin() {
           image: null,
           imageUrl: data.upsarpanch?.image?.url || data.upsarpanch?.image || "",
         });
-  setMembers((data.members || []).map(m => newMember(m)));
+        setMembers((data.members || []).map(m => newMember(m)));
 
         const defaultRoles = [
           "ग्राम महसूल अधिकारी",
@@ -109,7 +109,7 @@ export default function ExecutiveBoardAdmin() {
           "लिपिक",
           "शिपाई",
         ];
-  const existing = data.staff?.officers || [];
+        const existing = data.staff?.officers || [];
         setOfficers(
           defaultRoles.map(role => {
             const found = existing.find(o => o.role === role) || {};
@@ -220,25 +220,37 @@ export default function ExecutiveBoardAdmin() {
 
   return (
     <form onSubmit={handleSubmit} className="bg-gray-50 p-10 rounded-2xl shadow-2xl space-y-12 border border-green-200">
-      <h2 className="text-2xl font-bold text-green-700 mb-4 border-b sm:pb-2 md:pb-4 text-center">गाव कार्यकारिणी व्यवस्थापन</h2>
+      {(mode === "all" || mode === "exec") && (
+        <>
+          <h2 className="text-2xl font-bold text-green-700 mb-4 border-b sm:pb-2 md:pb-4 text-center">गाव कार्यकारिणी व्यवस्थापन</h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        <Card title="सरपंच" data={sarpanch} onChange={(k, v) => setSarpanch(s => ({ ...s, [k]: v }))} />
-        <Card title="उपसरपंच" data={upsarpanch} onChange={(k, v) => setUpsarpanch(s => ({ ...s, [k]: v }))} />
-        {members.map(m => (
-          <Card key={m._id} title="सदस्य" data={m} onChange={(k, v) => updateMember(m._id, k, v)} allowRemove={members.length > 1} onRemove={() => removeMember(m._id)} />
-        ))}
-      </div>
-      <div className="text-center mt-4">
-        <button type="button" onClick={addMember} className="bg-green-700 text-white px-4 py-2 rounded shadow">नवीन सदस्य जोडा</button>
-      </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <Card title="सरपंच" data={sarpanch} onChange={(k, v) => setSarpanch(s => ({ ...s, [k]: v }))} />
+            <Card title="उपसरपंच" data={upsarpanch} onChange={(k, v) => setUpsarpanch(s => ({ ...s, [k]: v }))} />
+            {members.map(m => (
+              <Card key={m._id} title="सदस्य" data={m} onChange={(k, v) => updateMember(m._id, k, v)} allowRemove={members.length > 1} onRemove={() => removeMember(m._id)} />
+            ))}
+          </div>
+          <div className="text-center mt-4">
+            <button type="button" onClick={addMember} className="bg-green-700 text-white px-4 py-2 rounded shadow">नवीन सदस्य जोडा</button>
+          </div>
+        </>
+      )}
 
-      <h3 className="text-3xl font-bold mb-4 border-t pt-10 text-green-700 text-center">अधिकारी</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {officers.map(o => (
-          <Card key={o._id} title={o.role} data={o} onChange={(k, v) => updateOfficer(o._id, k, v)} />
-        ))}
-      </div>
+      {(mode === "all" || mode === "officers") && (
+        <>
+          {mode === "all" ? (
+            <h3 className="text-3xl font-bold mb-4 border-t pt-10 text-green-700 text-center">अधिकारी</h3>
+          ) : (
+            <h2 className="text-2xl font-bold text-green-700 mb-4 border-b sm:pb-2 md:pb-4 text-center">अधिकारी</h2>
+          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {officers.map(o => (
+              <Card key={o._id} title={o.role} data={o} onChange={(k, v) => updateOfficer(o._id, k, v)} />
+            ))}
+          </div>
+        </>
+      )}
 
       <div className="mt-10 flex justify-center">
         <button type="button" className={`bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded shadow w-full max-w-md text-xl ${saving ? "opacity-60 cursor-not-allowed" : ""}`} onClick={handleSubmit} disabled={saving}>{saving ? "Saving..." : "Save"}</button>
