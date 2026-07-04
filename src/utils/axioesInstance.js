@@ -31,6 +31,15 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // Handle VMS Citizen Portal 401s separately to avoid admin refresh hijack
+    if (
+      error.response?.status === 401 &&
+      (originalRequest.url.includes("/user/") || originalRequest.url.includes("/auth/otp/"))
+    ) {
+      window.location.href = "/user-login";
+      return Promise.reject(error);
+    }
+
     // Only attempt refresh for 401 errors, not on login/refresh routes themselves
     if (
       error.response?.status === 401 &&
