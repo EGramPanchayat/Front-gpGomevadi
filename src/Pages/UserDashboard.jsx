@@ -614,7 +614,7 @@ export default function UserDashboard() {
       </aside>
 
       {/* MAIN CONTAINER */}
-      <main className="flex-1 p-6 md:p-10 pb-28 md:pb-10 space-y-6 overflow-y-auto relative">
+      <main className="flex-1 pt-4 px-4 md:pt-6 md:px-8 pb-28 md:pb-10 space-y-4 md:space-y-6 overflow-y-auto relative">
 
         {/* Sleek Header Navbar for Pay Taxes and Certificates tabs */}
         {activeTab !== "overview" ? (
@@ -771,7 +771,7 @@ export default function UserDashboard() {
           <div className="space-y-6">
 
             {/* Welcome Greeting Banner (Restricted to dashboard tab) */}
-            <div className={`relative rounded-3xl p-6 md:p-8 border shadow-sm overflow-hidden transition-colors duration-300 ${
+            <div className={`relative rounded-3xl py-4 px-5 md:py-5 md:px-8 border shadow-sm overflow-hidden transition-colors duration-300 ${
               isDarkMode
                 ? "bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/20 border-slate-850 text-white"
                 : "bg-gradient-to-br from-green-50/50 via-emerald-50/25 to-white border-green-100/70 text-gray-800"
