@@ -1,42 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axioesInstance from "../utils/axioesInstance";
-
-const translations = {
-  en: {
-    title: "Gram Panchayat Gomevadi",
-    subtitle: "Citizen Portal",
-    enterMobile: "Enter Mobile Number",
-    helperText: "* Use your registered mobile number to login.",
-    requestOtp: "Request OTP",
-    sending: "Sending...",
-    enteredMobile: "Entered Mobile Number",
-    change: "Change",
-    enterOtp: "Enter 6-Digit OTP Code",
-    verifying: "Verifying...",
-    verifyLogin: "Verify & Login",
-    resendIn: "Resend OTP in: ",
-    resendOtp: "Resend OTP",
-    backHome: "← Back to Home"
-  },
-  mr: {
-    title: "ग्रामपंचायत गोमेवाडी",
-    subtitle: "नागरिक सेवा पोर्टल",
-    enterMobile: "मोबाईल नंबर प्रविष्ट करा",
-    helperText: "* लॉगिन करण्यासाठी आपला नोंदणीकृत मोबाईल नंबर वापरा.",
-    requestOtp: "OTP मिळवा",
-    sending: "पाठवत आहे...",
-    enteredMobile: "प्रविष्ट केलेला मोबाईल नंबर",
-    change: "बदला",
-    enterOtp: "६ अंकी OTP कोड प्रविष्ट करा",
-    verifying: "पडताळणी होत आहे...",
-    verifyLogin: "पडताळणी आणि लॉगिन",
-    resendIn: "पुन्हा OTP मिळवा : ",
-    resendOtp: "पुन्हा OTP पाठवा",
-    backHome: "← मुख्यपृष्ठावर जा"
-  }
-};
 
 export default function UserLoginPage() {
   const [mobileNumber, setMobileNumber] = useState("");
@@ -44,18 +9,9 @@ export default function UserLoginPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
-  const [language, setLanguage] = useState(() => localStorage.getItem("lang") || "mr");
-  const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem("darkMode") === "true");
-
-  const t = translations[language];
-
-  useEffect(() => {
-    localStorage.setItem("lang", language);
-  }, [language]);
-
-  useEffect(() => {
-    localStorage.setItem("darkMode", isDarkMode);
-  }, [isDarkMode]);
+  const [otpValues, setOtpValues] = useState(Array(6).fill(""));
+  
+  const inputRefs = useRef([]);
 
   const startCountdown = () => {
     setCountdown(60);
@@ -71,7 +27,7 @@ export default function UserLoginPage() {
   };
 
   const handleRequestOtp = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (!/^\d{10}$/.test(mobileNumber)) {
       return toast.error("Please enter a valid 10-digit mobile number");
     }
@@ -119,194 +75,164 @@ export default function UserLoginPage() {
     }
   };
 
+  const handleOtpChange = (value, index) => {
+    const cleanValue = value.replace(/\D/g, "");
+    const newOtp = [...otpValues];
+    newOtp[index] = cleanValue.substring(cleanValue.length - 1);
+    setOtpValues(newOtp);
+    setOtp(newOtp.join(""));
+
+    // Focus next box if filled
+    if (cleanValue && index < 5) {
+      inputRefs.current[index + 1].focus();
+    }
+  };
+
+  const handleOtpKeyDown = (e, index) => {
+    if (e.key === "Backspace" && !otpValues[index] && index > 0) {
+      inputRefs.current[index - 1].focus();
+    }
+  };
+
+  const handleOtpPaste = (e) => {
+    e.preventDefault();
+    const data = e.clipboardData.getData("text").replace(/\D/g, "");
+    if (!/^\d{6}$/.test(data)) return;
+    const newOtp = data.split("");
+    setOtpValues(newOtp);
+    setOtp(data);
+    inputRefs.current[5].focus();
+  };
+
   return (
-    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${
-      isDarkMode ? "bg-slate-950 text-slate-100" : "bg-gradient-to-br from-green-50 via-white to-orange-50 text-gray-850"
-    }`}>
-      
-      {/* TOP HEADER / NAVBAR */}
-      <nav className={`flex justify-between items-center px-6 py-4 border-b transition duration-300 ${
-        isDarkMode ? "bg-slate-900/80 border-slate-800" : "bg-white/80 border-green-100"
-      } backdrop-blur`}>
-        <div className="flex items-center gap-2.5">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="flex flex-col md:flex-row w-full max-w-4xl h-auto md:h-[400px] bg-white shadow-2xl rounded-2xl overflow-hidden">
+        
+        {/* Left Part - Image & Brand (Exactly like LoginPage.jsx) */}
+        <div className="relative w-full md:w-1/2 h-48 md:h-auto">
           <img
-            src="/images/satyamev.jpg"
-            alt="Logo"
-            className="h-10 w-10 rounded-full object-cover border shadow-sm"
+            src="/images/nature1.jpg"
+            alt="background"
+            className="absolute inset-0 w-full h-full object-cover"
           />
-          <span className="font-extrabold text-sm tracking-tight">{t.title}</span>
+          <h1 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-2/11 text-2xl md:text-4xl font-extrabold text-white drop-shadow-lg font-serif text-center w-full px-4 leading-normal">
+            ग्रामपंचायत <br /> गोमेवाडी
+          </h1>
         </div>
 
-        <div className="flex items-center gap-4">
-          {/* Language selection button */}
-          <div className={`flex rounded-xl p-0.5 border ${isDarkMode ? "border-slate-800 bg-slate-950" : "border-gray-200 bg-gray-50"}`}>
-            <button
-              onClick={() => setLanguage("mr")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-                language === "mr" 
-                  ? "bg-green-700 text-white shadow-md" 
-                  : isDarkMode ? "text-slate-400 hover:text-slate-200" : "text-gray-500 hover:text-gray-850"
-              }`}
-            >
-              मराठी
-            </button>
-            <button
-              onClick={() => setLanguage("en")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-                language === "en" 
-                  ? "bg-green-700 text-white shadow-md" 
-                  : isDarkMode ? "text-slate-400 hover:text-slate-200" : "text-gray-500 hover:text-gray-855"
-              }`}
-            >
-              English
-            </button>
-          </div>
-
-          {/* Dark Mode toggle button */}
-          <button
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            className={`p-2 rounded-xl border transition ${
-              isDarkMode 
-                ? "bg-slate-800 border-slate-700 text-yellow-400" 
-                : "bg-gray-100 border-gray-200 text-gray-700"
-            }`}
-          >
-            {isDarkMode ? "☀️" : "🌙"}
-          </button>
-        </div>
-      </nav>
-
-      {/* LOGIN CARD CONTAINER */}
-      <div className="flex-1 flex items-center justify-center p-4">
-        <div className={`rounded-3xl shadow-2xl border p-8 w-full max-w-md relative overflow-hidden transition ${
-          isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-green-200"
-        }`}>
-          {/* Background decoration elements */}
-          <div className="absolute -top-16 -right-16 w-36 h-36 bg-green-200/20 rounded-full blur-xl"></div>
-          <div className="absolute -bottom-16 -left-16 w-36 h-36 bg-orange-200/20 rounded-full blur-xl"></div>
-
-          {/* SATYAMEV JAYATE LOGO */}
-          <div className="flex flex-col items-center mb-8 relative">
-            <img
-              src="/images/satyamev.jpg"
-              alt="Satyamev Jayate"
-              className="h-16 w-16 rounded-full object-cover border-2 border-green-600 shadow"
-            />
-            <h2 className="text-2xl font-bold mt-3 text-center">{t.title}</h2>
-            <p className="text-gray-400 text-sm">{t.subtitle}</p>
-          </div>
-
-          {!otpSent ? (
-            <form onSubmit={handleRequestOtp} className="space-y-6 relative">
-              <div>
-                <label className="block text-sm font-bold text-gray-500 mb-2">
-                  {t.enterMobile}
-                </label>
-                <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold select-none">+91</span>
-                  <input
-                    type="tel"
-                    maxLength={10}
-                    required
-                    placeholder="9876543210"
-                    value={mobileNumber}
-                    onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, ""))}
-                    className={`border-2 outline-none p-3 pl-14 rounded-2xl w-full text-lg font-semibold transition ${
-                      isDarkMode ? "bg-slate-950 border-slate-800 text-white focus:border-green-600" : "border-green-100 focus:border-green-600 text-gray-800"
-                    }`}
-                  />
-                </div>
-                <p className="text-xs text-gray-400 mt-2">
-                  {t.helperText}
-                </p>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className={`w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 px-4 rounded-2xl shadow-lg transition text-lg flex items-center justify-center gap-2 ${
-                  loading ? "opacity-60 cursor-not-allowed" : ""
-                }`}
-              >
-                {loading ? (
-                  <span>{t.sending}</span>
-                ) : (
-                  <>
-                    <span>{t.requestOtp}</span>
-                    <span className="text-xl">→</span>
-                  </>
-                )}
-              </button>
-            </form>
-          ) : (
-            <form onSubmit={handleVerifyOtp} className="space-y-6 relative">
-              <div>
-                <label className="block text-sm font-bold text-gray-500 mb-1">
-                  {t.enteredMobile}
-                </label>
-                <div className={`flex justify-between items-center border rounded-xl p-3 mb-4 ${
-                  isDarkMode ? "bg-slate-950 border-slate-800" : "bg-gray-50 border-green-200"
-                }`}>
-                  <span className="font-semibold text-gray-400">+91 {mobileNumber}</span>
-                  <button
-                    type="button"
-                    onClick={() => setOtpSent(false)}
-                    className="text-xs font-bold text-orange-500 hover:underline"
-                  >
-                    {t.change}
-                  </button>
+        {/* Right Part - Form (Functional for User OTP Login) */}
+        <div className="w-full md:w-1/2 flex flex-col justify-between p-6 relative">
+          <div className="w-full max-w-sm mx-auto mt-4">
+            <h2 className="text-2xl font-bold mb-1 text-green-800">Welcome Back</h2>
+            
+            {!otpSent ? (
+              <form onSubmit={handleRequestOtp} className="w-full">
+                <p className="text-gray-500 mb-5 text-base">लॉगिन करण्यासाठी आपला मोबाईल नंबर प्रविष्ट करा</p>
+                
+                <div className="mb-4 mt-10">
+                  <label className="block text-sm text-gray-700 mb-1">मोबाईल नंबर</label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold select-none text-base">+91</span>
+                    <input
+                      type="tel"
+                      maxLength={10}
+                      required
+                      placeholder="9876543210"
+                      value={mobileNumber}
+                      onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, ""))}
+                      className="w-full px-4 py-2 pl-12 border rounded-lg focus:ring focus:ring-green-300 focus:outline-none text-base font-medium"
+                    />
+                  </div>
                 </div>
 
-                <label className="block text-sm font-bold text-gray-500 mb-2">
-                  {t.enterOtp}
-                </label>
-                <input
-                  type="text"
-                  maxLength={6}
-                  required
-                  placeholder="******"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-                  className={`border-2 outline-none p-3 rounded-2xl w-full text-center text-2xl tracking-[0.7em] font-extrabold transition ${
-                    isDarkMode ? "bg-slate-950 border-slate-800 text-white focus:border-green-600" : "border-green-100 focus:border-green-600 text-gray-800"
-                  }`}
-                />
-              </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition disabled:opacity-50 font-bold text-sm mt-6"
+                >
+                  {loading ? "पाठवत आहे..." : "OTP मिळवा"}
+                </button>
+              </form>
+            ) : (
+              <form onSubmit={handleVerifyOtp} className="w-full">
+                <p className="text-green-600 mb-4 text-base font-medium">OTP sent successfully</p>
+                
+                <div className="mb-4 mt-6">
+                  {/* Styled Mobile Number Banner */}
+                  <div className="flex justify-between items-center bg-green-50 border border-green-100 rounded-xl px-3 py-2.5 mb-5 text-sm transition">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-green-800">+91 {mobileNumber}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOtpSent(false);
+                        setOtpValues(Array(6).fill(""));
+                        setOtp("");
+                      }}
+                      className="text-xs font-bold text-orange-600 hover:text-orange-750 hover:underline transition"
+                    >
+                      change
+                    </button>
+                  </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className={`w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 px-4 rounded-2xl shadow-lg transition text-lg ${
-                  loading ? "opacity-60 cursor-not-allowed" : ""
-                }`}
-              >
-                {loading ? t.verifying : t.verifyLogin}
-              </button>
+                  <label className="block text-sm text-gray-700 mb-2 font-medium">OTP कोड</label>
+                  
+                  {/* 6 beautiful digit boxes for OTP */}
+                  <div className="flex justify-between gap-2 mt-2">
+                    {otpValues.map((digit, idx) => (
+                      <input
+                        key={idx}
+                        ref={(el) => (inputRefs.current[idx] = el)}
+                        type="text"
+                        maxLength={1}
+                        value={digit}
+                        onChange={(e) => handleOtpChange(e.target.value, idx)}
+                        onKeyDown={(e) => handleOtpKeyDown(e, idx)}
+                        onPaste={idx === 0 ? handleOtpPaste : undefined}
+                        className="w-11 h-11 text-center text-xl font-bold border border-gray-300 rounded-lg focus:ring focus:ring-green-300 focus:border-green-600 focus:outline-none transition bg-slate-50/50"
+                      />
+                    ))}
+                  </div>
+                </div>
 
-              <div className="text-center">
-                {countdown > 0 ? (
-                  <p className="text-sm text-gray-500">
-                    {t.resendIn}<span className="font-bold text-green-700">{countdown}s</span>
-                  </p>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handleRequestOtp}
-                    className="text-sm font-bold text-green-700 hover:underline"
-                  >
-                    {t.resendOtp}
-                  </button>
-                )}
-              </div>
-            </form>
-          )}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-green-600 text-white py-2.5 rounded-lg hover:bg-green-700 transition disabled:opacity-50 font-bold text-sm mt-6 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                >
+                  {loading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                      <span>Verifying...</span>
+                    </>
+                  ) : (
+                    <span>Verify & Login</span>
+                  )}
+                </button>
 
-          <div className="text-center mt-8 border-t border-gray-150 pt-4">
-            <a href="/" className="text-sm text-orange-500 hover:underline font-semibold">
-              {t.backHome}
-            </a>
+                <div className="text-center mt-4">
+                  {countdown > 0 ? (
+                    <div className="inline-flex items-center gap-1.5 bg-gray-50 border border-gray-150 px-3 py-1 rounded-full text-xs text-gray-600">
+                      <span>resend</span>
+                      <span className="font-bold text-green-700">{countdown}s</span>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleRequestOtp}
+                      className="text-xs font-bold text-green-700 hover:text-green-800 hover:underline transition"
+                    >
+                      Resend OTP
+                    </button>
+                  )}
+                </div>
+              </form>
+            )}
           </div>
+
         </div>
+
       </div>
       <ToastContainer position="top-right" autoClose={4000} theme="colored" />
     </div>

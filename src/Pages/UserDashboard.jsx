@@ -543,7 +543,7 @@ export default function UserDashboard() {
   }
 
   return (
-    <div className={`min-h-screen font-sans flex flex-col md:flex-row transition-colors duration-300 ${isDarkMode
+    <div className={`h-screen overflow-hidden font-sans flex flex-col md:flex-row transition-colors duration-300 ${isDarkMode
       ? "bg-slate-950 text-slate-100"
       : "bg-gradient-to-br from-green-50/50 via-white to-orange-50/50 text-gray-800"
       }`}>
@@ -614,7 +614,7 @@ export default function UserDashboard() {
       </aside>
 
       {/* MAIN CONTAINER */}
-      <main className="flex-1 pt-4 px-4 md:pt-6 md:px-8 pb-28 md:pb-10 space-y-4 md:space-y-6 overflow-y-auto relative">
+      <main className="flex-1 pt-6 px-4 md:pt-8 md:px-8 pb-28 md:pb-10 space-y-4 md:space-y-6 overflow-y-auto relative">
 
         {/* Sleek Header Navbar for Pay Taxes and Certificates tabs */}
         {activeTab !== "overview" ? (
@@ -771,7 +771,7 @@ export default function UserDashboard() {
           <div className="space-y-6">
 
             {/* Welcome Greeting Banner (Restricted to dashboard tab) */}
-            <div className={`relative rounded-3xl py-5 px-6 md:py-6 md:px-8 border shadow-sm overflow-hidden transition-colors duration-300 ${isDarkMode
+            <div className={`relative rounded-3xl pt-8 pb-5 px-6 md:pt-10 md:pb-6 md:px-8 border shadow-sm overflow-hidden transition-colors duration-300 ${isDarkMode
                 ? "bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/20 border-slate-850 text-white"
                 : "bg-gradient-to-br from-green-50/50 via-emerald-50/25 to-white border-green-100/70 text-gray-800"
               }`}>
@@ -982,7 +982,9 @@ export default function UserDashboard() {
             <div className="lg:col-span-2 space-y-6">
               <div className={`rounded-3xl shadow p-6 border ${isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-green-100"
                 }`}>
-                <h3 className="text-lg font-bold mb-4 border-b pb-2">{t.taxBreakdown}</h3>
+               <h3 className={`text-lg font-black mb-4 pb-2 border-b-2 transition-colors duration-300 ${
+                  isDarkMode ? "border-emerald-800/80 text-emerald-400" : "border-green-800 text-green-800"
+                }`}>{t.taxBreakdown}</h3>
 
                 {bills.length === 0 ? (
                   <p className="text-gray-500 text-center py-6">{t.noBills}</p>
@@ -1062,7 +1064,9 @@ export default function UserDashboard() {
             <div className="space-y-6">
               <div className={`rounded-3xl shadow p-6 border ${isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-green-100"
                 }`}>
-                <h3 className="text-lg font-bold mb-4 border-b pb-2">{t.receiptsLedger}</h3>
+                <h3 className={`text-lg font-black mb-4 pb-2 border-b-2 transition-colors duration-300 ${
+                  isDarkMode ? "border-emerald-800/80 text-emerald-400" : "border-green-800 text-green-800"
+                }`}>{t.receiptsLedger}</h3>
                 {payments.length === 0 ? (
                   <p className="text-gray-500 text-center py-6 text-sm">{t.noPayments}</p>
                 ) : (
@@ -1104,7 +1108,9 @@ export default function UserDashboard() {
             <div className="space-y-6">
               <div className={`rounded-3xl shadow p-6 border ${isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-green-100"
                 }`}>
-                <h3 className="text-lg font-bold mb-4 border-b pb-2">{t.applyCertificate}</h3>
+                <h3 className={`text-lg font-black mb-4 pb-2 border-b-2 transition-colors duration-300 ${
+                  isDarkMode ? "border-emerald-800/80 text-emerald-400" : "border-emerald-700 text-emerald-700"
+                }`}>{t.applyCertificate}</h3>
                 <form onSubmit={handleApplyCertificate} className="space-y-4">
                   <div>
                     <label className="block text-xs font-bold text-gray-500 mb-1">{t.selectType}</label>
@@ -1167,9 +1173,9 @@ export default function UserDashboard() {
                   {form.type === "जन्म नोंद" && (
                     <div className={`p-4 rounded-2xl border space-y-3 ${isDarkMode ? "bg-slate-950 border-slate-800" : "bg-green-50/50 border-green-100"
                       }`}>
-                      <p className="text-[10px] font-bold text-green-700 uppercase">👶 {t.birthReg}</p>
+                      <p className="text-xs font-extrabold text-green-700 uppercase">👶 {t.birthReg}</p>
                       <div>
-                        <label className="block text-[10px] font-bold text-gray-500 mb-1">{t.childName}</label>
+                        <label className="block text-xs font-bold text-gray-500 mb-1">{t.childName}</label>
                         <input
                           type="text"
                           required
@@ -1180,7 +1186,7 @@ export default function UserDashboard() {
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] font-bold text-gray-500 mb-1">{t.dob}</label>
+                        <label className="block text-xs font-bold text-gray-500 mb-1">{t.dob}</label>
                         <input
                           type="date"
                           required
@@ -1323,7 +1329,9 @@ export default function UserDashboard() {
             <div className="lg:col-span-2 space-y-6">
               <div className={`rounded-3xl shadow p-6 border ${isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-green-100"
                 }`}>
-                <h3 className="text-lg font-bold mb-4 border-b pb-2">{t.applicationsStatus}</h3>
+                <h3 className={`text-lg font-black mb-4 pb-2 border-b-2 transition-colors duration-300 ${
+                  isDarkMode ? "border-emerald-800/80 text-emerald-400" : "border-emerald-700 text-emerald-700"
+                }`}>{t.applicationsStatus}</h3>
 
                 {applications.length === 0 ? (
                   <p className="text-gray-500 text-center py-10">{t.noApplications}</p>
