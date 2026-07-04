@@ -626,6 +626,8 @@ export default function UserDashboard() {
             {/* Background design elements: absolute colored circles */}
             <div className="absolute -left-6 -top-6 w-16 h-16 rounded-full bg-green-500/5 blur-sm pointer-events-none"></div>
             <div className="absolute right-1/4 -top-8 w-20 h-20 rounded-full bg-emerald-400/5 blur-md pointer-events-none"></div>
+            <div className="absolute -right-6 -top-6 w-14 h-14 rounded-full bg-green-500/10 blur-sm pointer-events-none"></div>
+            <div className="absolute -right-4 -bottom-6 w-12 h-12 rounded-full bg-emerald-500/10 blur-sm pointer-events-none"></div>
 
             {/* Left side: Person name */}
             <div className="flex items-center gap-2.5 relative z-10">
