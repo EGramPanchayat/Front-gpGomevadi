@@ -9,6 +9,20 @@ const axiosInstance = axios.create({
   },
 });
 
+// Request interceptor to attach userToken as Bearer Auth header
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("userToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // ── Auto-refresh interceptor ──────────────────────
 // If a request fails with 401 (access token expired),
 // try to refresh the token and retry the original request ONCE.

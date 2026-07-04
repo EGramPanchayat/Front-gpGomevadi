@@ -63,11 +63,13 @@ export default function UserDashboard() {
   const handleLogout = async () => {
     try {
       await axioesInstance.post("/auth/otp/logout");
+      localStorage.removeItem("userToken");
       toast.success("सत्र समाप्त झाले");
       setTimeout(() => {
         window.location.href = "/user-login";
       }, 1000);
     } catch {
+      localStorage.removeItem("userToken");
       window.location.href = "/user-login";
     }
   };

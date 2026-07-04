@@ -59,6 +59,9 @@ export default function UserLoginPage() {
         mobileNumber,
         code: otp,
       });
+      if (data.token) {
+        localStorage.setItem("userToken", data.token);
+      }
       toast.success("लॉगिन यशस्वी झाले!");
       setTimeout(() => {
         window.location.href = "/user/dashboard";
