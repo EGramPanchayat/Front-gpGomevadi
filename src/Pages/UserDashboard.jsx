@@ -708,9 +708,9 @@ export default function UserDashboard() {
           </div>
         ) : (
           /* Floating Settings capsule - Available globally across all tabs when in overview */
-          <div className={`absolute top-6 right-6 md:top-8 md:right-10 flex items-center gap-3 p-1 rounded-full border transition z-30 shadow-[0_4px_20px_rgba(0,0,0,0.06)] ${isDarkMode
-              ? "border-slate-800 bg-slate-950/95 backdrop-blur-md"
-              : "border-green-200/80 bg-white/95 backdrop-blur-md"
+          <div className={`absolute top-6 right-6 md:top-8 md:right-10 flex items-center gap-3 p-1 rounded-full border transition z-30 shadow-md ${isDarkMode
+              ? "border-slate-800 bg-slate-950 backdrop-blur-md"
+              : "border-gray-200 bg-white"
             }`}>
             {/* Cylinder language buttons */}
             <div className="flex items-center">
@@ -777,8 +777,7 @@ export default function UserDashboard() {
               }`}>
               {/* Multi-angle Designer Circles */}
               <div className="absolute -top-24 -left-24 w-48 h-48 rounded-full bg-green-500/5 blur-sm pointer-events-none"></div>
-              <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-green-400/10 blur-xl pointer-events-none"></div>
-              <div className="absolute top-1/2 -translate-y-1/2 -right-16 w-36 h-36 rounded-full bg-emerald-400/15 blur-xl pointer-events-none"></div>
+              <div className="absolute top-1/2 -translate-y-1/2 -right-16 w-36 h-36 rounded-full bg-green-100/50 pointer-events-none"></div>
 
               {/* Left part: Welcome message */}
               <div className="space-y-2 relative z-10 pr-28 md:pr-36">
@@ -789,10 +788,7 @@ export default function UserDashboard() {
                 <p className={`text-sm leading-relaxed font-semibold transition-colors duration-300 ${isDarkMode ? "text-slate-400" : "text-gray-500"}`}>
                   आपल्या डिजिटल ग्रामपंचायत पोर्टलवर आपले सहर्ष स्वागत आहे. येथून आपण विविध दाखल्यांचे अर्ज करू शकता, घरपट्टी, पाणीपट्टी आणि इतर कर विनासायास भरून शासकीय पावत्या प्राप्त करू शकता.
                 </p>
-                {/* Family head info at bottom */}
-                <p className="text-xs text-gray-400 font-bold mt-2">
-                  {t.headOfFamily}: <span className="text-green-600 font-extrabold">{family?.mainMemberName}</span> | ID: <span className="text-orange-600 font-extrabold">{family?.familyId}</span>
-                </p>
+
               </div>
             </div>
 
