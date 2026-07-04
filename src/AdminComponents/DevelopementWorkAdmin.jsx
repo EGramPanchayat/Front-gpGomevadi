@@ -8,6 +8,7 @@ const DevelopementWorkAdmin = () => {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [openSavedWorks, setOpenSavedWorks] = useState(false);
 
   useEffect(() => {
     axioesInstance.get("/devworks").then(res => {
@@ -95,44 +96,55 @@ const DevelopementWorkAdmin = () => {
       </form>
 
       {/* ---------- Saved Works Cards ---------- */}
-      <div className="my-20 ">
-        <h2 className="text-2xl font-bold text-green-700 mb-10  pb-2">
-          जतन केलेली कामे
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
-          {savedWorks.map(work => (
-            <div
-              key={work._id}
-              className="relative bg-white rounded-xl transition-all overflow-hidden pb-3 flex flex-col  border-green-600 border"
-            >
-              {work.image ? (
-                <img
-                  src={work.image.url}
-                  alt={work.title}
-                  className="w-full h-40 object-cover  mb-2 rounded"
-                />
-              ) : (
-                <span className="material-icons text-gray-400 text-5xl mb-2">image</span>
-              )}
-
-            
-                <h4 className="text-lg font-bold text-green-700 mb-1 text-center break-words whitespace-pre-wrap">
-                  {work.title}
-                </h4>
-                <p className="text-gray-700 text-center text-sm break-words whitespace-pre-wrap">
-                  {work.description}
-                </p>
-             
-
-              <button
-                onClick={() => handleDelete(work._id)}
-                className=" bg-red-500 text-white px-2 py-1 mt-2 rounded text-xs font-semibold shadow hover:bg-red-600 transition self-center"
-              >
-                Delete
-              </button>
-            </div>
-          ))}
-        </div>
+      <div className="my-10 border border-green-200 rounded-2xl overflow-hidden shadow">
+        <button
+          type="button"
+          onClick={() => setOpenSavedWorks(prev => !prev)}
+          className="w-full px-6 py-4 flex items-center justify-between text-left font-bold text-green-700 text-lg bg-green-50 hover:bg-green-100 transition duration-300"
+        >
+          <span>जतन केलेली कामे</span>
+          <span className={`transform transition-transform duration-300 ${openSavedWorks ? 'rotate-180' : 'rotate-0'}`}>
+            ▼
+          </span>
+        </button>
+        {openSavedWorks && (
+          <div className="p-6 bg-white border-t border-green-100">
+            {savedWorks.length === 0 ? (
+              <div className="text-gray-500 text-center py-4">कोणतीही विकास कामे जतन केलेली नाहीत.</div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {savedWorks.map(work => (
+                  <div
+                    key={work._id}
+                    className="relative bg-white rounded-xl transition-all overflow-hidden pb-3 flex flex-col border border-green-200 hover:shadow-lg transition duration-300"
+                  >
+                    {work.image ? (
+                      <img
+                        src={work.image.url || work.image}
+                        alt={work.title}
+                        className="w-full h-40 object-cover mb-2 rounded-t"
+                      />
+                    ) : (
+                      <div className="h-40 bg-green-50 flex items-center justify-center text-green-700 font-bold mb-2">No Image</div>
+                    )}
+                    <h4 className="text-lg font-bold text-green-700 mb-1 px-3 text-center break-words whitespace-pre-wrap">
+                      {work.title}
+                    </h4>
+                    <p className="text-gray-700 px-3 text-center text-sm break-words whitespace-pre-wrap">
+                      {work.description}
+                    </p>
+                    <button
+                      onClick={() => handleDelete(work._id)}
+                      className="bg-red-500 text-white px-3 py-1 mt-auto rounded text-sm font-semibold shadow hover:bg-red-600 transition self-center"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );
