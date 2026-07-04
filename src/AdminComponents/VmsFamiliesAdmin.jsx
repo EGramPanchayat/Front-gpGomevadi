@@ -19,7 +19,7 @@ export default function VmsFamiliesAdmin() {
   const [childrenCount, setChildrenCount] = useState(0);
 
   const [saving, setSaving] = useState(false);
-  const [selectedQr, setSelectedQr] = useState(null); // stores family object for QR modal
+
 
   const fetchFamilies = () => {
     setLoading(true);
@@ -262,12 +262,7 @@ export default function VmsFamiliesAdmin() {
                       {f.menCount + f.womenCount + f.seniorCount + f.childrenCount}
                     </td>
                     <td className="p-4 flex gap-2 justify-center">
-                      <button
-                        onClick={() => setSelectedQr(f)}
-                        className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs shadow"
-                      >
-                        🖨️ QR कोड
-                      </button>
+
                       <button
                         onClick={() => handleDelete(f._id)}
                         className="bg-red-500 hover:bg-red-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs shadow"
@@ -283,72 +278,7 @@ export default function VmsFamiliesAdmin() {
         )}
       </div>
 
-      {/* QR MODAL */}
-      {selectedQr && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl relative">
-            <h3 className="text-xl font-bold text-green-700 mb-2">QR कोड स्टिकर</h3>
-            <p className="text-sm text-gray-500 mb-4">{selectedQr.mainMemberName} - {selectedQr.houseNumber}</p>
-            
-            {/* Generate QR image using online public api for convenience */}
-            <div className="bg-gray-50 p-6 rounded-2xl inline-block border-2 border-green-600 mb-4">
-              <img
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
-                  `${window.location.origin}/family/${selectedQr.familyId}?token=${selectedQr.qrToken}`
-                )}`}
-                alt="QR Code"
-                className="w-48 h-48 mx-auto"
-              />
-            </div>
 
-            <p className="text-xs text-gray-400 font-mono break-all mb-6">
-              {window.location.origin}/family/{selectedQr.familyId}?token={selectedQr.qrToken}
-            </p>
-
-            <div className="flex gap-2">
-              <button
-                onClick={() => {
-                  const printWindow = window.open("", "_blank");
-                  printWindow.document.write(`
-                    <html>
-                      <head>
-                        <title>Print QR</title>
-                        <style>
-                          body { font-family: sans-serif; text-align: center; padding: 20px; }
-                          .container { border: 3px solid #15803d; border-radius: 20px; display: inline-block; padding: 30px; margin-top: 50px; }
-                          h2 { color: #15803d; margin-bottom: 5px; }
-                          p { font-weight: bold; color: #475569; }
-                        </style>
-                      </head>
-                      <body>
-                        <div class="container">
-                          <h2>ग्रामपंचायत गोमेवाडी</h2>
-                          <p>सदस्य: ${selectedQr.mainMemberName} (घर क्र: ${selectedQr.houseNumber})</p>
-                          <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
-                            `${window.location.origin}/family/${selectedQr.familyId}?token=${selectedQr.qrToken}`
-                          )}" />
-                          <p style="font-size: 12px; margin-top: 15px; color: #94a3b8;">घर कर भरण्यासाठी स्कॅन करा</p>
-                        </div>
-                        <script>window.onload = function() { window.print(); window.close(); }</script>
-                      </body>
-                    </html>
-                  `);
-                  printWindow.document.close();
-                }}
-                className="flex-1 bg-green-700 hover:bg-green-800 text-white font-bold py-2.5 rounded-xl text-sm transition"
-              >
-                Print Sticker
-              </button>
-              <button
-                onClick={() => setSelectedQr(null)}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2.5 rounded-xl text-sm transition"
-              >
-                बंद करा
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -9,7 +9,7 @@ import './App.css';
 
 // New VMS pages
 import UserLoginPage from './Pages/UserLoginPage.jsx';
-import PublicFamilyQRPage from './Pages/PublicFamilyQRPage.jsx';
+
 import UserDashboard from './Pages/UserDashboard.jsx';
 
 function App() {
@@ -28,7 +28,7 @@ function App() {
             }
           />
           <Route path="/user-login" element={<UserLoginPage />} />
-          <Route path="/family/:familyId" element={<PublicFamilyQRPage />} />
+
           <Route path="/user/dashboard" element={<UserDashboard />} />
         </Routes>
       </Router>

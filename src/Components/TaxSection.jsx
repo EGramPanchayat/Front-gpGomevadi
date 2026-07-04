@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const TaxSection = ({ panipattiQR="/images/no-image.png", gharPattiQR="/images/no-image.png" }) => {
-  const [modalType, setModalType] = useState("");
+const TaxSection = () => {
+  const navigate = useNavigate();
 
-  const handleOpenModal = (type) => setModalType(type);
-  const handleCloseModal = () => setModalType("");
+  const handlePay = () => {
+    navigate("/user-login");
+  };
 
   return (
     <section className="w-full flex justify-center items-center bg-white py-10 px-4">
@@ -44,7 +46,7 @@ const TaxSection = ({ panipattiQR="/images/no-image.png", gharPattiQR="/images/n
             <button
               className="bg-green-600 text-white px-6 py-2 rounded-lg w-full mt-auto 
                          hover:bg-green-700 transition text-base font-medium"
-              onClick={() => handleOpenModal("panipatti")}
+              onClick={handlePay}
             >
               भरा
             </button>
@@ -70,40 +72,12 @@ const TaxSection = ({ panipattiQR="/images/no-image.png", gharPattiQR="/images/n
             <button
               className="bg-green-600 text-white px-6 py-2 rounded-lg w-full mt-auto 
                          hover:bg-green-700 transition text-base font-medium"
-              onClick={() => handleOpenModal("gharpatti")}
+              onClick={handlePay}
             >
               भरा
             </button>
           </div>
         </div>
-
-        {/* Modal */}
-        {modalType && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl p-6 w-full max-w-xs flex flex-col items-center relative shadow-2xl">
-              <button
-                className="absolute top-2 right-3 text-gray-500 hover:text-gray-700 text-xl font-bold"
-                onClick={handleCloseModal}
-                aria-label="Close"
-              >
-                ×
-              </button>
-              <h3 className="text-lg font-semibold mb-4 text-green-700">
-                {modalType === "panipatti"
-                  ? "पाणीपट्टी QR कोड"
-                  : "मालमत्ता कर QR कोड"}
-              </h3>
-              <img
-                src={modalType === "panipatti" ? panipattiQR : gharPattiQR}
-                alt="QR Code"
-                className="w-48 h-48 object-contain mb-3 rounded-lg bg-white"
-              />
-              <p className="text-sm text-gray-600 text-center">
-                QR कोड स्कॅन करून UPI द्वारे कर भरा.
-              </p>
-            </div>
-          </div>
-        )}
       </div>
     </section>
   );

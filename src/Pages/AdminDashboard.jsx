@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 // Existing Admin Components
 import DevelopementWorkAdmin from "../AdminComponents/DevelopementWorkAdmin";
 import NewsUpload from "../AdminComponents/NewsUpload";
-import QRUploadModal from "../AdminComponents/QRUploadModal";
+
 import DakhalaSubmissions from "../AdminComponents/DakhalaSubmissions";
 import ExecutiveBoardAdmin from "../AdminComponents/ExecutiveBoardAdmin";
 import GovOfficialsAdmin from "../AdminComponents/GovOfficialsAdmin";
@@ -19,7 +19,7 @@ import VmsTaxesAdmin from "../AdminComponents/VmsTaxesAdmin";
 import VmsApplicationsAdmin from "../AdminComponents/VmsApplicationsAdmin";
 
 export default function AdminDashboard() {
-  const [qrModalOpen, setQrModalOpen] = useState(false);
+
   const [noticeModalOpen, setNoticeModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("overview"); // 'overview', 'development', 'submissions', 'families', 'taxes', 'vms-apps', 'members'
   
@@ -41,7 +41,7 @@ export default function AdminDashboard() {
 
   return (
     <>
-      <QRUploadModal open={qrModalOpen} onClose={() => setQrModalOpen(false)} />
+
       <NoticeUploadModal open={noticeModalOpen} onClose={() => setNoticeModalOpen(false)} />
 
       <div className="min-h-screen bg-gradient-to-br from-green-50/30 via-white to-orange-50/30 font-sans flex flex-col md:flex-row">
@@ -174,13 +174,8 @@ export default function AdminDashboard() {
                 >
                   🔔 नवीन सूचना
                 </button>
-                <button
-                  onClick={() => setQrModalOpen(true)}
-                  className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow transition"
-                >
-                  🖼️ QR अद्ययावत करा
-                </button>
               </div>
+
             )}
           </header>
 

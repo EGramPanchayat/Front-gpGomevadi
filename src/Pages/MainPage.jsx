@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import ExecutiveBoard from "../Components/ExecutiveBoard";
 import Navbar from "../Components/Navbar";
 import NewsSection from "../Components/NewsSection";
-import axioesInstance from "../utils/axioesInstance";
 import DevelopmentSlideshow from "../Components/DevelopmentSection";
+
 
 import PlacesSection from "../Components/PlacesSection";
 import ContactSection from "../Components/ContactSection";
@@ -37,9 +37,7 @@ const MainPage = () => {
   const [activeSection, setActiveSection] = useState("home");
   // Mobile nav state
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [showQRModal, setShowQRModal] = useState("");
-  const [panipattiQR, setPanipattiQR] = useState(null);
-  const [gharPattiQR, setGharPattiQR] = useState(null);
+
 
   const { config, loading } = useSiteConfig();
 
@@ -50,15 +48,7 @@ const MainPage = () => {
   const aboutTitle = config?.aboutTitle || "गावाची माहिती";
   const aboutParagraphs = config?.aboutParagraphs || [];
 
-  // Custom hook to fetch development works from backend
-  useEffect(() => {
-    axioesInstance.get("/qr").then((response) => {
-      const data = response.data;
-      setPanipattiQR(data.panipattiQR?.url);
-      setGharPattiQR(data.gharPattiQR?.url);
 
-    })
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -111,9 +101,9 @@ const MainPage = () => {
           <div
               key={idx}
               className={
-                `bg-white rounded-xl shadow-lg px-10 py-6 flex flex-col items-center 
+                `bg-white rounded-xl shadow-lg px-8 py-5 flex flex-col items-center 
                 border-l-4 border-green-400 hover:-translate-y-1 hover:shadow-xl transition
-                aspect-[5/2] min-w-[200px] w-full md:w-[300px] sm:max-w-xs
+                flex-1 min-w-[160px]
                 animate-[fadeUpSmall_0.7s_ease-out]`
               }
               style={{animationDelay: `${0.1 + idx * 0.1}s`}}>
@@ -180,7 +170,7 @@ const MainPage = () => {
 
 
     {/* Tax Section as Component */}
-    <TaxSection setShowQRModal={setShowQRModal} panipattiQR={panipattiQR} gharPattiQR={gharPattiQR} />
+    <TaxSection />
 
       {/* Government Officials Section */}
       <GovernmentOfficials />
