@@ -9,6 +9,7 @@ import QRUploadModal from "../AdminComponents/QRUploadModal";
 import DakhalaSubmissions from "../AdminComponents/DakhalaSubmissions";
 import ExecutiveBoardAdmin from "../AdminComponents/ExecutiveBoardAdmin";
 import GovOfficialsAdmin from "../AdminComponents/GovOfficialsAdmin";
+import SiteSettingsAdmin from "../AdminComponents/SiteSettingsAdmin";
 import { Link } from "react-scroll";
 import NoticeUploadModal from "../AdminComponents/NoticeUploadModal";
 
@@ -106,6 +107,7 @@ export default function AdminDashboard() {
                 <Link to="devworks-section" smooth duration={500} onClick={() => { closeMobileMenu(); setQrModalOpen(false); }} className="cursor-pointer text-gray-300 hover:text-green-300">विकास कामे</Link>
                 
                 {/* On Desktop these go to sections, on mobile we scroll to accordion area */}
+                <Link to="site-settings-section" smooth duration={500} onClick={() => { closeMobileMenu(); setQrModalOpen(false); }} className="cursor-pointer text-gray-300 hover:text-green-300">सामान्य माहिती</Link>
                 <Link to="exec-section" smooth duration={500} onClick={() => { closeMobileMenu(); setQrModalOpen(false); }} className="cursor-pointer text-gray-300 hover:text-green-300">कार्यकारिणी</Link>
                 <Link to="gov-officials-section" smooth duration={500} onClick={() => { closeMobileMenu(); setQrModalOpen(false); }} className="cursor-pointer text-gray-300 hover:text-green-300">शासकीय अधिकारी</Link>
                 
@@ -159,6 +161,10 @@ export default function AdminDashboard() {
 
           <section id="gov-officials-section" className="max-w-7xl mx-auto mb-12">
             <GovOfficialsAdmin />
+          </section>
+
+          <section id="site-settings-section" className="max-w-7xl mx-auto mb-12">
+            <SiteSettingsAdmin />
           </section>
         </div>
 
@@ -218,6 +224,25 @@ export default function AdminDashboard() {
             {openSection === 'gov' && (
               <div className="p-4 bg-white border-t border-green-100">
                 <GovOfficialsAdmin />
+              </div>
+            )}
+          </div>
+
+          {/* Item 4: सामान्य माहिती */}
+          <div className="bg-white rounded-2xl shadow-md border border-green-200 overflow-hidden">
+            <button
+              type="button"
+              onClick={() => toggleSection('site-settings')}
+              className="w-full px-6 py-4 flex items-center justify-between text-left font-bold text-green-700 text-lg bg-green-50 hover:bg-green-100 transition duration-300"
+            >
+              <span>सामान्य माहिती व्यवस्थापन</span>
+              <span className={`transform transition-transform duration-300 ${openSection === 'site-settings' ? 'rotate-180' : 'rotate-0'}`}>
+                ▼
+              </span>
+            </button>
+            {openSection === 'site-settings' && (
+              <div className="p-4 bg-white border-t border-green-100">
+                <SiteSettingsAdmin />
               </div>
             )}
           </div>
