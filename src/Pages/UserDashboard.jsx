@@ -618,71 +618,73 @@ export default function UserDashboard() {
 
         {/* Sleek Header Navbar for Pay Taxes and Certificates tabs */}
         {activeTab !== "overview" ? (
-          <div className={`flex justify-between items-center pb-4 mb-2 border-b transition-colors duration-300 ${
-            isDarkMode ? "border-slate-800" : "border-green-100"
+          <div className={`relative flex justify-between items-center py-2.5 px-4 mb-4 border rounded-3xl overflow-hidden shadow-sm transition-all duration-300 ${
+            isDarkMode 
+              ? "bg-gradient-to-r from-slate-950 via-slate-900/60 to-slate-950 border-slate-850" 
+              : "bg-gradient-to-r from-green-50/50 via-white to-emerald-50/30 border-green-100/60"
           }`}>
+            {/* Background design elements: absolute colored circles */}
+            <div className="absolute -left-6 -top-6 w-16 h-16 rounded-full bg-green-500/5 blur-sm pointer-events-none"></div>
+            <div className="absolute right-1/4 -top-8 w-20 h-20 rounded-full bg-emerald-400/5 blur-md pointer-events-none"></div>
+
             {/* Left side: Person name */}
-            <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-inner transition-colors duration-300 ${
+            <div className="flex items-center gap-2.5 relative z-10">
+              <div className={`w-8.5 h-8.5 rounded-full flex items-center justify-center shadow-inner transition-colors duration-300 ${
                 isDarkMode 
                   ? "bg-slate-900 border border-slate-800 text-green-400" 
-                  : "bg-green-50/50 border border-green-100/70 text-green-750"
+                  : "bg-green-100/60 border border-green-200/50 text-green-750"
               }`}>
-                <span className="text-lg">👤</span>
+                <span className="text-sm">👤</span>
               </div>
               <div>
-                <h2 className="text-base font-extrabold tracking-tight leading-tight">
+                <h2 className={`text-sm font-black tracking-tight leading-tight ${isDarkMode ? "text-slate-100" : "text-green-900"}`}>
                   {family?.mainMemberName}
                 </h2>
-                <p className={`text-[11px] font-bold uppercase tracking-wider mt-0.5 ${isDarkMode ? "text-slate-500" : "text-gray-400"}`}>
+                <p className={`text-[10px] font-bold uppercase tracking-wider mt-0.5 leading-none ${isDarkMode ? "text-slate-500" : "text-green-700/70"}`}>
                   {t.headOfFamily} | ID: {family?.familyId}
                 </p>
               </div>
             </div>
 
             {/* Right side: Language & Dark mode toggle capsule */}
-            <div className={`flex items-center gap-3 p-1 rounded-full border transition z-30 shadow-[0_4px_20px_rgba(0,0,0,0.06)] ${
-              isDarkMode 
-                ? "border-slate-800 bg-slate-950/95 backdrop-blur-md" 
-                : "border-green-200/80 bg-white/95 backdrop-blur-md"
-            }`}>
+            <div className={`flex items-center gap-3 p-1 rounded-full border transition z-30 shadow-[0_4px_20px_rgba(0,0,0,0.04)] ${isDarkMode
+                ? "border-slate-800 bg-slate-950/90 backdrop-blur-md"
+                : "border-green-200/70 bg-white/95 backdrop-blur-md"
+              }`}>
               {/* Cylinder language buttons */}
               <div className="flex items-center">
                 <button
                   onClick={() => setLanguage("mr")}
-                  className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${
-                    language === "mr"
+                  className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${language === "mr"
                       ? "bg-gradient-to-r from-green-700 to-emerald-800 text-white shadow scale-105"
-                      : isDarkMode 
-                        ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50" 
+                      : isDarkMode
+                        ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
                         : "text-green-800/85 hover:text-green-950 hover:bg-green-50"
-                  }`}
+                    }`}
                 >
                   मराठी
                 </button>
                 <button
                   onClick={() => setLanguage("en")}
-                  className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${
-                    language === "en"
+                  className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${language === "en"
                       ? "bg-gradient-to-r from-green-700 to-emerald-800 text-white shadow scale-105"
-                      : isDarkMode 
-                        ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50" 
+                      : isDarkMode
+                        ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
                         : "text-green-800/85 hover:text-green-905 hover:bg-green-50"
-                  }`}
+                    }`}
                 >
                   En
                 </button>
               </div>
-              
+
               {/* Divider line */}
               <div className={`h-4 w-px ${isDarkMode ? "bg-slate-800" : "bg-green-200"}`}></div>
 
               {/* Dark Mode toggle button */}
               <button
                 onClick={() => setIsDarkMode(!isDarkMode)}
-                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group ${
-                  isDarkMode ? "hover:bg-slate-800 text-yellow-300" : "hover:bg-green-50 text-amber-500"
-                }`}
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group ${isDarkMode ? "hover:bg-slate-800 text-yellow-300" : "hover:bg-green-50 text-amber-500"
+                  }`}
                 title={isDarkMode ? "Light Mode" : "Dark Mode"}
               >
                 {isDarkMode ? (
@@ -704,48 +706,44 @@ export default function UserDashboard() {
           </div>
         ) : (
           /* Floating Settings capsule - Available globally across all tabs when in overview */
-          <div className={`absolute top-6 right-6 md:top-8 md:right-10 flex items-center gap-3 p-1 rounded-full border transition z-30 shadow-[0_4px_20px_rgba(0,0,0,0.06)] ${
-            isDarkMode 
-              ? "border-slate-800 bg-slate-950/95 backdrop-blur-md" 
+          <div className={`absolute top-6 right-6 md:top-8 md:right-10 flex items-center gap-3 p-1 rounded-full border transition z-30 shadow-[0_4px_20px_rgba(0,0,0,0.06)] ${isDarkMode
+              ? "border-slate-800 bg-slate-950/95 backdrop-blur-md"
               : "border-green-200/80 bg-white/95 backdrop-blur-md"
-          }`}>
+            }`}>
             {/* Cylinder language buttons */}
             <div className="flex items-center">
               <button
                 onClick={() => setLanguage("mr")}
-                className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${
-                  language === "mr"
+                className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${language === "mr"
                     ? "bg-gradient-to-r from-green-700 to-emerald-800 text-white shadow scale-105"
-                    : isDarkMode 
-                      ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50" 
+                    : isDarkMode
+                      ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
                       : "text-green-800/85 hover:text-green-950 hover:bg-green-50"
-                }`}
+                  }`}
               >
                 मराठी
               </button>
               <button
                 onClick={() => setLanguage("en")}
-                className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${
-                  language === "en"
+                className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${language === "en"
                     ? "bg-gradient-to-r from-green-700 to-emerald-800 text-white shadow scale-105"
-                    : isDarkMode 
-                      ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50" 
+                    : isDarkMode
+                      ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
                       : "text-green-800/85 hover:text-green-905 hover:bg-green-50"
-                }`}
+                  }`}
               >
                 En
               </button>
             </div>
-            
+
             {/* Divider line */}
             <div className={`h-4 w-px ${isDarkMode ? "bg-slate-800" : "bg-green-200"}`}></div>
 
             {/* Dark Mode toggle button */}
             <button
               onClick={() => setIsDarkMode(!isDarkMode)}
-              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group ${
-                isDarkMode ? "hover:bg-slate-800 text-yellow-300" : "hover:bg-green-50 text-amber-500"
-              }`}
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group ${isDarkMode ? "hover:bg-slate-800 text-yellow-300" : "hover:bg-green-50 text-amber-500"
+                }`}
               title={isDarkMode ? "Light Mode" : "Dark Mode"}
             >
               {isDarkMode ? (
@@ -771,11 +769,10 @@ export default function UserDashboard() {
           <div className="space-y-6">
 
             {/* Welcome Greeting Banner (Restricted to dashboard tab) */}
-            <div className={`relative rounded-3xl py-5 px-6 md:py-6 md:px-8 border shadow-sm overflow-hidden transition-colors duration-300 ${
-              isDarkMode
+            <div className={`relative rounded-3xl py-5 px-6 md:py-6 md:px-8 border shadow-sm overflow-hidden transition-colors duration-300 ${isDarkMode
                 ? "bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/20 border-slate-850 text-white"
                 : "bg-gradient-to-br from-green-50/50 via-emerald-50/25 to-white border-green-100/70 text-gray-800"
-            }`}>
+              }`}>
               {/* Multi-angle Designer Circles */}
               <div className="absolute -top-24 -left-24 w-48 h-48 rounded-full bg-green-500/5 blur-sm pointer-events-none"></div>
               <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-green-400/10 blur-xl pointer-events-none"></div>
@@ -783,9 +780,8 @@ export default function UserDashboard() {
 
               {/* Left part: Welcome message */}
               <div className="space-y-2 relative z-10 pr-28 md:pr-36">
-                <h1 className={`text-xl md:text-2xl font-black tracking-tight transition-colors duration-300 ${
-                  isDarkMode ? "text-green-400" : "text-green-700"
-                }`}>
+                <h1 className={`text-xl md:text-2xl font-black tracking-tight transition-colors duration-300 ${isDarkMode ? "text-green-400" : "text-green-700"
+                  }`}>
                   नमस्कार, {family?.mainMemberName || "नागरिक"}! <span className="inline-block hover:animate-bounce cursor-default select-none">👋</span>
                 </h1>
                 <p className={`text-sm leading-relaxed font-semibold transition-colors duration-300 ${isDarkMode ? "text-slate-400" : "text-gray-500"}`}>
