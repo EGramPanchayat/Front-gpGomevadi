@@ -31,7 +31,7 @@ export default function VmsTaxesAdmin() {
         }
       })
       .catch(() => {
-        toast.error("कुटुंब यादी लोड करण्यात त्रुटी");
+        toast.error("Failed to load family list");
       });
   }, []);
 
@@ -45,7 +45,7 @@ export default function VmsTaxesAdmin() {
         setPayments(res.data.payments || []);
       })
       .catch(() => {
-        toast.error("कर विवरण माहिती लोड करण्यात अपयश");
+        toast.error("Failed to load tax details");
       })
       .finally(() => {
         setLoading(false);
@@ -61,7 +61,7 @@ export default function VmsTaxesAdmin() {
   const handleAssignTax = async (e) => {
     e.preventDefault();
     if (!selectedFamilyId || !taxType || !year || !amount) {
-      return toast.error("कृपया सर्व आवश्यक रकाने भरा");
+      return toast.error("Please fill all required fields");
     }
 
     setAssigning(true);
@@ -73,12 +73,12 @@ export default function VmsTaxesAdmin() {
         amount: Number(amount),
         dueDate: dueDate || undefined,
       });
-      toast.success("कर यशस्वीरित्या लागू केला!");
+      toast.success("Tax assigned successfully!");
       setAmount("");
       setDueDate("");
       fetchTaxes(selectedFamilyId);
     } catch (err) {
-      toast.error(err.response?.data?.error || "कर लागू करताना त्रुटी");
+      toast.error(err.response?.data?.error || "Error assigning tax");
     } finally {
       setAssigning(false);
     }
@@ -87,7 +87,7 @@ export default function VmsTaxesAdmin() {
   const handleRecordPayment = async (e) => {
     e.preventDefault();
     if (!selectedBillId || !payAmount) {
-      return toast.error("कर प्रकार आणि जमा रक्कम प्रविष्ट करा");
+      return toast.error("Please select a bill and enter payment amount");
     }
 
     setRecording(true);
@@ -96,12 +96,12 @@ export default function VmsTaxesAdmin() {
         billId: selectedBillId,
         amountPaid: Number(payAmount),
       });
-      toast.success("भरणा नोंद यशस्वीरित्या जमा केली!");
+      toast.success("Payment recorded successfully!");
       setPayAmount("");
       setSelectedBillId("");
       fetchTaxes(selectedFamilyId);
     } catch (err) {
-      toast.error(err.response?.data?.error || "भरणा नोंदवताना त्रुटी");
+      toast.error(err.response?.data?.error || "Error recording payment");
     } finally {
       setRecording(false);
     }

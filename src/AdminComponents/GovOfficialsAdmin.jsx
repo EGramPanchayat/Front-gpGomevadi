@@ -148,9 +148,9 @@ export default function GovOfficialsAdmin() {
       await axioesInstance.post("/admin/gov-officials", fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      toast.success("शासकीय अधिकारी यशस्वीरित्या जतन झाले!");
+      toast.success("Government officials saved successfully!");
     } catch (err) {
-      toast.error(`सर्व्हर त्रुटी: ${err.message}`);
+      toast.error(`Server error: ${err.message}`);
     } finally {
       setSaving(false);
     }

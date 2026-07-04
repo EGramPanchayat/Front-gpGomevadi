@@ -49,15 +49,15 @@ import axioesInstance from '../utils/axioesInstance';
 // --- CONFIGURATION CONSTANTS ---
 const PAYMENT_AMOUNT = '20';
 const FEE_REQUIRED_TYPES = [
-    'जन्म नोंद', 
-    'मृत्यू नोंद', 
-    'विवाह नोंदणी दाखला', 
-    '८ अ उतारा', 
-    'ग्रामपंचायत येणे बाकी दाखला'
+  'जन्म नोंद',
+  'मृत्यू नोंद',
+  'विवाह नोंदणी दाखला',
+  '८ अ उतारा',
+  'ग्रामपंचायत येणे बाकी दाखला'
 ];
 const FEE_EXEMPT_TYPES = [
-    'दारिद्र्य रेषेखाली असल्याचा दाखला', 
-    'निराधार असल्याचा दाखला मागणी'
+  'दारिद्र्य रेषेखाली असल्याचा दाखला',
+  'निराधार असल्याचा दाखला मागणी'
 ];
 // -----------------------------
 
@@ -84,11 +84,11 @@ const customTheme = createTheme({
 export default function DakhalaMagani() {
   // --- STATE MANAGEMENT ---
   const [form, setForm] = useState({
-    forName: '', whatsappNo: '', email: '', type: '', dob: '', childName: '', 
-    deathName: '', deathDate: '', coupleName: '', marriageYear: '', propertyNo: '', 
-    certificateName: '', niradharName: '', paymentScreenshot: null, 
+    forName: '', whatsappNo: '', email: '', type: '', dob: '', childName: '',
+    deathName: '', deathDate: '', coupleName: '', marriageYear: '', propertyNo: '',
+    certificateName: '', niradharName: '', paymentScreenshot: null,
   });
-  
+
   const [apiState, setApiState] = useState({ submissionLoading: false });
   const [paymentScreenshotPreview, setPaymentScreenshotPreview] = useState(null); // Image preview URL
   const [qrCodeUrl, setQrCodeUrl] = useState(null);
@@ -116,39 +116,39 @@ export default function DakhalaMagani() {
   const validateForm = () => {
     // 1. Basic Fields Check (Name, Email, Type)
     if (!form.forName || !form.email || !form.type) {
-        return "कृपया आपले नाव, ईमेल आणि आवश्यक दाखल्याचा प्रकार निवडा.";
+      return "Please enter your name, email and select the certificate type.";
     }
 
     // 2. Conditional Field Check
     switch (form.type) {
-        case 'जन्म नोंद':
-            if (!form.childName || !form.dob) return "जन्म नोंदीसाठी बाळाचे नाव आणि जन्मतारीख आवश्यक आहे.";
-            break;
-        case 'मृत्यू नोंद':
-            if (!form.deathName || !form.deathDate) return "मृत्यू नोंदीसाठी मृत व्यक्तीचे नाव आणि मृत्यूची तारीख आवश्यक आहे.";
-            break;
-        case 'विवाह नोंदणी दाखला':
-            if (!form.coupleName || !form.marriageYear) return "विवाह दाखल्यासाठी दांपत्याचे नाव आणि नोंदणीचे वर्ष आवश्यक आहे.";
-            break;
-        case '८ अ उतारा':
-            if (!form.propertyNo) return "८ अ उताऱ्यासाठी मिळकत नंबर आवश्यक आहे.";
-            break;
-        case 'निराधार असल्याचा दाखला मागणी':
-            if (!form.niradharName) return "निराधार दाखल्यासाठी संपूर्ण नाव आवश्यक आहे.";
-            break;
-        case 'दारिद्र्य रेषेखाली असल्याचा दाखला':
-        case 'ग्रामपंचायत येणे बाकी दाखला':
-            if (!form.certificateName) return "या दाखल्यासाठी अर्जदाराचे संपूर्ण नाव आवश्यक आहे.";
-            break;
-        default:
-            break;
+      case 'जन्म नोंद':
+        if (!form.childName || !form.dob) return "Child name and date of birth are required for birth registration.";
+        break;
+      case 'मृत्यू नोंद':
+        if (!form.deathName || !form.deathDate) return "Deceased name and date of death are required for death registration.";
+        break;
+      case 'विवाह नोंदणी दाखला':
+        if (!form.coupleName || !form.marriageYear) return "Couple names and marriage registration year are required for marriage certificate.";
+        break;
+      case '८ अ उतारा':
+        if (!form.propertyNo) return "Property account number is required for 8A transcript.";
+        break;
+      case 'निराधार असल्याचा दाखला मागणी':
+        if (!form.niradharName) return "Recipient name is required for destitute certificate.";
+        break;
+      case 'दारिद्र्य रेषेखाली असल्याचा दाखला':
+      case 'ग्रामपंचायत येणे बाकी दाखला':
+        if (!form.certificateName) return "Recipient name is required for this certificate.";
+        break;
+      default:
+        break;
     }
 
     // 3. Payment Check
     if (isPaymentRequired && !form.paymentScreenshot) {
-        return `हा दाखला मिळवण्यासाठी ₹${PAYMENT_AMOUNT} चे शुल्क भरून स्क्रीनशॉट अपलोड करा.`;
+      return `A fee of ₹${PAYMENT_AMOUNT} is required. Please complete payment and upload screenshot.`;
     }
-    
+
     return null; // All checks passed
   };
   // -------------------------
@@ -164,11 +164,11 @@ export default function DakhalaMagani() {
       // Basic client-side validation
       const maxSize = 5 * 1024 * 1024; // 5 MB
       if (!file.type || !file.type.startsWith('image/')) {
-        toast.error('कृपया प्रतिमा फाइल (.jpg/.png/.webp) निवडा');
+        toast.error('Please select an image file (.jpg/.png/.webp)');
         return;
       }
       if (file.size > maxSize) {
-        toast.error('फाइल खूप मोठी आहे — जास्तीत जास्त 5MB परवान्य आहे');
+        toast.error('File too large — maximum limit is 5MB');
         return;
       }
 
@@ -199,7 +199,7 @@ export default function DakhalaMagani() {
     // WhatsApp number validation (10 digits only)
     const mobileRegex = /^[0-9]{10}$/;
     if (!mobileRegex.test(form.whatsappNo)) {
-      toast.error('व्हॉट्सऍप क्रमांक 10 अंकांचा असावा');
+      toast.error('WhatsApp number must be 10 digits');
       return;
     }
     const validationError = validateForm();
@@ -211,7 +211,7 @@ export default function DakhalaMagani() {
     try {
       const formData = new FormData();
       // Append all expected fields as strings (or empty string) so backend has consistent keys
-      const expectedKeys = ['forName','whatsappNo','email','type','dob','childName','deathName','deathDate','coupleName','marriageYear','propertyNo','certificateName','niradharName'];
+      const expectedKeys = ['forName', 'whatsappNo', 'email', 'type', 'dob', 'childName', 'deathName', 'deathDate', 'coupleName', 'marriageYear', 'propertyNo', 'certificateName', 'niradharName'];
       for (const k of expectedKeys) {
         const v = form[k] ?? '';
         formData.append(k, typeof v === 'string' ? v : String(v));
@@ -222,7 +222,7 @@ export default function DakhalaMagani() {
       }
 
 
-      
+
 
 
 
@@ -234,12 +234,12 @@ export default function DakhalaMagani() {
         }
       );
 
-    
-      toast.success(res.data?.message || 'आपला अर्ज यशस्वीरित्या पाठवला गेला ');
+
+      toast.success(res.data?.message || 'Application submitted successfully');
       setForm({ forName: '', whatsappNo: '', email: '', type: '', dob: '', childName: '', deathName: '', deathDate: '', coupleName: '', marriageYear: '', propertyNo: '', certificateName: '', niradharName: '', paymentScreenshot: null });
       setPaymentScreenshotPreview(null);
     } catch (error) {
-      toast.error(`अर्जात त्रुटी: ${error.response?.data?.message || error.message}`);
+      toast.error(`Application error: ${error.response?.data?.message || error.message}`);
     } finally {
       setApiState(prev => ({ ...prev, submissionLoading: false }));
     }
@@ -273,17 +273,17 @@ export default function DakhalaMagani() {
             flexDirection: { xs: 'column', lg: 'row' },
             borderRadius: '24px',
             overflow: 'hidden',
-            margin: 'auto', 
+            margin: 'auto',
             // --- LAPTOP / LARGE SCREEN SIZING ---
-            '& > div:first-of-type': { 
-                borderRadius: { xs: '24px 24px 0 0', lg: '24px 0 0 24px' },
-                flexBasis: { lg: '35%' }, // 35% width for left part
-                maxWidth: { lg: '35%' },
+            '& > div:first-of-type': {
+              borderRadius: { xs: '24px 24px 0 0', lg: '24px 0 0 24px' },
+              flexBasis: { lg: '35%' }, // 35% width for left part
+              maxWidth: { lg: '35%' },
             },
-            '& > div:last-of-type': { 
-                borderRadius: { xs: '0 0 24px 24px', lg: '0 24px 24px 0' },
-                flexBasis: { lg: '65%' }, // 65% width for right part
-                maxWidth: { lg: '65%' },
+            '& > div:last-of-type': {
+              borderRadius: { xs: '0 0 24px 24px', lg: '0 24px 24px 0' },
+              flexBasis: { lg: '65%' }, // 65% width for right part
+              maxWidth: { lg: '65%' },
             },
           }}
         >
@@ -382,268 +382,268 @@ export default function DakhalaMagani() {
               )}
 
 
-        {/* दारिद्र्य / येणे बाकी दाखला (General Certificate Name) */}
-        {FEE_REQUIRED_TYPES.includes(form.type) || FEE_EXEMPT_TYPES.includes(form.type) ? (
-          // Use the certificateName field only if it's not a specific type that uses other fields (like birth/death/marriage/niradhar)
-          !['जन्म नोंद', 'मृत्यू नोंद', 'विवाह नोंदणी दाखला', 'निराधार असल्याचा दाखला मागणी'].includes(form.type) && (
-            <InputField label="ज्याच्या नावे दाखला आवश्यक आहे त्याचे संपूर्ण नाव" name="certificateName" value={form.certificateName} onChange={handleChange} placeholder="नाव टाका" required />
-          )
-        ) : null}
+              {/* दारिद्र्य / येणे बाकी दाखला (General Certificate Name) */}
+              {FEE_REQUIRED_TYPES.includes(form.type) || FEE_EXEMPT_TYPES.includes(form.type) ? (
+                // Use the certificateName field only if it's not a specific type that uses other fields (like birth/death/marriage/niradhar)
+                !['जन्म नोंद', 'मृत्यू नोंद', 'विवाह नोंदणी दाखला', 'निराधार असल्याचा दाखला मागणी'].includes(form.type) && (
+                  <InputField label="ज्याच्या नावे दाखला आवश्यक आहे त्याचे संपूर्ण नाव" name="certificateName" value={form.certificateName} onChange={handleChange} placeholder="नाव टाका" required />
+                )
+              ) : null}
 
 
               {/* निराधार असल्याचा दाखला मागणी (Destitute Name) - Unique Field */}
               {form.type === 'निराधार असल्याचा दाखला मागणी' && (
                 <InputField label="निराधाराचे संपूर्ण नाव" name="niradharName" value={form.niradharName} onChange={handleChange} placeholder="निराधाराचे संपूर्ण नाव टाका" required />
               )}
-              
+
               {/* --- PAYMENT / FEE SECTION (FLEX LAYOUT) --- */}
               {form.type && (
-                  <Box 
-                    sx={{ 
-                      p: { xs: 1.5, md: 2 }, 
-                      bgcolor: 'secondary.main', // Outer background to Orange
-                      borderRadius: '12px', 
-                      border: '1px solid #ddd',
-                      width: '100%' 
+                <Box
+                  sx={{
+                    p: { xs: 1.5, md: 2 },
+                    bgcolor: 'secondary.main', // Outer background to Orange
+                    borderRadius: '12px',
+                    border: '1px solid #ddd',
+                    width: '100%'
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      color: 'white', // Text color to White
+                      mb: 2,
+                      fontWeight: 700,
+                      fontSize: { xs: '1rem', md: '1.25rem' }
                     }}
                   >
-                    <Typography 
-                      variant="h6" 
-                      sx={{ 
-                        color: 'white', // Text color to White
-                        mb: 2, 
-                        fontWeight: 700, 
-                        fontSize: { xs: '1rem', md: '1.25rem' } 
+                    {isPaymentRequired ? `शुल्क: ₹${PAYMENT_AMOUNT} भरणे आवश्यक आहे.` : 'शुल्क: माफ (Exempted)'}
+                  </Typography>
+
+                  {isPaymentRequired ? (
+                    // Removed Grid and replaced with Flexbox
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'column', sm: 'row' }, // Stack on mobile, row on tablet/desktop
+                        gap: '16px', // Spacing between cards
+                        alignItems: 'stretch', // Ensure all cards stretch to the full height of the container
+                        width: '100%',
                       }}
                     >
-                      {isPaymentRequired ? `शुल्क: ₹${PAYMENT_AMOUNT} भरणे आवश्यक आहे.` : 'शुल्क: माफ (Exempted)'}
-                    </Typography>
 
-                    {isPaymentRequired ? (
-                      // Removed Grid and replaced with Flexbox
-                      <Box 
-                        sx={{ 
-                            display: 'flex', 
-                            flexDirection: { xs: 'column', sm: 'row' }, // Stack on mobile, row on tablet/desktop
-                            gap: '16px', // Spacing between cards
-                            alignItems: 'stretch', // Ensure all cards stretch to the full height of the container
-                            width: '100%',
+                      {/* LEFT: SCREENSHOT PREVIEW CARD */}
+                      <Paper
+                        elevation={3}
+                        sx={{
+                          p: 3,
+                          flex: 1, // Takes up equal space in the row
+                          minWidth: 0, // Allows shrinking on smaller screens
+                          minHeight: 320, // Match screenshot card
+                          height: '100%', // Ensure full height
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          borderRadius: '12px',
+                          boxSizing: 'border-box',
                         }}
                       >
-                        
-                        {/* LEFT: SCREENSHOT PREVIEW CARD */}
-                          <Paper 
-                            elevation={3} 
-                            sx={{ 
-                              p: 3, 
-                              flex: 1, // Takes up equal space in the row
-                              minWidth: 0, // Allows shrinking on smaller screens
-                              minHeight: 320, // Match screenshot card
-                              height: '100%', // Ensure full height
-                              display: 'flex', 
-                              flexDirection: 'column', 
-                              justifyContent: 'space-between', 
-                              alignItems: 'center', 
-                              borderRadius: '12px',
-                              boxSizing: 'border-box',
-                            }}
-                          >
-                          
-                          {/* Header */}
-                          <Typography 
-                            variant="body1" 
-                            sx={{ 
-                              mb: 1, 
-                              fontWeight: 700, 
-                              color: 'primary.main', 
-                              fontSize: { xs: '0.9rem', md: '1rem' }, 
-                              textAlign: 'center',
-                            }}
-                          > 
-                            पेमेंट स्क्रीनशॉट अपलोड करा
-                          </Typography>
-                          
-                          {/* Preview Area (Fixed Size Box - Height 180) */}
-                          <Box sx={{ 
-                              flexGrow: 1,
-                              height: 180, 
-                              width: '100%', 
-                              mb: 2, 
-                              border: '2px dashed #ccc', 
-                              display: 'flex', 
-                              justifyContent: 'center', 
-                              alignItems: 'center', 
-                              bgcolor: '#fff', 
-                              borderRadius: '8px', 
-                              overflow: 'hidden' 
-                          }}>
-                            <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
-                              <Box
-                                component="img"
-                                src="/images/no-image.png"
-                                alt="No Screenshot"
-                                sx={{
-                                  width: '100%',
-                                  height: '100%',
-                                  objectFit: 'contain',
-                                  opacity: 0.5,
-                                  position: 'absolute',
-                                  top: 0,
-                                  left: 0,
-                                  zIndex: 1
-                                }}
-                              />
-                              {paymentScreenshotPreview && (
-                                <Box
-                                  component="img"
-                                  src={paymentScreenshotPreview}
-                                  alt="Screenshot Preview"
-                                  sx={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'contain',
-                                    position: 'relative',
-                                    zIndex: 2
-                                  }}
-                                />
-                              )}
-                            </Box>
-                          </Box>
 
-                          {/* Upload Button */}
-                          <Button
-                              variant="contained" 
-                              component="label"
-                              fullWidth
-                              sx={{ 
-                                textTransform: 'none', 
-                                borderRadius: '8px', 
-                                fontSize: { xs: '0.75rem', md: '0.875rem' },
-                                bgcolor: 'secondary.main', 
-                                color: 'white', 
-                                fontWeight: 700,
-                                p: 1.5, 
-                                '&:hover': {
-                                  bgcolor: '#E68A00', 
-                                }
-                              }}
-                          >
-                              {form.paymentScreenshot ? `फाइल निवडली: ${form.paymentScreenshot.name}` : 'स्क्रीनशॉट निवडा (.jpg/.png)'}
-                              <input
-                                type="file"
-                                hidden
-                                accept=".jpg,.png,image/*"
-                                name="paymentScreenshot"
-                                onChange={handleChange}
-                              />
-                          </Button>
-                         
-                         
-                        </Paper>
-
-
-                        
-                        {/* RIGHT: QR CODE SCAN CARD */}
-                        <Paper 
-                          elevation={3} 
-                          sx={{ 
-                            p: 3, 
-                            flex: 1, // Takes up equal space in the row
-                            minWidth: 0, // Allows shrinking on smaller screens
-                            minHeight: 320, 
-                            display: 'flex', 
-                            flexDirection: 'column', 
-                            justifyContent: 'space-between', 
-                            alignItems: 'center', 
-                            borderRadius: '12px',
-                            boxSizing: 'border-box',
+                        {/* Header */}
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            mb: 1,
+                            fontWeight: 700,
+                            color: 'primary.main',
+                            fontSize: { xs: '0.9rem', md: '1rem' },
+                            textAlign: 'center',
                           }}
                         >
-                          
-                          {/* Header */}
-                          <Typography 
-                            variant="body1" 
-                            sx={{ 
-                              mb: 1, 
-                              fontWeight: 700, 
-                              color: 'primary.main', 
-                              fontSize: { xs: '0.9rem', md: '1rem' }, 
-                              textAlign: 'center',
-                            }}
-                          > 
-                            ₹{PAYMENT_AMOUNT} शुल्क भरा (UPI)
-                          </Typography>
-                          
-                          {/* QR Code Box (Fixed Size Box - Height 180) */}
-                          <Box 
-                            sx={{ 
-                              flexGrow: 1,
-                              height: 180, 
-                              width: '100%', 
-                              mb: 2, 
-                              border: '2px dashed', 
-                              borderColor: 'grey.400', 
-                              display: 'flex', 
-                              justifyContent: 'center', 
-                              alignItems: 'center', 
-                              bgcolor: '#fff', 
-                              borderRadius: '8px', 
-                              overflow: 'hidden' 
-                            }}
-                          >
-                            <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
+                          पेमेंट स्क्रीनशॉट अपलोड करा
+                        </Typography>
+
+                        {/* Preview Area (Fixed Size Box - Height 180) */}
+                        <Box sx={{
+                          flexGrow: 1,
+                          height: 180,
+                          width: '100%',
+                          mb: 2,
+                          border: '2px dashed #ccc',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          bgcolor: '#fff',
+                          borderRadius: '8px',
+                          overflow: 'hidden'
+                        }}>
+                          <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
+                            <Box
+                              component="img"
+                              src="/images/no-image.png"
+                              alt="No Screenshot"
+                              sx={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'contain',
+                                opacity: 0.5,
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                zIndex: 1
+                              }}
+                            />
+                            {paymentScreenshotPreview && (
                               <Box
                                 component="img"
-                                src="/images/no-image.png"
-                                alt="No QR"
+                                src={paymentScreenshotPreview}
+                                alt="Screenshot Preview"
                                 sx={{
                                   width: '100%',
                                   height: '100%',
                                   objectFit: 'contain',
-                                  opacity: 0.5,
-                                  position: 'absolute',
-                                  top: 0,
-                                  left: 0,
-                                  zIndex: 1
+                                  position: 'relative',
+                                  zIndex: 2
                                 }}
                               />
-                              {qrCodeUrl && (
-                                <Box
-                                  component="img"
-                                  src={qrCodeUrl}
-                                  alt="Scan to Pay QR Code"
-                                  sx={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'contain',
-                                    position: 'relative',
-                                    zIndex: 2
-                                  }}
-                                />
-                              )}
-                            </Box>
+                            )}
                           </Box>
-                          
-                          {/* Caption wrapped in Orange Box */}
-                          <Box sx={{ 
-                            width: '100%', 
-                            p: 1.5, 
-                            bgcolor: 'secondary.main', 
-                            borderRadius: '8px', 
-                            textAlign: 'center' 
-                          }}>
-                            <Typography variant="body2" sx={{ fontWeight: 700, color: 'white' }}>
-                              QR कोड स्कॅन करून पेमेंट करा.
-                            </Typography>
+                        </Box>
+
+                        {/* Upload Button */}
+                        <Button
+                          variant="contained"
+                          component="label"
+                          fullWidth
+                          sx={{
+                            textTransform: 'none',
+                            borderRadius: '8px',
+                            fontSize: { xs: '0.75rem', md: '0.875rem' },
+                            bgcolor: 'secondary.main',
+                            color: 'white',
+                            fontWeight: 700,
+                            p: 1.5,
+                            '&:hover': {
+                              bgcolor: '#E68A00',
+                            }
+                          }}
+                        >
+                          {form.paymentScreenshot ? `फाइल निवडली: ${form.paymentScreenshot.name}` : 'स्क्रीनशॉट निवडा (.jpg/.png)'}
+                          <input
+                            type="file"
+                            hidden
+                            accept=".jpg,.png,image/*"
+                            name="paymentScreenshot"
+                            onChange={handleChange}
+                          />
+                        </Button>
+
+
+                      </Paper>
+
+
+
+                      {/* RIGHT: QR CODE SCAN CARD */}
+                      <Paper
+                        elevation={3}
+                        sx={{
+                          p: 3,
+                          flex: 1, // Takes up equal space in the row
+                          minWidth: 0, // Allows shrinking on smaller screens
+                          minHeight: 320,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          borderRadius: '12px',
+                          boxSizing: 'border-box',
+                        }}
+                      >
+
+                        {/* Header */}
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            mb: 1,
+                            fontWeight: 700,
+                            color: 'primary.main',
+                            fontSize: { xs: '0.9rem', md: '1rem' },
+                            textAlign: 'center',
+                          }}
+                        >
+                          ₹{PAYMENT_AMOUNT} शुल्क भरा (UPI)
+                        </Typography>
+
+                        {/* QR Code Box (Fixed Size Box - Height 180) */}
+                        <Box
+                          sx={{
+                            flexGrow: 1,
+                            height: 180,
+                            width: '100%',
+                            mb: 2,
+                            border: '2px dashed',
+                            borderColor: 'grey.400',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            bgcolor: '#fff',
+                            borderRadius: '8px',
+                            overflow: 'hidden'
+                          }}
+                        >
+                          <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
+                            <Box
+                              component="img"
+                              src="/images/no-image.png"
+                              alt="No QR"
+                              sx={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'contain',
+                                opacity: 0.5,
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                zIndex: 1
+                              }}
+                            />
+                            {qrCodeUrl && (
+                              <Box
+                                component="img"
+                                src={qrCodeUrl}
+                                alt="Scan to Pay QR Code"
+                                sx={{
+                                  width: '100%',
+                                  height: '100%',
+                                  objectFit: 'contain',
+                                  position: 'relative',
+                                  zIndex: 2
+                                }}
+                              />
+                            )}
                           </Box>
-                        </Paper>
-                      </Box>
-                    ) : (
-                      <Typography variant="body2" sx={{ p: 1, color: 'white' }}> 
-                        ✅ हा दाखला दारिद्र्य/निराधार श्रेणीतील  gg असल्याने, कोणतेही शुल्क लागू नाही.
-                      </Typography>
-                    )}
-                  </Box>
+                        </Box>
+
+                        {/* Caption wrapped in Orange Box */}
+                        <Box sx={{
+                          width: '100%',
+                          p: 1.5,
+                          bgcolor: 'secondary.main',
+                          borderRadius: '8px',
+                          textAlign: 'center'
+                        }}>
+                          <Typography variant="body2" sx={{ fontWeight: 700, color: 'white' }}>
+                            QR कोड स्कॅन करून पेमेंट करा.
+                          </Typography>
+                        </Box>
+                      </Paper>
+                    </Box>
+                  ) : (
+                    <Typography variant="body2" sx={{ p: 1, color: 'white' }}>
+                      ✅ हा दाखला दारिद्र्य/निराधार श्रेणीतील  gg असल्याने, कोणतेही शुल्क लागू नाही.
+                    </Typography>
+                  )}
+                </Box>
               )}
               {/* --- End PAYMENT / FEE SECTION --- */}
 

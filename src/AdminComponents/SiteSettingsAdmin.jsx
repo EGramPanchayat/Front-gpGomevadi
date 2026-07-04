@@ -50,7 +50,7 @@ export default function SiteSettingsAdmin() {
           setOfficeHours(data.contact.officeHours || "");
         }
       } catch (err) {
-        toast.error("माहिती लोड करण्यात अयशस्वी!");
+        toast.error("Failed to load settings data!");
       } finally {
         setLoading(false);
       }
@@ -84,12 +84,12 @@ export default function SiteSettingsAdmin() {
 
     try {
       await axioesInstance.post("/admin/site-config", payload);
-      toast.success("माहिती यशस्वीरित्या जतन झाली!");
+      toast.success("Settings saved successfully!");
       setTimeout(() => {
         window.location.reload();
       }, 1500);
     } catch (err) {
-      toast.error(`त्रुटी: ${err.message}`);
+      toast.error(`Error: ${err.message}`);
     } finally {
       setSaving(false);
     }

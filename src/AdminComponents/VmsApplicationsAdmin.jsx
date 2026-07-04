@@ -21,7 +21,7 @@ export default function VmsApplicationsAdmin() {
         setApplications(res.data || []);
       })
       .catch(() => {
-        toast.error("अर्ज यादी लोड करताना त्रुटी आली");
+        toast.error("Failed to load applications list");
       })
       .finally(() => {
         setLoading(false);
@@ -50,11 +50,11 @@ export default function VmsApplicationsAdmin() {
         remark,
         documentUrl,
       });
-      toast.success("अर्ज माहिती अद्ययावत केली!");
+      toast.success("Application details updated!");
       setSelectedApp(null);
       fetchApplications();
     } catch (err) {
-      toast.error("अपडेट करताना त्रुटी आली");
+      toast.error("Error while updating");
     } finally {
       setUpdating(false);
     }

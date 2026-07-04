@@ -29,7 +29,7 @@ export default function VmsFamiliesAdmin() {
         setFamilies(res.data || []);
       })
       .catch(() => {
-        toast.error("कुटुंब यादी लोड करण्यात त्रुटी");
+        toast.error("Failed to load family list");
       })
       .finally(() => {
         setLoading(false);
@@ -43,7 +43,7 @@ export default function VmsFamiliesAdmin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!familyId || !houseNumber || !mainMemberName || !mobileNumber || !address) {
-      return toast.error("कृपया सर्व आवश्यक माहिती भरा");
+      return toast.error("Please fill all required fields");
     }
 
     setSaving(true);
@@ -60,7 +60,7 @@ export default function VmsFamiliesAdmin() {
         seniorCount,
         childrenCount,
       });
-      toast.success("कुटुंब यशस्वीरित्या नोंदणीकृत केले!");
+      toast.success("Family registered successfully!");
       // Reset form
       setFamilyId("");
       setHouseNumber("");
@@ -74,22 +74,22 @@ export default function VmsFamiliesAdmin() {
       setChildrenCount(0);
       fetchFamilies();
     } catch (err) {
-      toast.error(err.response?.data?.error || "नोंदणी करताना त्रुटी आली");
+      toast.error(err.response?.data?.error || "Error during registration");
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("तुम्हाला खात्री आहे की हे कुटुंब हटवायचे आहे? सर्व संबंधित कर आणि अर्ज देखील हटवले जाऊ शकतात.")) {
+    if (!window.confirm("Are you sure you want to delete this family? All related taxes and applications may also be deleted.")) {
       return;
     }
     try {
       await axioesInstance.delete(`/admin/families/${id}`);
-      toast.success("कुटुंब हटवले गेले");
+      toast.success("Family deleted successfully");
       fetchFamilies();
     } catch (err) {
-      toast.error("हटवताना त्रुटी");
+      toast.error("Error while deleting");
     }
   };
 

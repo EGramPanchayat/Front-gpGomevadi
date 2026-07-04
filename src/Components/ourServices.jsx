@@ -77,7 +77,7 @@ const AamchyaSeva = () => {
         setShowNoticesModal(true);
       } catch (err) {
         console.error("Error fetching notices:", err);
-        alert("सूचना आणताना त्रुटी आली. कृपया पुन्हा प्रयत्न करा.");
+        alert("Error fetching notices. Please try again.");
       }
     } else if (service.pdfPath) {
       setSelectedPdf(service);

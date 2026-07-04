@@ -194,9 +194,9 @@ export default function ExecutiveBoardAdmin({ mode = "all" }) {
       await axioesInstance.post("/admin/executive-board", fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      toast.success("कार्यकारिणी यशस्वीरित्या जतन झाली!");
+      toast.success("Executive board saved successfully!");
     } catch (err) {
-      toast.error(`सर्व्हर त्रुटी: ${err.message}`);
+      toast.error(`Server error: ${err.message}`);
     } finally {
       setSaving(false);
     }

@@ -34,7 +34,7 @@ export default function PublicFamilyQRPage() {
         setPayAmounts(initialAmounts);
       })
       .catch((err) => {
-        toast.error(err.response?.data?.error || "अवैध QR लिंक किंवा माहिती आढळली नाही");
+        toast.error(err.response?.data?.error || "Invalid QR link or family data not found");
       })
       .finally(() => {
         setLoading(false);
@@ -60,7 +60,7 @@ export default function PublicFamilyQRPage() {
     const maxPayable = bill.amount - bill.paidAmount;
 
     if (isNaN(payAmt) || payAmt <= 0 || payAmt > maxPayable) {
-      return toast.error(`कृपया ₹१ ते ₹${maxPayable} दरम्यान योग्य रक्कम प्रविष्ट करा`);
+      return toast.error(`Please enter a valid amount between ₹1 and ₹${maxPayable}`);
     }
 
     setProcessingId(bill._id);
@@ -88,10 +88,10 @@ export default function PublicFamilyQRPage() {
               razorpayPaymentId: `pay_mock_${Math.random().toString(36).substring(7)}`,
               mock: true,
             });
-            toast.success("₹" + payAmt + " कर भरणा यशस्वी झाला!");
+            toast.success("₹" + payAmt + " tax payment successful!");
             setTimeout(() => window.location.reload(), 1500);
           } catch (verifyErr) {
-            toast.error("भरणा पडताळणी अयशस्वी");
+            toast.error("Payment verification failed");
           }
         }, 1500);
         return;
@@ -115,10 +115,10 @@ export default function PublicFamilyQRPage() {
               razorpayPaymentId: response.razorpay_payment_id,
               razorpaySignature: response.razorpay_signature,
             });
-            toast.success("भरणा यशस्वीरित्या पूर्ण झाला!");
+            toast.success("Payment completed successfully!");
             setTimeout(() => window.location.reload(), 1500);
           } catch (e) {
-            toast.error("पेमेंट पडताळणी अयशस्वी झाली");
+            toast.error("Payment verification failed");
           }
         },
         prefill: {
@@ -132,7 +132,7 @@ export default function PublicFamilyQRPage() {
       const paymentObject = new window.Razorpay(options);
       paymentObject.open();
     } catch (err) {
-      toast.error(err.message || "पेमेंट प्रक्रिया सुरू करण्यात अक्षम");
+      toast.error(err.message || "Unable to initiate payment process");
     } finally {
       setProcessingId(null);
     }

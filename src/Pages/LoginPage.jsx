@@ -32,7 +32,7 @@ export default function LoginCard() {
     e.preventDefault();
 
     if (!email || !password) {
-      toast.error("कृपया सर्व फील्ड भरा"); // Marathi: Please fill all fields
+      toast.error("Please fill in all fields");
       return;
     }
 
