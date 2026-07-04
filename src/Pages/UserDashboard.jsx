@@ -616,67 +616,155 @@ export default function UserDashboard() {
       {/* MAIN CONTAINER */}
       <main className="flex-1 p-6 md:p-10 pb-28 md:pb-10 space-y-6 overflow-y-auto relative">
 
-        {/* Floating Settings capsule - Available globally across all tabs */}
-        <div className={`absolute top-6 right-6 md:top-8 md:right-10 flex items-center gap-3 p-1 rounded-full border transition z-30 shadow-[0_4px_20px_rgba(0,0,0,0.06)] ${
-          isDarkMode 
-            ? "border-slate-800 bg-slate-950/95 backdrop-blur-md" 
-            : "border-green-200/80 bg-white/95 backdrop-blur-md"
-        }`}>
-          {/* Cylinder language buttons */}
-          <div className="flex items-center">
+        {/* Sleek Header Navbar for Pay Taxes and Certificates tabs */}
+        {activeTab !== "overview" ? (
+          <div className={`flex justify-between items-center pb-4 mb-2 border-b transition-colors duration-300 ${
+            isDarkMode ? "border-slate-800" : "border-green-100"
+          }`}>
+            {/* Left side: Person name */}
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-inner transition-colors duration-300 ${
+                isDarkMode 
+                  ? "bg-slate-900 border border-slate-800 text-green-400" 
+                  : "bg-green-50/50 border border-green-100/70 text-green-750"
+              }`}>
+                <span className="text-lg">👤</span>
+              </div>
+              <div>
+                <h2 className="text-base font-extrabold tracking-tight leading-tight">
+                  {family?.mainMemberName}
+                </h2>
+                <p className={`text-[11px] font-bold uppercase tracking-wider mt-0.5 ${isDarkMode ? "text-slate-500" : "text-gray-400"}`}>
+                  {t.headOfFamily} | ID: {family?.familyId}
+                </p>
+              </div>
+            </div>
+
+            {/* Right side: Language & Dark mode toggle capsule */}
+            <div className={`flex items-center gap-3 p-1 rounded-full border transition z-30 shadow-[0_4px_20px_rgba(0,0,0,0.06)] ${
+              isDarkMode 
+                ? "border-slate-800 bg-slate-950/95 backdrop-blur-md" 
+                : "border-green-200/80 bg-white/95 backdrop-blur-md"
+            }`}>
+              {/* Cylinder language buttons */}
+              <div className="flex items-center">
+                <button
+                  onClick={() => setLanguage("mr")}
+                  className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${
+                    language === "mr"
+                      ? "bg-gradient-to-r from-green-700 to-emerald-800 text-white shadow scale-105"
+                      : isDarkMode 
+                        ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50" 
+                        : "text-green-800/85 hover:text-green-950 hover:bg-green-50"
+                  }`}
+                >
+                  मराठी
+                </button>
+                <button
+                  onClick={() => setLanguage("en")}
+                  className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${
+                    language === "en"
+                      ? "bg-gradient-to-r from-green-700 to-emerald-800 text-white shadow scale-105"
+                      : isDarkMode 
+                        ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50" 
+                        : "text-green-800/85 hover:text-green-905 hover:bg-green-50"
+                  }`}
+                >
+                  En
+                </button>
+              </div>
+              
+              {/* Divider line */}
+              <div className={`h-4 w-px ${isDarkMode ? "bg-slate-800" : "bg-green-200"}`}></div>
+
+              {/* Dark Mode toggle button */}
+              <button
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group ${
+                  isDarkMode ? "hover:bg-slate-800 text-yellow-300" : "hover:bg-green-50 text-amber-500"
+                }`}
+                title={isDarkMode ? "Light Mode" : "Dark Mode"}
+              >
+                {isDarkMode ? (
+                  <div className="relative w-5 h-5 flex items-center justify-center">
+                    <svg className="w-4 h-4 text-yellow-300 drop-shadow-[0_0_5px_rgba(253,224,71,0.6)] transition-all duration-300 transform group-hover:rotate-12 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                    </svg>
+                    <span className="absolute -top-1 -right-0.5 text-[8px] text-yellow-200 animate-pulse select-none">✦</span>
+                  </div>
+                ) : (
+                  <div className="relative w-5 h-5 flex items-center justify-center">
+                    <svg className="w-4 h-4 text-amber-500 drop-shadow-[0_0_4px_rgba(245,158,11,0.4)] transition-all duration-300 transform group-hover:rotate-45 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m0 13.5V21M4.93 4.93l1.59 1.59m10.96 10.96l1.59 1.59M3 12h2.25m13.5 0H21m-16.07 7.07l1.59-1.59M16.93 7.07l1.59-1.59M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                    </svg>
+                  </div>
+                )}
+              </button>
+            </div>
+          </div>
+        ) : (
+          /* Floating Settings capsule - Available globally across all tabs when in overview */
+          <div className={`absolute top-6 right-6 md:top-8 md:right-10 flex items-center gap-3 p-1 rounded-full border transition z-30 shadow-[0_4px_20px_rgba(0,0,0,0.06)] ${
+            isDarkMode 
+              ? "border-slate-800 bg-slate-950/95 backdrop-blur-md" 
+              : "border-green-200/80 bg-white/95 backdrop-blur-md"
+          }`}>
+            {/* Cylinder language buttons */}
+            <div className="flex items-center">
+              <button
+                onClick={() => setLanguage("mr")}
+                className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${
+                  language === "mr"
+                    ? "bg-gradient-to-r from-green-700 to-emerald-800 text-white shadow scale-105"
+                    : isDarkMode 
+                      ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50" 
+                      : "text-green-800/85 hover:text-green-950 hover:bg-green-50"
+                }`}
+              >
+                मराठी
+              </button>
+              <button
+                onClick={() => setLanguage("en")}
+                className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${
+                  language === "en"
+                    ? "bg-gradient-to-r from-green-700 to-emerald-800 text-white shadow scale-105"
+                    : isDarkMode 
+                      ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50" 
+                      : "text-green-800/85 hover:text-green-905 hover:bg-green-50"
+                }`}
+              >
+                En
+              </button>
+            </div>
+            
+            {/* Divider line */}
+            <div className={`h-4 w-px ${isDarkMode ? "bg-slate-800" : "bg-green-200"}`}></div>
+
+            {/* Dark Mode toggle button */}
             <button
-              onClick={() => setLanguage("mr")}
-              className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${
-                language === "mr"
-                  ? "bg-gradient-to-r from-green-700 to-emerald-800 text-white shadow scale-105"
-                  : isDarkMode 
-                    ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50" 
-                    : "text-green-800/85 hover:text-green-950 hover:bg-green-50"
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group ${
+                isDarkMode ? "hover:bg-slate-800 text-yellow-300" : "hover:bg-green-50 text-amber-500"
               }`}
+              title={isDarkMode ? "Light Mode" : "Dark Mode"}
             >
-              मराठी
-            </button>
-            <button
-              onClick={() => setLanguage("en")}
-              className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${
-                language === "en"
-                  ? "bg-gradient-to-r from-green-700 to-emerald-800 text-white shadow scale-105"
-                  : isDarkMode 
-                    ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50" 
-                    : "text-green-800/85 hover:text-green-905 hover:bg-green-50"
-              }`}
-            >
-              En
+              {isDarkMode ? (
+                <div className="relative w-5 h-5 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-yellow-300 drop-shadow-[0_0_5px_rgba(253,224,71,0.6)] transition-all duration-300 transform group-hover:rotate-12 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                  </svg>
+                  <span className="absolute -top-1 -right-0.5 text-[8px] text-yellow-200 animate-pulse select-none">✦</span>
+                </div>
+              ) : (
+                <div className="relative w-5 h-5 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-amber-500 drop-shadow-[0_0_4px_rgba(245,158,11,0.4)] transition-all duration-300 transform group-hover:rotate-45 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m0 13.5V21M4.93 4.93l1.59 1.59m10.96 10.96l1.59 1.59M3 12h2.25m13.5 0H21m-16.07 7.07l1.59-1.59M16.93 7.07l1.59-1.59M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                  </svg>
+                </div>
+              )}
             </button>
           </div>
-          
-          {/* Divider line */}
-          <div className={`h-4 w-px ${isDarkMode ? "bg-slate-800" : "bg-green-200"}`}></div>
-
-          {/* Dark Mode toggle button */}
-          <button
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group ${
-              isDarkMode ? "hover:bg-slate-800 text-yellow-300" : "hover:bg-green-50 text-amber-500"
-            }`}
-            title={isDarkMode ? "Light Mode" : "Dark Mode"}
-          >
-            {isDarkMode ? (
-              <div className="relative w-5 h-5 flex items-center justify-center">
-                <svg className="w-4 h-4 text-yellow-300 drop-shadow-[0_0_5px_rgba(253,224,71,0.6)] transition-all duration-300 transform group-hover:rotate-12 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-                </svg>
-                <span className="absolute -top-1 -right-0.5 text-[8px] text-yellow-200 animate-pulse select-none">✦</span>
-              </div>
-            ) : (
-              <div className="relative w-5 h-5 flex items-center justify-center">
-                <svg className="w-4 h-4 text-amber-500 drop-shadow-[0_0_4px_rgba(245,158,11,0.4)] transition-all duration-300 transform group-hover:rotate-45 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m0 13.5V21M4.93 4.93l1.59 1.59m10.96 10.96l1.59 1.59M3 12h2.25m13.5 0H21m-16.07 7.07l1.59-1.59M16.93 7.07l1.59-1.59M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                </svg>
-              </div>
-            )}
-          </button>
-        </div>
+        )}
 
         {/* ──────── TAB 1: OVERVIEW ──────── */}
         {activeTab === "overview" && (
