@@ -350,14 +350,14 @@ export default function QrPartialPage() {
               {language === "mr" ? "सुरक्षित" : "Secure"}
             </span>
           </div>
-          <div className="text-center mt-4 space-y-1">
-            <h4 className="text-xs font-bold text-white/80 uppercase tracking-widest select-none">
+          <div className="text-center mt-4 space-y-1.5">
+            <h4 className="text-sm font-black text-white/95 uppercase tracking-widest select-none">
               {language === "mr" ? "महाराष्ट्र शासन" : "Government of Maharashtra"}
             </h4>
-            <h1 className="text-2xl font-bold text-white mb-1 tracking-tight">
+            <h1 className="text-2xl font-bold text-white tracking-tight">
               {gpDetails?.name || "ग्रामपंचायत गोमेवाडी"}
             </h1>
-            <p className="text-green-200 text-xs font-medium tracking-wide">
+            <p className="text-green-100 text-base font-extrabold tracking-wide">
               {language === "mr" ? "ता. आटपाडी, जि. सांगली" : "Tal. Atpadi, Dist. Sangli"}
             </p>
           </div>
