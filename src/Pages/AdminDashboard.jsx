@@ -3,6 +3,7 @@ import axioesInstance from "../utils/axioesInstance";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSiteConfig } from "../utils/SiteConfigContext";
+import { useLanguage } from "../utils/LanguageContext";
 
 // Existing Admin Components
 import DevelopementWorkAdmin from "../AdminComponents/DevelopementWorkAdmin";
@@ -20,15 +21,11 @@ import QrPrintAdmin from "../AdminComponents/QrPrintAdmin";
 
 export default function AdminDashboard() {
   const { config } = useSiteConfig();
+  const { lang, setLang } = useLanguage();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [openSection, setOpenSection] = useState(null);
 
-  const [language, setLanguage] = useState(() => localStorage.getItem("lang") || "mr");
   const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem("darkMode") === "true");
-
-  useEffect(() => {
-    localStorage.setItem("lang", language);
-  }, [language]);
 
   useEffect(() => {
     localStorage.setItem("darkMode", isDarkMode);
@@ -49,34 +46,36 @@ export default function AdminDashboard() {
   };
 
   const navItems = [
-    { key: "dashboard", label: "डॅशबोर्ड" },
-    { key: "overview", label: "बातम्या व सूचना" },
-    { key: "development", label: "विकास कामे" },
+    { key: "dashboard", mr: "डॅशबोर्ड", en: "Dashboard" },
+    { key: "overview", mr: "बातम्या व सूचना", en: "News & Notices" },
+    { key: "development", mr: "विकास कामे", en: "Development Works" },
   ];
 
   const vmsItems = [
-    { key: "families", label: "कुटुंब नोंदणी" },
-    { key: "taxes", label: "कर विवरण" },
-    { key: "vms-apps", label: "दाखले मागणी अर्ज" },
-    { key: "print-qr", label: "QR प्रिंट" },
+    { key: "families", mr: "कुटुंब नोंदणी", en: "Family Registry" },
+    { key: "taxes", mr: "कर विवरण", en: "Tax Management" },
+    { key: "vms-apps", mr: "दाखले मागणी अर्ज", en: "Certificate Requests" },
+    { key: "print-qr", mr: "QR प्रिंट", en: "Print QR Cards" },
   ];
 
   const memberItems = [
-    { key: "members", label: "सदस्य व शासकीय अधिकारी" },
+    { key: "members", mr: "सदस्य व शासकीय अधिकारी", en: "Members & Officials" },
   ];
 
   const tabTitles = {
-    dashboard: "प्रशासकीय डॅशबोर्ड",
-    overview: "बातम्या आणि सूचना व्यवस्थापन",
-
-    development: "विकास कामे व्यवस्थापन",
-    submissions: "सार्वजनिक दाखले मागण्या यादी",
-    families: "गाव कुटुंब नोंदणी केंद्र",
-    taxes: "कर आकारणी आणि वसुली व्यवस्थापन",
-    "vms-apps": "दाखले मागणी अर्ज मंजुरी केंद्र",
-    "print-qr": "QR कोड प्रिंट",
-    members: "अधिकारी, कार्यकारिणी आणि गाव माहिती",
+    dashboard: { mr: "प्रशासकीय डॅशबोर्ड", en: "Admin Dashboard" },
+    overview: { mr: "बातम्या आणि सूचना व्यवस्थापन", en: "News & Notices Management" },
+    development: { mr: "विकास कामे व्यवस्थापन", en: "Development Works Management" },
+    submissions: { mr: "सार्वजनिक दाखले मागण्या यादी", en: "Public Certificate Requests" },
+    families: { mr: "गाव कुटुंब नोंदणी केंद्र", en: "Village Family Registry" },
+    taxes: { mr: "कर आकारणी आणि वसुली व्यवस्थापन", en: "Tax Assessment & Collection" },
+    "vms-apps": { mr: "दाखले मागणी अर्ज मंजुरी केंद्र", en: "Certificate Approval Center" },
+    "print-qr": { mr: "QR कोड प्रिंट", en: "QR Code Print" },
+    members: { mr: "अधिकारी, कार्यकारिणी आणि गाव माहिती", en: "Officials, Board & Village Info" },
   };
+
+  const T = (key) => tabTitles[key]?.[lang] || tabTitles[key]?.mr || key;
+  const navLabel = (item) => item[lang] || item.mr;
 
   const NavButton = ({ tabKey, label }) => (
     <button
@@ -135,25 +134,41 @@ export default function AdminDashboard() {
             {/* NAVIGATION */}
             <nav className="flex flex-col gap-2">
               {navItems.map((item) => (
-                <NavButton key={item.key} tabKey={item.key} label={item.label} />
+                <NavButton key={item.key} tabKey={item.key} label={navLabel(item)} />
               ))}
 
               <div className={`border-t my-2 pt-2 text-[10px] font-bold tracking-wider uppercase ${isDarkMode ? "border-slate-800 text-slate-500" : "border-green-800 text-green-400"}`}>
-                कुटुंब व कर
+                {lang === "mr" ? "कुटुंब व कर" : "Family & Tax"}
               </div>
 
               {vmsItems.map((item) => (
-                <NavButton key={item.key} tabKey={item.key} label={item.label} />
+                <NavButton key={item.key} tabKey={item.key} label={navLabel(item)} />
               ))}
 
               <div className={`border-t my-2 pt-2 text-[10px] font-bold tracking-wider uppercase ${isDarkMode ? "border-slate-800 text-slate-500" : "border-green-800 text-green-400"}`}>
-                संस्था व रचना
+                {lang === "mr" ? "संस्था व रचना" : "Board & Structure"}
               </div>
 
               {memberItems.map((item) => (
-                <NavButton key={item.key} tabKey={item.key} label={item.label} />
+                <NavButton key={item.key} tabKey={item.key} label={navLabel(item)} />
               ))}
             </nav>
+
+            {/* Language Toggle */}
+            <div className="flex items-center gap-1 mt-4 bg-white/10 rounded-full px-1 py-0.5 border border-white/20 self-start">
+              <button
+                onClick={() => setLang("mr")}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition ${lang === "mr" ? "bg-orange-500 text-white shadow" : "text-green-200 hover:text-white"}`}
+              >
+                मर
+              </button>
+              <button
+                onClick={() => setLang("en")}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition ${lang === "en" ? "bg-orange-500 text-white shadow" : "text-green-200 hover:text-white"}`}
+              >
+                EN
+              </button>
+            </div>
           </div>
 
           {/* LOGOUT */}
@@ -161,7 +176,7 @@ export default function AdminDashboard() {
             onClick={handleLogout}
             className="w-full mt-8 bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl font-bold transition border border-white/20 shadow-md flex items-center justify-center gap-2"
           >
-            बाहेर पडा
+            {lang === "mr" ? "बाहेर पडा" : "Logout"}
           </button>
         </aside>
 

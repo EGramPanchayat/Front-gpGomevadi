@@ -5,6 +5,7 @@ import LoginPage from './Pages/LoginPage.jsx';
 import AdminDashboard from './Pages/AdminDashboard.jsx';
 import RequireAuth from './Components/RequireAuth.jsx';
 import { SiteConfigProvider } from './utils/SiteConfigContext.jsx';
+import { LanguageProvider } from './utils/LanguageContext.jsx';
 import './App.css';
 
 // New VMS pages
@@ -15,26 +16,28 @@ import QrPartialPage from './Pages/QrPartialPage.jsx';
 
 function App() {
   return (
-    <SiteConfigProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route
-            path="/admin"
-            element={
-              <RequireAuth>
-                <AdminDashboard />
-              </RequireAuth>
-            }
-          />
-          <Route path="/user-login" element={<UserLoginPage />} />
+    <LanguageProvider>
+      <SiteConfigProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<MainPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route
+              path="/admin"
+              element={
+                <RequireAuth>
+                  <AdminDashboard />
+                </RequireAuth>
+              }
+            />
+            <Route path="/user-login" element={<UserLoginPage />} />
 
-          <Route path="/user/dashboard" element={<UserDashboard />} />
-          <Route path="/qr-partial" element={<QrPartialPage />} />
-        </Routes>
-      </Router>
-    </SiteConfigProvider>
+            <Route path="/user/dashboard" element={<UserDashboard />} />
+            <Route path="/qr-partial" element={<QrPartialPage />} />
+          </Routes>
+        </Router>
+      </SiteConfigProvider>
+    </LanguageProvider>
   );
 }
 

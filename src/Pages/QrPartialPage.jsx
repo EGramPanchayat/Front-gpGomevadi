@@ -3,6 +3,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axioesInstance from "../utils/axioesInstance";
 import { useSiteConfig } from "../utils/SiteConfigContext";
+import { useLanguage } from "../utils/LanguageContext";
 import { useSearchParams } from "react-router-dom";
 import { User, ShieldCheck, CheckCircle2, Home, LayoutDashboard, Lock, Receipt, IndianRupee, ChevronRight, FileText } from "lucide-react";
 
@@ -73,7 +74,7 @@ export default function QrPartialPage() {
   const [bills, setBills] = useState([]);
   const [payAmounts, setPayAmounts] = useState({});
   const [processingId, setProcessingId] = useState(null);
-  const [language] = useState("mr");
+  const { lang: language } = useLanguage();
 
   const inputRefs = useRef([]);
 
@@ -339,23 +340,25 @@ export default function QrPartialPage() {
   return (
     <div className="min-h-screen bg-slate-100 flex justify-center font-sans sm:py-8">
       {/* Mobile App Container */}
-      <div className="w-full max-w-md bg-slate-50 sm:rounded-[2.5rem] shadow-2xl overflow-hidden relative flex flex-col min-h-screen sm:min-h-0 sm:h-[840px]">
+      <div className="w-full max-w-md bg-slate-50 sm:rounded-[2.5rem] shadow-2xl overflow-hidden relative flex flex-col min-h-screen sm:min-h-0 sm:h-[850px]">
         
-        {/* Header Section */}
-        <div className="bg-gradient-to-br from-green-800 via-green-700 to-emerald-900 pt-12 pb-20 px-6 rounded-b-[2.5rem] shadow-md relative z-0">
+        {/* Header Section (Curved Background) */}
+        <div className="bg-gradient-to-br from-green-700 via-emerald-600 to-green-900 pt-12 pb-20 px-6 rounded-b-[2.5rem] shadow-md relative z-0">
           <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full">
             <ShieldCheck className="w-4 h-4 text-white animate-pulse" />
-            <span className="text-[10px] font-bold text-white tracking-wide uppercase">QR सत्यापित</span>
+            <span className="text-xs font-medium text-white tracking-wide uppercase">
+              {language === "mr" ? "सुरक्षित" : "Secure"}
+            </span>
           </div>
           <div className="text-center mt-4 space-y-1">
-            <h4 className="text-xs font-black text-white/90 tracking-wide uppercase select-none">
-              महाराष्ट्र शासन
+            <h4 className="text-xs font-bold text-white/80 uppercase tracking-widest select-none">
+              {language === "mr" ? "महाराष्ट्र शासन" : "Government of Maharashtra"}
             </h4>
-            <h1 className="text-xl font-black text-white tracking-tight">
+            <h1 className="text-2xl font-bold text-white mb-1 tracking-tight">
               {gpDetails?.name || "ग्रामपंचायत गोमेवाडी"}
             </h1>
-            <p className="text-orange-200 text-[10px] font-black tracking-wider uppercase select-none">
-              ता. आटपाडी, जि. सांगली
+            <p className="text-green-200 text-xs font-medium tracking-wide">
+              {language === "mr" ? "ता. आटपाडी, जि. सांगली" : "Tal. Atpadi, Dist. Sangli"}
             </p>
           </div>
         </div>
@@ -367,58 +370,72 @@ export default function QrPartialPage() {
               <img 
                 src={gpDetails?.logo || "/images/satyamev.jpg"} 
                 alt="Logo" 
-                className="w-16 h-16 object-cover"
+                className="w-16 h-16 object-contain"
               />
             </div>
           </div>
         </div>
 
         {/* Scrollable Content Body */}
-        <div className="px-5 pt-6 pb-32 flex-1 overflow-y-auto space-y-5">
+        <div className="px-5 pt-6 pb-28 flex-1 overflow-y-auto space-y-5">
           
           {/* Scan success confirmation */}
-          <div className="bg-green-50/50 border border-green-150 rounded-2xl p-4 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center shrink-0">
-              <CheckCircle2 className="w-5 h-5 text-green-700" />
+          <div className="bg-green-50 border border-green-100 rounded-2xl p-4 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-6 h-6 text-green-600" />
             </div>
-            <div>
-              <h4 className="font-extrabold text-green-900 text-xs">स्कॅन यशस्वी!</h4>
-              <p className="text-[10px] text-green-700 mt-0.5 font-bold">QR कोड सुरक्षितपणे ओळखला गेला आहे</p>
+            <div className="text-left">
+              <h4 className="font-bold text-green-900 text-sm">
+                {language === "mr" ? "स्कॅन यशस्वी!" : "Scan Successful!"}
+              </h4>
+              <p className="text-xs text-green-700 mt-0.5">
+                {language === "mr" ? "QR कोड सुरक्षितपणे ओळखला गेला आहे" : "QR Code securely recognized"}
+              </p>
             </div>
           </div>
 
-          {/* Household Info Cards - Clean SaaS style */}
-          <div className="bg-white rounded-3xl p-5 shadow-lg border border-slate-100/80 space-y-4">
-            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1 select-none border-b pb-2">
-              कुटुंब माहिती (Household Profile)
-            </h3>
+          {/* Family Card (Neumorphic/Clean) */}
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/60 text-left">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
+                <User className="w-6 h-6 text-green-600" />
+              </div>
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                  {language === "mr" ? "कुटुंब प्रमुख" : "Head of Family"}
+                </p>
+                <h2 className="text-lg font-bold text-slate-800 leading-tight">
+                  {family?.mainMemberName || "—"}
+                </h2>
+              </div>
+            </div>
             
-            <div className="space-y-3.5">
-              {/* Family ID badge */}
-              <div className="flex items-center gap-3.5 bg-orange-50/40 border border-orange-200/40 px-4 py-3 rounded-2xl text-orange-700 font-extrabold text-sm transition hover:bg-orange-50">
-                <span className="w-8 h-8 rounded-xl bg-orange-100/80 text-orange-700 flex items-center justify-center font-black text-xs shrink-0 select-none">ID</span>
-                <div className="flex flex-col text-left">
-                  <span className="text-[9px] font-black text-orange-400 uppercase leading-none">कुटुंब ID</span>
-                  <span className="text-orange-950 font-black mt-1 text-sm">{family?.familyId || "—"}</span>
+            <div className="mt-5 pt-4 border-t border-slate-100 grid grid-cols-3 gap-2">
+              <div>
+                <div className="flex items-center gap-1 text-slate-500 mb-0.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider">
+                    {language === "mr" ? "कुटुंब ID" : "Family ID"}
+                  </span>
                 </div>
+                <p className="text-xs font-bold text-slate-800 font-mono truncate">{family?.familyId || "—"}</p>
               </div>
-
-              {/* Main Member name */}
-              <div className="flex items-center gap-3.5 bg-orange-50/40 border border-orange-200/40 px-4 py-3 rounded-2xl text-orange-700 font-extrabold text-sm transition hover:bg-orange-50">
-                <span className="w-8 h-8 rounded-xl bg-orange-100/80 text-orange-700 flex items-center justify-center font-black text-xs shrink-0 select-none">👤</span>
-                <div className="flex flex-col text-left">
-                  <span className="text-[9px] font-black text-orange-400 uppercase leading-none">कुटुंब प्रमुख</span>
-                  <span className="text-orange-950 font-black mt-1 text-sm">{family?.mainMemberName || "—"}</span>
+              <div>
+                <div className="flex items-center gap-1 text-slate-500 mb-0.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider">
+                    {language === "mr" ? "घर क्रमांक" : "House No."}
+                  </span>
                 </div>
+                <p className="text-xs font-bold text-slate-800">{family?.houseNumber || "—"}</p>
               </div>
-
-              {/* House Number */}
-              <div className="flex items-center gap-3.5 bg-orange-50/40 border border-orange-200/40 px-4 py-3 rounded-2xl text-orange-700 font-extrabold text-sm transition hover:bg-orange-50">
-                <span className="w-8 h-8 rounded-xl bg-orange-100/80 text-orange-700 flex items-center justify-center font-black text-xs shrink-0 select-none">🏠</span>
-                <div className="flex flex-col text-left">
-                  <span className="text-[9px] font-black text-orange-400 uppercase leading-none">घर क्रमांक</span>
-                  <span className="text-orange-950 font-black mt-1 text-sm">{family?.houseNumber || "—"}</span>
+              <div>
+                <div className="flex items-center gap-1 text-slate-500 mb-0.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider">
+                    {language === "mr" ? "सदस्य संख्या" : "Members"}
+                  </span>
                 </div>
+                <p className="text-xs font-bold text-slate-800">
+                  {family?.familySize || 0} {language === "mr" ? "व्यक्ती" : "Persons"}
+                </p>
               </div>
             </div>
           </div>
@@ -426,44 +443,47 @@ export default function QrPartialPage() {
           {!otpVerified ? (
             /* SECURE PRE-OTP CHALLENGE STEP */
             !otpSent ? (
-              <div className="space-y-3.5 pt-4">
+              <div className="space-y-3.5 pt-2">
                 <button
                   type="button"
                   onClick={() => (window.location.href = "/")}
-                  className="w-full py-4 bg-white border-2 border-slate-200 hover:border-slate-300 text-slate-700 font-extrabold rounded-2xl flex items-center justify-center gap-2.5 transition active:scale-[0.98] shadow-sm text-sm"
+                  className="w-full py-4 bg-white border border-slate-200 hover:border-slate-300 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2.5 transition active:scale-[0.98] shadow-sm text-sm"
                 >
                   <Home className="w-5 h-5 text-slate-500" />
-                  मुख्य वेबसाईटवर जा
+                  {language === "mr" ? "मुख्य वेबसाईटवर जा" : "Go to Main Website"}
                 </button>
 
                 <button
                   type="button"
                   onClick={handleRequestOtp}
                   disabled={requestingOtp}
-                  className="w-full py-4 bg-orange-500 hover:bg-orange-600 text-white font-extrabold rounded-2xl flex items-center justify-center gap-2.5 transition active:scale-[0.98] disabled:opacity-75 shadow-md shadow-orange-500/20 text-sm"
+                  className="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-lg shadow-green-600/30 active:scale-[0.98] disabled:opacity-75 text-sm"
                 >
                   {requestingOtp ? (
                     <>
                       <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                      <span>ओटीपी पाठवत आहे...</span>
+                      <span>{language === "mr" ? "ओटीपी पाठवत आहे..." : "Sending OTP..."}</span>
                     </>
                   ) : (
                     <>
                       <LayoutDashboard className="w-5 h-5" />
-                      करांचा भरणा करा / Pay Taxes
+                      {language === "mr" ? "करांचा भरणा करा" : "Pay Taxes"}
                     </>
                   )}
                 </button>
               </div>
             ) : (
-              <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/60 space-y-6 animate-fadeIn">
-                <div className="text-center space-y-1.5">
-                  <div className="w-12 h-12 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center mx-auto mb-2 border border-orange-100">
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/60 space-y-6 animate-fadeIn text-center">
+                <div className="space-y-1.5">
+                  <div className="w-14 h-14 rounded-full bg-green-50 text-green-600 flex items-center justify-center mx-auto mb-2 border border-green-100">
                     <Lock className="w-6 h-6" />
                   </div>
-                  <h3 className="font-extrabold text-slate-800 text-sm">मोबाईल पडताळणी (OTP Verification)</h3>
-                  <p className="text-xs text-slate-400 font-bold leading-normal">
-                    नोंदणीकृत मोबाईल नंबर <span className="text-slate-850">{maskedMobile}</span> वर OTP पाठवला आहे
+                  <h3 className="font-bold text-slate-800 text-base">
+                    {language === "mr" ? "मोबाईल पडताळणी" : "OTP Verification"}
+                  </h3>
+                  <p className="text-xs text-slate-500 leading-normal">
+                    {language === "mr" ? "नोंदणीकृत मोबाईल नंबर" : "OTP sent to registered mobile"}{" "}
+                    <span className="font-bold text-slate-800">{maskedMobile}</span>
                   </p>
                 </div>
 
@@ -479,7 +499,7 @@ export default function QrPartialPage() {
                         onChange={(e) => handleOtpChange(e.target.value, idx)}
                         onKeyDown={(e) => handleOtpKeyDown(e, idx)}
                         onPaste={handleOtpPaste}
-                        className="w-11 h-12 border-2 rounded-xl text-center font-extrabold text-base focus:ring-2 focus:ring-orange-400 focus:border-transparent outline-none bg-slate-50 transition"
+                        className="w-11 h-12 border-2 rounded-xl text-center font-extrabold text-lg focus:ring-2 focus:ring-green-400 focus:border-transparent outline-none bg-slate-50 transition"
                       />
                     ))}
                   </div>
@@ -487,15 +507,15 @@ export default function QrPartialPage() {
                   <div className="text-center text-xs font-bold">
                     {countdown > 0 ? (
                       <span className="text-slate-400">
-                        पुन्हा पाठवा {countdown} सेकंदात
+                        {language === "mr" ? `पुन्हा पाठवा ${countdown} सेकंदात` : `Resend in ${countdown}s`}
                       </span>
                     ) : (
                       <button
                         type="button"
                         onClick={handleRequestOtp}
-                        className="text-orange-600 hover:text-orange-700 transition underline"
+                        className="text-green-700 hover:text-green-800 transition underline"
                       >
-                        OTP पुन्हा पाठवा (Resend OTP)
+                        {language === "mr" ? "ओटीपी पुन्हा पाठवा" : "Resend OTP"}
                       </button>
                     )}
                   </div>
@@ -503,15 +523,15 @@ export default function QrPartialPage() {
                   <button
                     type="submit"
                     disabled={verifyingOtp || otp.length !== 6}
-                    className="w-full py-3.5 bg-green-700 hover:bg-green-800 text-white font-extrabold rounded-2xl transition disabled:opacity-50 active:scale-[0.98] shadow-md shadow-green-700/20 text-xs flex items-center justify-center gap-1.5"
+                    className="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition disabled:opacity-50 active:scale-[0.98] shadow-lg shadow-green-600/30 text-sm flex items-center justify-center gap-1.5"
                   >
                     {verifyingOtp ? (
                       <>
                         <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                        <span>सत्यापित करत आहे...</span>
+                        <span>{language === "mr" ? "सत्यापित करत आहे..." : "Verifying..."}</span>
                       </>
                     ) : (
-                      <span>सत्यापित करा / Verify & Pay</span>
+                      <span>{language === "mr" ? "पडताळणी करा" : "Verify & Pay"}</span>
                     )}
                   </button>
                 </form>
@@ -522,54 +542,59 @@ export default function QrPartialPage() {
             <div className="space-y-4 animate-fadeIn">
               {/* Tax Bills Header */}
               <div className="flex items-center justify-between mb-2 px-1">
-                <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
                   <FileText className="w-4 h-4 text-slate-400" />
-                  कर देयके (Tax Bills Statement)
+                  {language === "mr" ? "कर देयके" : "Tax Bills"}
                 </h3>
-                <span className="bg-orange-100 text-orange-700 text-[10px] font-black px-2.5 py-1 rounded-md">
-                  {paymentGroups.length} प्रकार
+                <span className="bg-orange-100 text-orange-700 text-xs font-bold px-2.5 py-1 rounded-md">
+                  {paymentGroups.length} {language === "mr" ? "प्रकार" : "Items"}
                 </span>
               </div>
 
               {/* Tax Bills List */}
               {paymentGroups.length > 0 ? (
-                <div className="space-y-3.5">
+                <div className="space-y-3">
                   {paymentGroups.map((group) => (
-                    <div key={group.id} className="bg-white rounded-3xl p-5 shadow-md border border-slate-100 flex flex-col gap-3">
+                    <div key={group.id} className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/60 flex flex-col gap-3">
                       {/* Bill Header */}
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0">
                           <Receipt className="w-5 h-5 text-emerald-600" />
                         </div>
                         <div className="flex-1 text-left">
-                          <h4 className="font-extrabold text-sm text-slate-800 leading-tight">
+                          <h4 className="font-semibold text-slate-800">
                             {CATEGORY_NAMES[group.id][language]}
                           </h4>
+                          <p className="text-xs text-slate-500 mt-0.5">
+                            {currentFinancialYear}-{String(currentFinancialYear + 1).slice(2)}
+                          </p>
                         </div>
                         <div className="text-right">
-                          <span className={`inline-block text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wide ${group.remaining === 0 ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-orange-50 text-orange-700 border border-orange-200'}`}>
-                            {group.remaining === 0 ? 'जमा' : 'थकीत'}
+                          <span className={`inline-block text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wide ${group.remaining === 0 ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
+                            {group.remaining === 0 ? (language === "mr" ? "जमा" : "Paid") : (language === "mr" ? "थकीत" : "Pending")}
                           </span>
                         </div>
                       </div>
 
                       {/* Detailed Breakdown */}
-                      <div className="bg-slate-50/50 rounded-2xl p-3.5 space-y-2 text-xs border border-slate-100">
-                        <div className="flex justify-between text-slate-500 font-bold">
-                          <span>चालू वर्ष ({currentFinancialYear}-{String(currentFinancialYear + 1).slice(2)})</span>
-                          <span className="font-black text-slate-800 flex items-center">
+                      <div className="bg-slate-50 rounded-xl p-3.5 mt-1 space-y-2 text-sm border border-slate-100 text-left">
+                        <div className="flex justify-between text-slate-600">
+                          <span>{language === "mr" ? "चालू वर्ष" : "Current Year"} ({currentFinancialYear}-{String(currentFinancialYear + 1).slice(2)})</span>
+                          <span className="font-medium text-slate-800 flex items-center">
                             {money(group.currentDue)}
                           </span>
                         </div>
-                        <div className="flex justify-between text-slate-500 font-bold">
-                          <span>मागील वर्षांची थकबाकी</span>
-                          <span className="font-black text-slate-800 flex items-center">
+                        <div className="flex justify-between text-slate-600">
+                          <span>{language === "mr" ? "मागील थकबाकी" : "Previous Dues"}</span>
+                          <span className="font-medium text-slate-800 flex items-center">
                             {money(group.previousDue)}
                           </span>
                         </div>
-                        <div className="flex justify-between border-t border-slate-150 pt-2 mt-2">
-                          <span className="font-black text-slate-800 uppercase text-[10px]">एकूण देय रक्कम</span>
-                          <span className={`font-black flex items-center text-sm ${group.remaining === 0 ? 'text-green-700' : 'text-slate-900'}`}>
+                        <div className="flex justify-between border-t border-slate-200 pt-2 mt-2">
+                          <span className="font-bold text-slate-800">
+                            {language === "mr" ? "एकूण देय रक्कम" : "Total Payable"}
+                          </span>
+                          <span className="font-bold text-slate-900 flex items-center text-base">
                             {money(group.remaining)}
                           </span>
                         </div>
@@ -581,21 +606,21 @@ export default function QrPartialPage() {
                             type="number"
                             value={payAmounts[group.id] || ""}
                             onChange={(e) => setPayAmounts({ ...payAmounts, [group.id]: e.target.value })}
-                            placeholder="रक्कम प्रविष्ट करा"
-                            className="flex-1 px-4 py-2.5 border border-slate-200 rounded-xl focus:ring focus:ring-green-150 focus:outline-none text-xs font-bold"
+                            placeholder={language === "mr" ? "रक्कम प्रविष्ट करा" : "Enter amount"}
+                            className="flex-1 px-4 py-2.5 border border-slate-200 rounded-xl focus:ring focus:ring-green-150 focus:outline-none text-xs font-semibold"
                           />
                           <button
                             onClick={() => handlePayCategory(group)}
                             disabled={processingId === group.id}
-                            className="bg-green-700 hover:bg-green-800 text-white px-4 py-2.5 rounded-xl transition disabled:opacity-50 flex items-center gap-1.5 text-xs font-extrabold shadow-sm active:scale-95"
+                            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2.5 rounded-xl transition disabled:opacity-50 flex items-center gap-1.5 text-xs font-bold shadow-md active:scale-95 whitespace-nowrap"
                           >
                             {processingId === group.id ? (
                               <>
                                 <div className="animate-spin rounded-full h-3.5 w-3.5 border-2 border-white border-t-transparent"></div>
-                                <span>प्रक्रिया...</span>
+                                <span>{language === "mr" ? "प्रक्रिया..." : "Processing..."}</span>
                               </>
                             ) : (
-                              <span>ऑनलाइन भरा</span>
+                              <span>{language === "mr" ? "ऑनलाइन भरा" : "Pay Online"}</span>
                             )}
                           </button>
                         </div>
@@ -604,40 +629,47 @@ export default function QrPartialPage() {
                   ))}
                 </div>
               ) : (
-                <div className="bg-white rounded-3xl p-8 border border-slate-100 text-center">
-                  <div className="w-14 h-14 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <CheckCircle2 className="w-7 h-7 text-green-600" />
+                <div className="bg-white rounded-2xl p-8 border border-slate-200/60 text-center">
+                  <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <CheckCircle2 className="w-8 h-8 text-green-500" />
                   </div>
-                  <h4 className="font-extrabold text-slate-800 text-sm">कोणतेही बिल उपलब्ध नाही</h4>
-                  <p className="text-xs text-slate-400 font-bold mt-1">या कुटुंबासाठी सध्या कोणतेही कर रेकॉर्ड नाहीत.</p>
+                  <h4 className="font-bold text-slate-800">
+                    {language === "mr" ? "सर्व कर भरलेले आहेत" : "No Bills Found"}
+                  </h4>
+                  <p className="text-sm text-slate-500 mt-1">
+                    {language === "mr" ? "या कुटुंबासाठी सध्या कोणतेही कर रेकॉर्ड नाहीत." : "There are currently no tax records for this family."}
+                  </p>
                 </div>
               )}
 
-              {/* Dashboard Button */}
+              {/* Dashboard Redirection Button */}
               <button
                 onClick={() => (window.location.href = "/user/dashboard")}
-                className="w-full mt-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold py-3.5 rounded-xl transition text-xs shadow-inner"
+                className="w-full mt-2 bg-slate-100 hover:bg-slate-250 text-slate-700 font-bold py-4 rounded-xl transition text-xs shadow-inner flex items-center justify-center gap-2 border border-slate-200/40"
               >
-                संपूर्ण डॅशबोर्डवर जा / Go to Dashboard
+                <LayoutDashboard className="w-4 h-4 text-slate-500" />
+                {language === "mr" ? "संपूर्ण डॅशबोर्डवर जा" : "Go to Dashboard"}
               </button>
             </div>
           )}
         </div>
 
-        {/* STICKY BOTTOM PAY ACTION BAR (Post-OTP Verified Only) */}
+        {/* Sticky Bottom Action Bar (Post-OTP Verified Only) */}
         {otpVerified && (
-          <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-slate-150 p-5 rounded-b-[2.5rem] shadow-[0_-8px_16px_rgba(0,0,0,0.03)] z-10">
-            <div className="flex items-center justify-between mb-4">
+          <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-5 pt-4 rounded-b-[2.5rem] shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] z-10">
+            <div className="flex items-end justify-between mb-4">
               <div className="text-left">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-0.5">एकूण थकबाकी (Total Dues)</p>
-                <h2 className="text-2xl font-black text-slate-900 tracking-tight">
+                <p className="text-sm font-medium text-slate-500 mb-1">
+                  {language === "mr" ? "एकूण देय रक्कम" : "Total Amount Due"}
+                </p>
+                <h2 className="text-3xl font-black text-slate-900 flex items-center tracking-tight">
                   {money(totalDue)}
                 </h2>
               </div>
             </div>
             
             <button 
-              className="w-full bg-green-700 hover:bg-green-800 text-white font-extrabold py-4 rounded-2xl flex items-center justify-between px-6 transition-all shadow-md shadow-green-700/20 active:scale-[0.98] text-xs"
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl flex items-center justify-between px-6 transition-all shadow-lg shadow-green-600/30 active:scale-[0.98]"
               disabled={totalDue === 0}
               onClick={() => {
                 if (totalDue > 0) {
@@ -646,13 +678,15 @@ export default function QrPartialPage() {
                 }
               }}
             >
-              <span>
-                {totalDue > 0 ? "सर्व कर थकीत देयके भरा / Pay Total" : "सर्व कर भरलेले आहेत"}
+              <span className="text-lg">
+                {totalDue > 0
+                  ? (language === "mr" ? "सर्व कर थकीत देयके भरा" : "Pay Now")
+                  : (language === "mr" ? "सर्व कर भरलेले आहेत" : "Nothing to Pay")}
               </span>
               {totalDue > 0 ? (
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="w-6 h-6" />
               ) : (
-                <CheckCircle2 className="w-5 h-5 text-green-300" />
+                <CheckCircle2 className="w-6 h-6 text-green-300" />
               )}
             </button>
           </div>

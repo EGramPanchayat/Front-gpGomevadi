@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axioesInstance from "../utils/axioesInstance";
+import { useLanguage } from "../utils/LanguageContext";
 
 export default function UserLoginPage() {
+  const { lang, t } = useLanguage();
   const [mobileNumber, setMobileNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
@@ -123,14 +125,18 @@ export default function UserLoginPage() {
         {/* Right Part - Form (Functional for User OTP Login) */}
         <div className="w-full md:w-1/2 flex flex-col justify-between p-6 relative">
           <div className="w-full max-w-sm mx-auto mt-4">
-            <h2 className="text-2xl font-bold mb-1 text-green-800">Welcome Back</h2>
+            <h2 className="text-2xl font-bold mb-1 text-green-800">
+              {lang === "mr" ? "आपले स्वागत आहे" : "Welcome Back"}
+            </h2>
             
             {!otpSent ? (
               <form onSubmit={handleRequestOtp} className="w-full">
-                <p className="text-gray-500 mb-5 text-base">लॉगिन करण्यासाठी आपला मोबाईल नंबर प्रविष्ट करा</p>
+                <p className="text-gray-500 mb-5 text-base">
+                  {lang === "mr" ? "लॉगिन करण्यासाठी आपला मोबाईल नंबर प्रविष्ट करा" : "Enter your registered mobile number to login"}
+                </p>
                 
                 <div className="mb-4 mt-10">
-                  <label className="block text-sm text-gray-700 mb-1">मोबाईल नंबर</label>
+                  <label className="block text-sm text-gray-700 mb-1">{t("mobile_number")}</label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold select-none text-base">+91</span>
                     <input
@@ -150,12 +156,14 @@ export default function UserLoginPage() {
                   disabled={loading}
                   className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition disabled:opacity-50 font-bold text-sm mt-6"
                 >
-                  {loading ? "पाठवत आहे..." : "OTP मिळवा"}
+                  {loading ? (lang === "mr" ? "पाठवत आहे..." : "Sending...") : t("send_otp")}
                 </button>
               </form>
             ) : (
               <form onSubmit={handleVerifyOtp} className="w-full">
-                <p className="text-green-600 mb-4 text-base font-medium">OTP sent successfully</p>
+                <p className="text-green-600 mb-4 text-base font-medium">
+                  {lang === "mr" ? "ओटीपी यशस्वीरित्या पाठवला" : "OTP sent successfully"}
+                </p>
                 
                 <div className="mb-4 mt-6">
                   {/* Styled Mobile Number Banner */}
@@ -170,13 +178,13 @@ export default function UserLoginPage() {
                         setOtpValues(Array(6).fill(""));
                         setOtp("");
                       }}
-                      className="text-xs font-bold text-orange-600 hover:text-orange-750 hover:underline transition"
+                      className="text-xs font-bold text-orange-600 hover:text-orange-755 hover:underline transition"
                     >
-                      change
+                      {lang === "mr" ? "बदला" : "change"}
                     </button>
                   </div>
 
-                  <label className="block text-sm text-gray-700 mb-2 font-medium">OTP कोड</label>
+                  <label className="block text-sm text-gray-700 mb-2 font-medium">{t("enter_otp")}</label>
                   
                   {/* 6 beautiful digit boxes for OTP */}
                   <div className="flex justify-between gap-2 mt-2">
@@ -204,17 +212,17 @@ export default function UserLoginPage() {
                   {loading ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                      <span>Verifying...</span>
+                      <span>{t("verifying")}</span>
                     </>
                   ) : (
-                    <span>Verify & Login</span>
+                    <span>{t("verify_login")}</span>
                   )}
                 </button>
 
                 <div className="text-center mt-4">
                   {countdown > 0 ? (
                     <div className="inline-flex items-center gap-1.5 bg-gray-50 border border-gray-150 px-3 py-1 rounded-full text-xs text-gray-600">
-                      <span>resend</span>
+                      <span>{lang === "mr" ? "पुन्हा पाठवा" : "resend"}</span>
                       <span className="font-bold text-green-700">{countdown}s</span>
                     </div>
                   ) : (
@@ -223,7 +231,7 @@ export default function UserLoginPage() {
                       onClick={handleRequestOtp}
                       className="text-xs font-bold text-green-700 hover:text-green-800 hover:underline transition"
                     >
-                      Resend OTP
+                      {t("resend_otp")}
                     </button>
                   )}
                 </div>

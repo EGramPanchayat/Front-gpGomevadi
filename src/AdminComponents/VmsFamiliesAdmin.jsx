@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axioesInstance from "../utils/axioesInstance";
+import { useLanguage } from "../utils/LanguageContext";
+import { getCertificateTypeName } from "../utils/translations";
 
-const taxTypeLabels = {
-  samanya_water: "सामान्य पाणीपट्टी (General Water)",
-  vishesh_water: "विशेष पाणीपट्टी (Special Water)",
-  house: "घरपट्टी (House Tax)",
-  health: "आरोग्य कर (Health Tax)",
-  electricity: "वीज कर (Electricity Tax)",
-  fine: "दंड (Fine / Penalty)",
+const TAX_TYPE_LABELS = {
+  samanya_water: { mr: "सामान्य पाणीपट्टी", en: "General Water Tax" },
+  vishesh_water: { mr: "विशेष पाणीपट्टी", en: "Special Water Tax" },
+  house: { mr: "घरपट्टी", en: "House Tax" },
+  health: { mr: "आरोग्य कर", en: "Health Tax" },
+  electricity: { mr: "वीज कर", en: "Electricity Tax" },
+  fine: { mr: "दंड", en: "Fine / Penalty" },
 };
 
 export default function VmsFamiliesAdmin() {
+  const { lang } = useLanguage();
+  const taxTypeLabel = (type) => TAX_TYPE_LABELS[type]?.[lang] || TAX_TYPE_LABELS[type]?.mr || type;
   const [families, setFamilies] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -466,7 +470,7 @@ export default function VmsFamiliesAdmin() {
                   }}
                   className="flex items-center gap-2 text-white bg-orange-600 hover:bg-orange-700 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow-md transition-all duration-205 hover:-translate-y-0.5"
                 >
-                  ← मागे जा / Back to Search
+                  {lang === "mr" ? "← मागे जा" : "← Back"}
                 </button>
                 <div className="text-right">
                   <h4 className="font-extrabold text-sm md:text-base text-slate-800 leading-tight">
@@ -908,7 +912,7 @@ export default function VmsFamiliesAdmin() {
                               onClick={() => handleSelectFamily(f)}
                               className="border border-green-600 text-green-700 hover:bg-green-700 hover:text-white font-extrabold px-3.5 py-2 rounded-xl text-xs shadow-sm transition-all duration-200 hover:-translate-y-0.5"
                             >
-                              पहा / View Profile
+                              {lang === "mr" ? "प्रोफाइल पहा" : "View Profile"}
                             </button>
                             <button
                               type="button"
@@ -943,7 +947,7 @@ export default function VmsFamiliesAdmin() {
                         }}
                         className="bg-green-700 hover:bg-green-800 text-white font-extrabold px-6 py-3 rounded-xl text-xs shadow-md transition-all duration-200 hover:-translate-y-0.5 inline-flex items-center gap-2"
                       >
-                        <span>सर्व नोंदणीकृत कुटुंबे पहा / View All Families</span>
+                        <span>{lang === "mr" ? "सर्व नोंदणीकृत कुटुंबे पहा" : "View All Families"}</span>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                         </svg>
@@ -1084,7 +1088,7 @@ export default function VmsFamiliesAdmin() {
                 disabled={saving}
                 className="w-full bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
               >
-                {saving ? "नोंदणी होत आहे..." : "कुटुंब नोंदवा / Register"}
+                {saving ? (lang === "mr" ? "नोंदणी होत आहे..." : "Registering...") : (lang === "mr" ? "कुटुंब नोंदवा" : "Register Family")}
               </button>
             </div>
           </form>
@@ -1111,7 +1115,7 @@ export default function VmsFamiliesAdmin() {
               }}
               className="flex items-center gap-2 text-white bg-orange-600 hover:bg-orange-700 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow-md transition-all duration-205 hover:-translate-y-0.5"
             >
-              ← मागे जा / Back to Search
+              {lang === "mr" ? "← मागे जा" : "← Back"}
             </button>
           </div>
 
@@ -1322,7 +1326,7 @@ export default function VmsFamiliesAdmin() {
                   }}
                   className="flex-1 bg-green-700 hover:bg-green-800 text-white font-extrabold py-3 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-1.5 hover:-translate-y-0.5 transform duration-150"
                 >
-                  🖨️ मुद्रित करा / Print
+                  🖨️ {lang === "mr" ? "मुद्रित करा" : "Print"}
                 </button>
                 <button
                   type="button"
@@ -1332,7 +1336,7 @@ export default function VmsFamiliesAdmin() {
                   }}
                   className="flex-1 bg-orange-500 hover:bg-orange-650 text-white font-extrabold py-3 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-1.5 hover:-translate-y-0.5 transform duration-150"
                 >
-                  बंद करा / Close
+                  {lang === "mr" ? "बंद करा" : "Close"}
                 </button>
               </div>
             </div>

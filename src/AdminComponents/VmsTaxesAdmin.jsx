@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axioesInstance from "../utils/axioesInstance";
+import { useLanguage } from "../utils/LanguageContext";
 
-const taxTypeLabels = {
-  samanya_water: "सामान्य पाणीपट्टी (General Water)",
-  vishesh_water: "विशेष पाणीपट्टी (Special Water)",
-  house: "घरपट्टी (House Tax)",
-  health: "आरोग्य कर (Health Tax)",
-  electricity: "वीज कर (Electricity Tax)",
-  fine: "दंड (Fine / Penalty)",
+const TAX_TYPE_LABELS = {
+  samanya_water: { mr: "सामान्य पाणीपट्टी", en: "General Water Tax" },
+  vishesh_water: { mr: "विशेष पाणीपट्टी", en: "Special Water Tax" },
+  house: { mr: "घरपट्टी", en: "House Tax" },
+  health: { mr: "आरोग्य कर", en: "Health Tax" },
+  electricity: { mr: "वीज कर", en: "Electricity Tax" },
+  fine: { mr: "दंड", en: "Fine / Penalty" },
 };
 
 // Helper: Get current financial year start year
@@ -39,6 +40,8 @@ const notifTypeLabels = {
 };
 
 export default function VmsTaxesAdmin() {
+  const { lang } = useLanguage();
+  const taxTypeLabel = (type) => TAX_TYPE_LABELS[type]?.[lang] || TAX_TYPE_LABELS[type]?.mr || type;
   const [activeTab, setActiveTab] = useState("stats");
   const [families, setFamilies] = useState([]);
   const [selectedFamilyId, setSelectedFamilyId] = useState("");
@@ -439,7 +442,7 @@ export default function VmsTaxesAdmin() {
                     onClick={() => setSelectedYearPending(null)}
                     className="bg-green-700 hover:bg-green-800 text-white font-bold text-xs px-4 py-2 rounded-xl shadow transition duration-300"
                   >
-                    मागे जा / Back
+                     {lang === "mr" ? "मागे जा" : "Back"}
                   </button>
                 </div>
 
@@ -488,7 +491,7 @@ export default function VmsTaxesAdmin() {
                               }}
                               className="text-xs bg-orange-500 hover:bg-orange-600 text-white font-bold px-3 py-1.5 rounded-lg shadow whitespace-nowrap transition duration-300"
                             >
-                              दंड आकारणी / View Ledger & Assign Fine
+                              {lang === "mr" ? "दंड आकारणी" : "View Ledger & Assign Fine"}
                             </button>
                           </td>
                         </tr>
@@ -573,7 +576,7 @@ export default function VmsTaxesAdmin() {
                                         onClick={() => fetchPendingFamilies(yr.year)}
                                         className="text-xs bg-green-700 hover:bg-green-800 text-white font-bold px-3 py-1.5 rounded-lg shadow transition duration-300"
                                       >
-                                        पहा / View List
+                                        {lang === "mr" ? "यादी पहा" : "View List"}
                                       </button>
                                     </td>
                                   </tr>
@@ -1086,7 +1089,7 @@ export default function VmsTaxesAdmin() {
                         onClick={() => setShowFineReasonModal(true)}
                         className="w-full mt-3.5 bg-orange-100 hover:bg-orange-200 text-orange-700 hover:text-orange-850 font-black py-2 rounded-xl text-[10px] transition uppercase tracking-wider flex items-center justify-center gap-1 border border-orange-200"
                       >
-                        📄 दंडाचे कारण पहा / View Fine Reason
+                        📄 {lang === "mr" ? "दंडाचे कारण पहा" : "View Fine Reason"}
                       </button>
                     </div>
                   </div>

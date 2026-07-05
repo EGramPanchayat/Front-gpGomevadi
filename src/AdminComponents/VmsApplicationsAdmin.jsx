@@ -1,23 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axioesInstance from "../utils/axioesInstance";
+import { useLanguage } from "../utils/LanguageContext";
+import { getCertificateTypeName } from "../utils/translations";
 
-const detailsLabels = {
-  whatsappNo: "WhatsApp क्रमांक (WhatsApp No)",
-  email: "ईमेल (Email)",
-  transactionId: "ट्रेन्झॅक्शन ID (Transaction ID)",
-  dob: "जन्म तारीख (Date of Birth)",
-  childName: "बालकाचे नाव (Child Name)",
-  deathName: "मयत व्यक्तीचे नाव (Deceased Name)",
-  deathDate: "मृत्यू तारीख (Death Date)",
-  coupleName: "पती-पत्नीचे नाव (Couple Name)",
-  marriageYear: "लग्नाचे वर्ष (Marriage Year)",
-  propertyNo: "मालमत्ता क्रमांक (Property/Tax ID No)",
-  certificateName: "दाखला नाव (Certificate Name)",
-  niradharName: "निराधार व्यक्तीचे नाव (Destitute Name)",
+const DETAILS_LABELS = {
+  whatsappNo: { mr: "व्हॉट्सँप क्रमांक", en: "WhatsApp No" },
+  email: { mr: "ईमेल", en: "Email" },
+  transactionId: { mr: "व्यवहार ID", en: "Transaction ID" },
+  dob: { mr: "जन्म तारीख", en: "Date of Birth" },
+  childName: { mr: "बालकाचे नाव", en: "Child Name" },
+  deathName: { mr: "मयत व्यक्तीचे नाव", en: "Deceased Name" },
+  deathDate: { mr: "मृत्यू तारीख", en: "Death Date" },
+  coupleName: { mr: "पती-पत्नीचे नाव", en: "Couple Name" },
+  marriageYear: { mr: "लग्नाचे वर्ष", en: "Marriage Year" },
+  propertyNo: { mr: "मालमत्ता क्रमांक", en: "Property / Tax ID No" },
+  certificateName: { mr: "दाखला नाव", en: "Certificate Name" },
+  niradharName: { mr: "निराधार व्यक्तीचे नाव", en: "Destitute Name" },
 };
 
 export default function VmsApplicationsAdmin() {
+  const { lang } = useLanguage();
+  const detailLabel = (key) => DETAILS_LABELS[key]?.[lang] || DETAILS_LABELS[key]?.mr || key;
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedApp, setSelectedApp] = useState(null);
@@ -105,8 +109,12 @@ export default function VmsApplicationsAdmin() {
         <div className="absolute top-1/2 left-[60%] w-16 h-16 bg-yellow-400/30 rounded-full -translate-y-1/2 pointer-events-none z-0"></div>
 
         <div className="relative z-10">
-          <h2 className="text-2xl font-black text-white drop-shadow-md">दाखले मागणी अर्ज (VMS Certificate Requests)</h2>
-          <p className="text-sm text-green-100 font-semibold mt-1">ग्रामपंचायत दाखले अर्ज, पडताळणी, रिमार्क आणि मंजुरी व्यवस्थापन पॅनेल</p>
+          <h2 className="text-2xl font-black text-white drop-shadow-md">
+            {lang === "mr" ? "दाखले मागणी अर्ज" : "Certificate Requests"}
+          </h2>
+          <p className="text-sm text-green-100 font-semibold mt-1">
+            {lang === "mr" ? "ग्रामपंचायत दाखले अर्ज, पडताळणी, रिमार्क आणि मंजुरी व्यवस्थापन पॅनेल" : "Gram Panchayat Certificate Requests, Verification, Remarks & Approval Panel"}
+          </p>
         </div>
 
         {/* TAB CONTROLS */}
@@ -120,7 +128,7 @@ export default function VmsApplicationsAdmin() {
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
-            <span>प्रलंबित अर्ज</span>
+            <span>{lang === "mr" ? "प्रलंबित अर्ज" : "Pending"}</span>
             <span className={`px-2 py-0.5 text-[10px] rounded-full font-black ${
               activeSubTab === "pending" ? "bg-white/20 text-white" : "bg-slate-200/70 text-slate-600"
             }`}>
@@ -136,7 +144,7 @@ export default function VmsApplicationsAdmin() {
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
-            <span>पूर्ण झालेले अर्ज</span>
+            <span>{lang === "mr" ? "पूर्ण झालेले अर्ज" : "Completed"}</span>
             <span className={`px-2 py-0.5 text-[10px] rounded-full font-black ${
               activeSubTab === "completed" ? "bg-white/20 text-white" : "bg-slate-200/70 text-slate-600"
             }`}>
@@ -150,7 +158,7 @@ export default function VmsApplicationsAdmin() {
       {/* APPLICATIONS LIST TABLE (2/3 width) */}
       <div className="lg:col-span-2 bg-white rounded-3xl p-6 shadow-xl border border-green-100">
         <h3 className="text-xl font-bold text-green-700 mb-4 border-b pb-2">
-          अर्ज यादी (Certificate Request Queue)
+          {lang === "mr" ? "अर्ज यादी" : "Certificate Request Queue"}
         </h3>
 
         {loading ? (
@@ -158,20 +166,20 @@ export default function VmsApplicationsAdmin() {
         ) : filteredApps.length === 0 ? (
           <p className="text-center text-gray-500 py-6">
             {activeSubTab === "pending"
-              ? "सध्या कोणताही प्रलंबित अर्ज नाही."
-              : "सध्या कोणताही पूर्ण झालेला अर्ज नाही."}
+              ? (lang === "mr" ? "सध्या कोणताही प्रलंबित अर्ज नाही." : "No pending applications.")
+              : (lang === "mr" ? "सध्या कोणताही पूर्ण झालेला अर्ज नाही." : "No completed applications.")}
           </p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm border-collapse">
               <thead>
                 <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
-                  <th className="p-4 rounded-l-xl">नाव व घर ID</th>
-                  <th className="p-4">दाखला प्रकार</th>
-                  <th className="p-4">अर्ज तारीख</th>
-                  {activeSubTab === "completed" && <th className="p-4">पूर्ण वेळ (Completed At)</th>}
-                  <th className="p-4">स्थिती</th>
-                  <th className="p-4 rounded-r-xl text-center">कृती</th>
+                  <th className="p-4 rounded-l-xl">{lang === "mr" ? "नाव व घर ID" : "Name & House ID"}</th>
+                  <th className="p-4">{lang === "mr" ? "दाखला प्रकार" : "Certificate Type"}</th>
+                  <th className="p-4">{lang === "mr" ? "अर्ज तारीख" : "Application Date"}</th>
+                  {activeSubTab === "completed" && <th className="p-4">{lang === "mr" ? "पूर्ण वेळ" : "Completed At"}</th>}
+                  <th className="p-4">{lang === "mr" ? "स्थिती" : "Status"}</th>
+                  <th className="p-4 rounded-r-xl text-center">{lang === "mr" ? "कृती" : "Action"}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
@@ -182,11 +190,7 @@ export default function VmsApplicationsAdmin() {
                       <span className="text-[10px] text-gray-400 font-mono">ID: {app.familyId}</span>
                     </td>
                     <td className="p-4 capitalize font-bold text-gray-700">
-                      {app.type === "birth" ? "जन्म दाखला" : 
-                       app.type === "death" ? "मृत्यू दाखला" : 
-                       app.type === "income" ? "उत्पन्न दाखला" : 
-                       app.type === "marriage" ? "विवाह दाखला" : 
-                       "रहिवासी दाखला"}
+                      {getCertificateTypeName(app.type, lang)}
                     </td>
                     <td className="p-4 text-gray-500">{new Date(app.createdAt).toLocaleDateString("en-US")}</td>
                     {activeSubTab === "completed" && (
@@ -217,7 +221,7 @@ export default function VmsApplicationsAdmin() {
                         onClick={() => handleOpenDetails(app)}
                         className="bg-green-700 hover:bg-green-800 text-white font-bold px-3 py-1 rounded-xl text-xs shadow"
                       >
-                        पहा / Review
+                        {lang === "mr" ? "पुनरावलोकन" : "Review"}
                       </button>
                     </td>
                   </tr>
@@ -230,23 +234,29 @@ export default function VmsApplicationsAdmin() {
 
       {/* APPLICATION DETAILS & REMARKS (1/3 width) */}
       <div className="bg-white rounded-3xl p-6 shadow-xl border border-green-100">
-        <h3 className="text-xl font-bold text-green-700 mb-4 border-b pb-2">अर्ज पुनरावलोकन (Review details)</h3>
+        <h3 className="text-xl font-bold text-green-700 mb-4 border-b pb-2">
+          {lang === "mr" ? "अर्ज पुनरावलोकन" : "Review Details"}
+        </h3>
         
         {!selectedApp ? (
-          <p className="text-gray-500 text-center py-12 text-sm">तपशील आणि रिमार्क जोडण्यासाठी डाव्या बाजूने अर्ज निवडा.</p>
+          <p className="text-gray-500 text-center py-12 text-sm">
+            {lang === "mr" ? "तपशील आणि रिमार्क जोडण्यासाठी डाव्या बाजूने अर्ज निवडा." : "Select an application from the left to view details and add remarks."}
+          </p>
         ) : (
           <form onSubmit={handleUpdate} className="space-y-4">
             <div className="bg-gray-50 p-4 rounded-2xl border border-green-100 text-sm space-y-2">
-              <p><strong>अर्जदार:</strong> {selectedApp.applicantName}</p>
-              <p className="capitalize"><strong>प्रकार:</strong> {selectedApp.type} Certificate</p>
+              <p><strong>{lang === "mr" ? "अर्जदार:" : "Applicant:"}</strong> {selectedApp.applicantName}</p>
+              <p className="capitalize"><strong>{lang === "mr" ? "प्रकार:" : "Type:"}</strong> {getCertificateTypeName(selectedApp.type, lang)}</p>
               
               {/* Render all submitted details */}
               {selectedApp.details && Object.keys(selectedApp.details).length > 0 && (
                 <div className="mt-3 pt-3 border-t border-gray-200 space-y-1.5">
-                  <p className="font-extrabold text-green-700 text-xs mb-1">अर्ज माहिती (Submitted Details):</p>
+                  <p className="font-extrabold text-green-700 text-xs mb-1">
+                    {lang === "mr" ? "अर्ज माहिती:" : "Submitted Details:"}
+                  </p>
                   {Object.entries(selectedApp.details).map(([key, val]) => {
                     if (!val) return null;
-                    const label = detailsLabels[key] || key;
+                    const label = detailLabel(key);
                     return (
                       <p key={key} className="bg-white p-2 rounded-xl border border-gray-100 text-xs">
                         <strong className="text-gray-600">{label}:</strong> <span className="font-semibold text-gray-800">{val}</span>
@@ -258,23 +268,27 @@ export default function VmsApplicationsAdmin() {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">अर्ज स्थिती (Status)</label>
+              <label className="block text-sm font-bold text-gray-700 mb-1">
+                {lang === "mr" ? "अर्ज स्थिती" : "Status"}
+              </label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
                 className="border border-green-600 p-2 rounded-xl w-full text-sm outline-none font-bold"
               >
-                <option value="pending">प्रलंबित (Pending)</option>
-                <option value="completed">पूर्ण झाले (Completed)</option>
-                <option value="need_documents">कागदपत्रे अपूर्ण (Need Documents)</option>
+                <option value="pending">{lang === "mr" ? "प्रलंबित" : "Pending"}</option>
+                <option value="completed">{lang === "mr" ? "पूर्ण झाले" : "Completed"}</option>
+                <option value="need_documents">{lang === "mr" ? "कागदपत्रे अपूर्ण" : "Need Documents"}</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">अधिकारी शेरा (Remarks / Queries)</label>
+              <label className="block text-sm font-bold text-gray-700 mb-1">
+                {lang === "mr" ? "अधिकारी शेरा" : "Remarks / Queries"}
+              </label>
               <textarea
                 rows={3}
-                placeholder="उदा. रहिवासी दाखल्यासाठी रेशन कार्डची प्रत सादर करा."
+                placeholder={lang === "mr" ? "उदा. रहिवासी दाखल्यासाठी रेशन कार्डची प्रत सादर करा." : "e.g. Please submit ration card copy."}
                 value={remark}
                 onChange={(e) => setRemark(e.target.value)}
                 className="border border-green-600 p-2.5 rounded-xl w-full text-sm outline-none"
@@ -283,7 +297,9 @@ export default function VmsApplicationsAdmin() {
 
             {status === "completed" && (
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1">दाखला पीडीएफ अपलोड करा (Upload Certificate PDF)</label>
+                <label className="block text-sm font-bold text-gray-700 mb-1">
+                  {lang === "mr" ? "दाखला पीडीएफ अपलोड करा" : "Upload Certificate PDF"}
+                </label>
                 <input
                   type="file"
                   key={selectedApp._id}
@@ -292,7 +308,12 @@ export default function VmsApplicationsAdmin() {
                   className="border border-green-600 p-2 rounded-xl w-full text-sm outline-none bg-white font-semibold"
                 />
                 {selectedApp.documentUrl && !pdfFile && (
-                  <p className="text-[11px] text-green-700 mt-1 font-bold">✓ आधीच अपलोड केलेली फाइल: <a href={selectedApp.documentUrl} target="_blank" rel="noreferrer" className="underline">पहा (View)</a></p>
+                  <p className="text-[11px] text-green-700 mt-1 font-bold">
+                    ✓ {lang === "mr" ? "आधीच अपलोड केलेली फाइल:" : "Already uploaded file:"}{" "}
+                    <a href={selectedApp.documentUrl} target="_blank" rel="noreferrer" className="underline">
+                      {lang === "mr" ? "पहा" : "View"}
+                    </a>
+                  </p>
                 )}
               </div>
             )}
@@ -303,14 +324,14 @@ export default function VmsApplicationsAdmin() {
                 disabled={updating}
                 className="flex-1 bg-green-700 hover:bg-green-800 text-white font-bold py-2.5 rounded-xl text-sm transition"
               >
-                {updating ? "Saving..." : "Update Status"}
+                {updating ? (lang === "mr" ? "जतन होत आहे..." : "Saving...") : (lang === "mr" ? "अद्यतनित करा" : "Update Status")}
               </button>
               <button
                 type="button"
                 onClick={() => setSelectedApp(null)}
                 className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2.5 rounded-xl text-sm transition"
               >
-                रद्द करा
+                {lang === "mr" ? "रद्द करा" : "Cancel"}
               </button>
             </div>
           </form>

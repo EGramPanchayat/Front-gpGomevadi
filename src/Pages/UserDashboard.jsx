@@ -3,6 +3,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axioesInstance from "../utils/axioesInstance";
 import { useSiteConfig } from "../utils/SiteConfigContext";
+import { useLanguage } from "../utils/LanguageContext";
 
 const TAX_CATEGORIES = [
   {
@@ -263,6 +264,7 @@ const translations = {
 
 export default function UserDashboard() {
   const { config } = useSiteConfig();
+  const { lang: language, setLang: setLanguage } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [family, setFamily] = useState(null);
   const [bills, setBills] = useState([]);
@@ -274,7 +276,6 @@ export default function UserDashboard() {
   const [editingApplication, setEditingApplication] = useState(null);
   const [showFineModal, setShowFineModal] = useState(false);
   const [selectedFineForModal, setSelectedFineForModal] = useState(null);
-  const [language, setLanguage] = useState(() => localStorage.getItem("lang") || "mr");
   const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem("darkMode") === "true");
 
   // Notifications states
@@ -288,7 +289,7 @@ export default function UserDashboard() {
     forName: "",
     whatsappNo: "",
     email: "",
-    type: "जन्म नोंद",
+    type: "birth",
     dob: "",
     childName: "",
     deathName: "",
@@ -306,10 +307,6 @@ export default function UserDashboard() {
   const [processingId, setProcessingId] = useState(null);
 
   const t = translations[language];
-
-  useEffect(() => {
-    localStorage.setItem("lang", language);
-  }, [language]);
 
   useEffect(() => {
     localStorage.setItem("darkMode", isDarkMode);
@@ -1105,7 +1102,7 @@ export default function UserDashboard() {
                     }}
                     className="w-full mt-3.5 bg-orange-100 hover:bg-orange-200 text-orange-700 font-extrabold py-2 rounded-xl text-[10px] transition uppercase tracking-wider flex items-center justify-center gap-1 border border-orange-200"
                   >
-                    📄 दंडाचे कारण पहा / View Fine Reason
+                    {language === "mr" ? "📄 दंडाचे कारण पहा" : "📄 View Fine Reason"}
                   </button>
                 )}
               </article>
@@ -1798,7 +1795,7 @@ export default function UserDashboard() {
                 <h3 className={`text-lg font-black mb-4 pb-2 border-b-2 transition-colors duration-300 ${isDarkMode ? "border-emerald-800/80 text-emerald-400" : "border-emerald-700 text-emerald-700"
                   }`}>
                   {editingApplication 
-                    ? (language === "mr" ? "अर्ज दुरुस्ती करा (Edit Application)" : "Edit Application Details")
+                    ? (language === "mr" ? "अर्ज दुरुस्ती करा" : "Edit Application Details")
                     : t.applyCertificate}
                 </h3>
                 <form onSubmit={handleApplyCertificate} className="space-y-4">
@@ -1813,13 +1810,13 @@ export default function UserDashboard() {
                       } ${isDarkMode ? "bg-slate-900 border-slate-700 text-white" : "border-green-600 text-gray-800"
                         }`}
                     >
-                      <option value="जन्म नोंद">{t.birthReg}</option>
-                      <option value="मृत्यू नोंद">{t.deathReg}</option>
-                      <option value="विवाह नोंदणी दाखला">{t.marriageReg}</option>
-                      <option value="८ अ उतारा">{t.transcript8a}</option>
-                      <option value="ग्रामपंचायत येणे बाकी दाखला">{t.noDuesReg}</option>
-                      <option value="दारिद्र्य रेषेखाली असल्याचा दाखला">{t.bplReg}</option>
-                      <option value="निराधार असल्याचा दाखला मागणी">{t.destituteReg}</option>
+                      <option value="birth">{t.birthReg}</option>
+                      <option value="death">{t.deathReg}</option>
+                      <option value="marriage">{t.marriageReg}</option>
+                      <option value="8a">{t.transcript8a}</option>
+                      <option value="nodues">{t.noDuesReg}</option>
+                      <option value="bpl">{t.bplReg}</option>
+                      <option value="destitute">{t.destituteReg}</option>
                     </select>
                   </div>
 
@@ -1863,7 +1860,7 @@ export default function UserDashboard() {
                   </div>
 
                   {/* DYNAMIC FORMS STACK */}
-                  {form.type === "जन्म नोंद" && (
+                  {form.type === "birth" && (
                     <div className={`p-4 rounded-2xl border space-y-3 ${isDarkMode ? "bg-slate-950 border-slate-800" : "bg-green-50/50 border-green-100"
                       }`}>
                       <p className="text-xs font-extrabold text-green-700 uppercase">👶 {t.birthReg}</p>
@@ -1892,7 +1889,7 @@ export default function UserDashboard() {
                     </div>
                   )}
 
-                  {form.type === "मृत्यू नोंद" && (
+                  {form.type === "death" && (
                     <div className={`p-4 rounded-2xl border space-y-3 ${isDarkMode ? "bg-slate-950 border-slate-800" : "bg-green-50/50 border-green-100"
                       }`}>
                       <p className="text-[10px] font-bold text-green-700 uppercase">🪦 {t.deathReg}</p>
@@ -1921,7 +1918,7 @@ export default function UserDashboard() {
                     </div>
                   )}
 
-                  {form.type === "विवाह नोंदणी दाखला" && (
+                  {form.type === "marriage" && (
                     <div className={`p-4 rounded-2xl border space-y-3 ${isDarkMode ? "bg-slate-950 border-slate-800" : "bg-green-50/50 border-green-100"
                       }`}>
                       <p className="text-[10px] font-bold text-green-700 uppercase">💍 {t.marriageReg}</p>
@@ -1952,7 +1949,7 @@ export default function UserDashboard() {
                     </div>
                   )}
 
-                  {form.type === "८ अ उतारा" && (
+                  {form.type === "8a" && (
                     <div className={`p-4 rounded-2xl border space-y-3 ${isDarkMode ? "bg-slate-950 border-slate-800" : "bg-green-50/50 border-green-100"
                       }`}>
                       <p className="text-[10px] font-bold text-green-700 uppercase">📄 {t.transcript8a}</p>
@@ -1971,7 +1968,7 @@ export default function UserDashboard() {
                     </div>
                   )}
 
-                  {form.type === "निराधार असल्याचा दाखला मागणी" && (
+                  {form.type === "destitute" && (
                     <div className={`p-4 rounded-2xl border space-y-3 ${isDarkMode ? "bg-slate-950 border-slate-800" : "bg-green-50/50 border-green-100"
                       }`}>
                       <p className="text-[10px] font-bold text-green-700 uppercase">🤝 {t.destituteReg}</p>
@@ -1989,7 +1986,7 @@ export default function UserDashboard() {
                     </div>
                   )}
 
-                  {(form.type === "दारिद्र्य रेषेखाली असल्याचा दाखला" || form.type === "ग्रामपंचायत येणे बाकी दाखला") && (
+                  {(form.type === "bpl" || form.type === "nodues") && (
                     <div className={`p-4 rounded-2xl border space-y-3 ${isDarkMode ? "bg-slate-950 border-slate-800" : "bg-green-50/50 border-green-100"
                       }`}>
                       <p className="text-[10px] font-bold text-green-700 uppercase">📑 {t.selectType}</p>
@@ -2016,7 +2013,7 @@ export default function UserDashboard() {
                     {!submittingApp && !editingApplication && ['à¤œà¤¨à¥ à¤® à¤¨à¥‹à¤‚à¤¦', 'à¤®à¥ƒà¤¤à¥ à¤¯à¥‚ à¤¨à¥‹à¤‚à¤¦', 'à¤µà¤¿à¤µà¤¾à¤¹ à¤¨à¥‹à¤‚à¤¦à¤£à¥€ à¤¦à¤¾à¤–à¤²à¤¾', 'à¥® à¤… à¤‰à¤¤à¤¾à¤°à¤¾', 'à¤—à¥ à¤°à¤¾à¤®à¤ªà¤‚à¤šà¤¾à¤¯à¤¤ à¤¯à¥‡à¤£à¥‡ à¤¬à¤¾à¤•à¥€ à¤¦à¤¾à¤–à¤²à¤¾'].includes(form.type) && <RazorpayMark />}
                     {submittingApp 
                       ? (editingApplication ? (language === "mr" ? "अद्ययावत होत आहे..." : "Updating...") : t.submitting) 
-                      : (editingApplication ? (language === "mr" ? "बदल जतन करा / Save" : "Save Changes") : ['जन्म नोंद', 'मृत्यू नोंद', 'विवाह नोंदणी दाखला', '८ अ उतारा', 'ग्रामपंचायत येणे बाकी दाखला'].includes(form.type) ? t.submitPay : t.submitFree)}
+                      : (editingApplication ? (language === "mr" ? "बदल जतन करा" : "Save Changes") : ['birth', 'death', 'marriage', '8a', 'nodues'].includes(form.type) ? t.submitPay : t.submitFree)}
                   </button>
                   {editingApplication && (
                     <button
@@ -2024,7 +2021,7 @@ export default function UserDashboard() {
                       onClick={cancelEditing}
                       className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition mt-2 border"
                     >
-                      {language === "mr" ? "रद्द करा / Cancel" : "Cancel Edit"}
+                      {language === "mr" ? "रद्द करा" : "Cancel"}
                     </button>
                   )}
                 </form>
