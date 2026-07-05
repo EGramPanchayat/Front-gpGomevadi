@@ -102,16 +102,30 @@ export default function AdminDashboard() {
           }`}>
           <div className="space-y-8">
 
-            {/* LOGO */}
-            <div className={`flex items-center gap-3 border-b pb-4 ${isDarkMode ? "border-slate-800" : "border-green-800"}`}>
-              <img
-                src="/images/satyamev.jpg"
-                alt="Logo"
-                className="h-12 w-12 rounded-full object-cover border-2 border-white shadow"
-              />
-              <div>
-                <h2 className="font-bold text-lg leading-tight">गोमेवाडी GP</h2>
-                <span className={`text-xs ${isDarkMode ? "text-slate-400" : "text-white/60"}`}>प्रशासकीय डॅशबोर्ड</span>
+            <div className={`flex flex-col border-b pb-4 gap-3 ${isDarkMode ? "border-slate-800" : "border-green-800"}`}>
+              {/* Row for Logo Circle + Grampanchayat Name */}
+              {(() => {
+                const gpVillageName = config?.gpName ? config.gpName.replace(/ग्रामपंचायत/g, "").trim() : "गोमेवाडी";
+                return (
+                  <div className="flex items-center gap-3">
+                    <img
+                      src="/images/satyamev.jpg"
+                      alt="Logo"
+                      className="h-14 w-14 rounded-full object-cover border-2 border-white shadow shrink-0"
+                    />
+                    <div className="min-w-0">
+                      <h2 className="font-black text-[17px] leading-tight text-white tracking-wide">ग्रामपंचायत</h2>
+                      <h3 className="font-black text-[17px] leading-tight text-white mt-0.5 tracking-wide">{gpVillageName}</h3>
+                    </div>
+                  </div>
+                );
+              })()}
+              
+              {/* Full width bottom info: Tal & Dist dynamic in Marathi */}
+              <div className="flex justify-between items-center text-xs font-black text-gray-100 mt-1">
+                <span>ता. {config?.taluka || "आटपाडी"}</span>
+                <span>जि. {config?.district || "सांगली"}</span>
+                <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider ${isDarkMode ? "bg-slate-800 text-green-400 border border-slate-700" : "bg-white/10 text-orange-300 border border-white/10"}`}>Admin</span>
               </div>
             </div>
 
@@ -122,7 +136,7 @@ export default function AdminDashboard() {
               ))}
 
               <div className={`border-t my-2 pt-2 text-[10px] font-bold tracking-wider uppercase ${isDarkMode ? "border-slate-800 text-slate-500" : "border-green-800 text-green-400"}`}>
-                VMS — कुटुंब व कर
+                कुटुंब व कर
               </div>
 
               {vmsItems.map((item) => (

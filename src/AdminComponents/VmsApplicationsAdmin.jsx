@@ -48,11 +48,14 @@ export default function VmsApplicationsAdmin() {
     fetchApplications();
   }, []);
 
+  const [pdfFile, setPdfFile] = useState(null);
+
   const handleOpenDetails = (app) => {
     setSelectedApp(app);
     setStatus(app.status);
     setRemark(app.remark || "");
     setDocumentUrl(app.documentUrl || "");
+    setPdfFile(null);
   };
 
   const handleUpdate = async (e) => {
@@ -61,13 +64,23 @@ export default function VmsApplicationsAdmin() {
 
     setUpdating(true);
     try {
-      await axioesInstance.post(`/admin/applications/${selectedApp._id}/status`, {
-        status,
-        remark,
-        documentUrl,
+      const formData = new FormData();
+      formData.append("status", status);
+      formData.append("remark", remark);
+      if (pdfFile) {
+        formData.append("pdfFile", pdfFile);
+      } else {
+        formData.append("documentUrl", documentUrl);
+      }
+
+      await axioesInstance.post(`/admin/applications/${selectedApp._id}/status`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       toast.success("Application details updated!");
       setSelectedApp(null);
+      setPdfFile(null);
       fetchApplications();
     } catch (err) {
       toast.error("Error while updating");
@@ -258,7 +271,7 @@ export default function VmsApplicationsAdmin() {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">अधिकारी रिमार्क (Remarks / Queries)</label>
+              <label className="block text-sm font-bold text-gray-700 mb-1">अधिकारी शेरा (Remarks / Queries)</label>
               <textarea
                 rows={3}
                 placeholder="उदा. रहिवासी दाखल्यासाठी रेशन कार्डची प्रत सादर करा."
@@ -268,16 +281,21 @@ export default function VmsApplicationsAdmin() {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">दाखला लिंक / URL (Certificate File URL)</label>
-              <input
-                type="text"
-                placeholder="उदा. https://drive.google.com/..."
-                value={documentUrl}
-                onChange={(e) => setDocumentUrl(e.target.value)}
-                className="border border-green-600 p-2.5 rounded-xl w-full text-sm outline-none"
-              />
-            </div>
+            {status === "completed" && (
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1">दाखला पीडीएफ अपलोड करा (Upload Certificate PDF)</label>
+                <input
+                  type="file"
+                  key={selectedApp._id}
+                  accept=".pdf,application/pdf"
+                  onChange={(e) => setPdfFile(e.target.files[0])}
+                  className="border border-green-600 p-2 rounded-xl w-full text-sm outline-none bg-white font-semibold"
+                />
+                {selectedApp.documentUrl && !pdfFile && (
+                  <p className="text-[11px] text-green-700 mt-1 font-bold">✓ आधीच अपलोड केलेली फाइल: <a href={selectedApp.documentUrl} target="_blank" rel="noreferrer" className="underline">पहा (View)</a></p>
+                )}
+              </div>
+            )}
 
             <div className="flex gap-2">
               <button

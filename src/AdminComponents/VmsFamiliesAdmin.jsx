@@ -15,16 +15,19 @@ export default function VmsFamiliesAdmin() {
   const [families, setFamilies] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Switch tabs: "search" or "add"
+  // Switch tabs: "search" or "add" or "all"
   const [activeTab, setActiveTab] = useState("search");
 
   // Search states
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedFamily, setSelectedFamily] = useState(null);
   const [familyTaxes, setFamilyTaxes] = useState(null);
   const [familyApps, setFamilyApps] = useState([]);
   const [loadingTaxes, setLoadingTaxes] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [showQrModal, setShowQrModal] = useState(false);
+  const [selectedFamilyForQr, setSelectedFamilyForQr] = useState(null);
 
   // Form states
   const [familyId, setFamilyId] = useState("");
@@ -213,8 +216,37 @@ export default function VmsFamiliesAdmin() {
         );
       });
 
+  // Pagination for all families view
+  const itemsPerPage = 15;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = latestFamilies.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(latestFamilies.length / itemsPerPage);
+
   return (
     <div className="space-y-8">
+      <style>{`
+        .custom-sass-scrollbar::-webkit-scrollbar {
+          width: 5px;
+          height: 5px;
+        }
+        .custom-sass-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-sass-scrollbar::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 9999px;
+        }
+        .custom-sass-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #94a3b8;
+        }
+        .dark .custom-sass-scrollbar::-webkit-scrollbar-thumb {
+          background: #334155;
+        }
+        .dark .custom-sass-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #475569;
+        }
+      `}</style>
       {/* HEADER SECTION */}
       <div className="relative overflow-hidden bg-green-900 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="absolute -top-20 -right-20 w-72 h-72 bg-emerald-600/30 rounded-full pointer-events-none z-0"></div>
@@ -227,20 +259,35 @@ export default function VmsFamiliesAdmin() {
         </div>
 
         {/* TAB CONTROLS */}
-        <div className="relative z-10 flex bg-slate-100 p-1.5 rounded-2xl gap-1 shrink-0 w-full md:w-auto">
+        <div className="relative z-10 flex bg-slate-100 p-1.5 rounded-2xl gap-1 shrink-0 w-full md:w-auto overflow-x-auto">
           <button
             type="button"
             onClick={() => {
               setActiveTab("search");
               setSelectedFamily(null);
             }}
-            className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl font-bold text-xs transition ${
+            className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl font-bold text-xs transition whitespace-nowrap ${
               activeTab === "search"
                 ? "bg-green-700 text-white shadow-md"
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
-            कुटुंब शोधा व व्यवस्थापन
+            कुटुंब व्यवस्थापन
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setActiveTab("all");
+              setSelectedFamily(null);
+              setCurrentPage(1);
+            }}
+            className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl font-bold text-xs transition whitespace-nowrap ${
+              activeTab === "all"
+                ? "bg-green-700 text-white shadow-md"
+                : "text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            सर्व कुटुंब यादी
           </button>
           <button
             type="button"
@@ -248,7 +295,7 @@ export default function VmsFamiliesAdmin() {
               setActiveTab("add");
               setSelectedFamily(null);
             }}
-            className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl font-bold text-xs transition ${
+            className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl font-bold text-xs transition whitespace-nowrap ${
               activeTab === "add"
                 ? "bg-green-700 text-white shadow-md"
                 : "text-slate-600 hover:text-slate-900"
@@ -260,145 +307,147 @@ export default function VmsFamiliesAdmin() {
       </div>
 
       {/* 1. STATS METADATA GRID - SAAS Upgrade */}
-      <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-        {/* Total Families */}
-        <div className="relative overflow-hidden bg-white p-5 rounded-3xl border border-green-100 text-left shadow-xl hover:scale-[1.02] transition-all duration-300 group">
-          {/* Decorative Circles */}
-          <div className="absolute -right-6 -bottom-6 w-20 h-20 bg-green-500/5 rounded-full blur-xl pointer-events-none group-hover:scale-150 transition-transform duration-500" />
-          <div className="absolute -left-4 -top-4 w-12 h-12 bg-green-300/10 rounded-full blur-md pointer-events-none" />
-          
-          <div className="relative z-10">
-            <div className="flex justify-between items-start mb-3">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">एकूण कुटुंबे</p>
-              <div className="p-1.5 rounded-lg bg-green-50 text-green-600 group-hover:bg-green-100 transition-colors">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
+      {activeTab === "search" && selectedFamily === null && (
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+          {/* Total Families */}
+          <div className="relative overflow-hidden bg-white p-5 rounded-3xl border border-green-100 text-left shadow-xl hover:scale-[1.02] transition-all duration-300 group">
+            {/* Decorative Circles */}
+            <div className="absolute -top-3 -right-3 w-8 h-8 bg-green-500/10 rounded-full pointer-events-none" />
+            <div className="absolute -bottom-6 -left-6 w-16 h-16 bg-green-500/5 rounded-full pointer-events-none" />
+            
+            <div className="relative z-10">
+              <div className="flex justify-between items-start mb-3">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">एकूण कुटुंबे</p>
+                <div className="p-1.5 rounded-lg bg-green-50 text-green-600 group-hover:bg-green-100 transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                  </svg>
+                </div>
               </div>
+              <p className="text-2xl font-black text-green-700 tracking-tight">{families.length}</p>
+              <p className="text-[9px] text-slate-400 mt-1 font-bold">Households</p>
             </div>
-            <p className="text-2xl font-black text-slate-800 tracking-tight">{families.length}</p>
-            <p className="text-[9px] text-slate-400 mt-1 font-bold">Households</p>
+          </div>
+
+          {/* Total Population */}
+          <div className="relative overflow-hidden bg-white p-5 rounded-3xl border border-blue-100 text-left shadow-xl hover:scale-[1.02] transition-all duration-300 group">
+            {/* Decorative Circles */}
+            <div className="absolute -right-6 -bottom-6 w-20 h-20 bg-blue-500/10 rounded-full pointer-events-none" />
+            <div className="absolute -left-4 -top-4 w-12 h-12 bg-blue-300/10 rounded-full pointer-events-none" />
+
+            <div className="relative z-10">
+              <div className="flex justify-between items-start mb-3">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">एकूण लोकसंख्या</p>
+                <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 group-hover:bg-blue-100 transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+              </div>
+              <p className="text-2xl font-black text-green-700 tracking-tight">
+                {families.reduce(
+                  (acc, f) =>
+                    acc +
+                    (f.menCount || 0) +
+                    (f.womenCount || 0) +
+                    (f.seniorCount || 0) +
+                    (f.childrenCount || 0),
+                  0
+                )}
+              </p>
+              <p className="text-[9px] text-slate-400 mt-1 font-bold">Total Population</p>
+            </div>
+          </div>
+
+          {/* Total Men */}
+          <div className="relative overflow-hidden bg-white p-5 rounded-3xl border border-teal-100 text-left shadow-xl hover:scale-[1.02] transition-all duration-300 group">
+            {/* Decorative Circles */}
+            <div className="absolute -bottom-8 -left-8 w-20 h-20 bg-teal-500/5 rounded-full pointer-events-none" />
+            <div className="absolute top-2 right-12 w-6 h-6 bg-teal-500/10 rounded-full pointer-events-none" />
+
+            <div className="relative z-10">
+              <div className="flex justify-between items-start mb-3">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">एकूण पुरुष</p>
+                <div className="p-1.5 rounded-lg bg-teal-50 text-teal-600 group-hover:bg-teal-100 transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+              </div>
+              <p className="text-2xl font-black text-green-700 tracking-tight">
+                {families.reduce((acc, f) => acc + (f.menCount || 0), 0)}
+              </p>
+              <p className="text-[9px] text-slate-400 mt-1 font-bold">Men</p>
+            </div>
+          </div>
+
+          {/* Total Women */}
+          <div className="relative overflow-hidden bg-white p-5 rounded-3xl border border-rose-100 text-left shadow-xl hover:scale-[1.02] transition-all duration-300 group">
+            {/* Decorative Circles */}
+            <div className="absolute -top-2 -left-2 w-10 h-10 bg-rose-500/10 rounded-full pointer-events-none" />
+            <div className="absolute -bottom-6 -right-6 w-18 h-18 bg-rose-500/5 rounded-full pointer-events-none" />
+
+            <div className="relative z-10">
+              <div className="flex justify-between items-start mb-3">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">एकूण महिला</p>
+                <div className="p-1.5 rounded-lg bg-rose-50 text-rose-600 group-hover:bg-rose-100 transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+              </div>
+              <p className="text-2xl font-black text-green-700 tracking-tight">
+                {families.reduce((acc, f) => acc + (f.womenCount || 0), 0)}
+              </p>
+              <p className="text-[9px] text-slate-400 mt-1 font-bold">Women</p>
+            </div>
+          </div>
+
+          {/* Seniors */}
+          <div className="relative overflow-hidden bg-white p-5 rounded-3xl border border-amber-100 text-left shadow-xl hover:scale-[1.02] transition-all duration-300 group">
+            {/* Decorative Circles */}
+            <div className="absolute -bottom-2 -left-2 w-8 h-8 bg-amber-500/10 rounded-full pointer-events-none" />
+            <div className="absolute -top-8 -right-8 w-18 h-18 bg-amber-500/5 rounded-full pointer-events-none" />
+
+            <div className="relative z-10">
+              <div className="flex justify-between items-start mb-3">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">ज्येष्ठ नागरिक</p>
+                <div className="p-1.5 rounded-lg bg-amber-50 text-amber-600 group-hover:bg-amber-100 transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+              </div>
+              <p className="text-2xl font-black text-green-700 tracking-tight">
+                {families.reduce((acc, f) => acc + (f.seniorCount || 0), 0)}
+              </p>
+              <p className="text-[9px] text-slate-400 mt-1 font-bold">Seniors (60+)</p>
+            </div>
+          </div>
+
+          {/* Kids */}
+          <div className="relative overflow-hidden bg-white p-5 rounded-3xl border border-purple-100 text-left shadow-xl hover:scale-[1.02] transition-all duration-300 group">
+            {/* Decorative Circles */}
+            <div className="absolute -top-4 -left-4 w-12 h-12 bg-purple-500/10 rounded-full pointer-events-none" />
+            <div className="absolute bottom-4 -right-3 w-6 h-6 bg-purple-500/5 rounded-full pointer-events-none" />
+
+            <div className="relative z-10">
+              <div className="flex justify-between items-start mb-3">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">बालके (0-18)</p>
+                <div className="p-1.5 rounded-lg bg-purple-50 text-purple-600 group-hover:bg-purple-100 transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                  </svg>
+                </div>
+              </div>
+              <p className="text-2xl font-black text-green-700 tracking-tight">
+                {families.reduce((acc, f) => acc + (f.childrenCount || 0), 0)}
+              </p>
+              <p className="text-[9px] text-slate-400 mt-1 font-bold">Children (0-18)</p>
+            </div>
           </div>
         </div>
-
-        {/* Total Population */}
-        <div className="relative overflow-hidden bg-white p-5 rounded-3xl border border-blue-100 text-left shadow-xl hover:scale-[1.02] transition-all duration-300 group">
-          {/* Decorative Circles */}
-          <div className="absolute -right-6 -bottom-6 w-20 h-20 bg-blue-500/5 rounded-full blur-xl pointer-events-none group-hover:scale-150 transition-transform duration-500" />
-          <div className="absolute -left-4 -top-4 w-12 h-12 bg-blue-300/10 rounded-full blur-md pointer-events-none" />
-
-          <div className="relative z-10">
-            <div className="flex justify-between items-start mb-3">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">एकूण लोकसंख्या</p>
-              <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 group-hover:bg-blue-100 transition-colors">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-            </div>
-            <p className="text-2xl font-black text-slate-800 tracking-tight">
-              {families.reduce(
-                (acc, f) =>
-                  acc +
-                  (f.menCount || 0) +
-                  (f.womenCount || 0) +
-                  (f.seniorCount || 0) +
-                  (f.childrenCount || 0),
-                0
-              )}
-            </p>
-            <p className="text-[9px] text-slate-400 mt-1 font-bold">Total Population</p>
-          </div>
-        </div>
-
-        {/* Total Men */}
-        <div className="relative overflow-hidden bg-white p-5 rounded-3xl border border-teal-100 text-left shadow-xl hover:scale-[1.02] transition-all duration-300 group">
-          {/* Decorative Circles */}
-          <div className="absolute -right-6 -bottom-6 w-20 h-20 bg-teal-500/5 rounded-full blur-xl pointer-events-none group-hover:scale-150 transition-transform duration-500" />
-          <div className="absolute -left-4 -top-4 w-12 h-12 bg-teal-300/10 rounded-full blur-md pointer-events-none" />
-
-          <div className="relative z-10">
-            <div className="flex justify-between items-start mb-3">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">एकूण पुरुष</p>
-              <div className="p-1.5 rounded-lg bg-teal-50 text-teal-600 group-hover:bg-teal-100 transition-colors">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </div>
-            </div>
-            <p className="text-2xl font-black text-slate-800 tracking-tight">
-              {families.reduce((acc, f) => acc + (f.menCount || 0), 0)}
-            </p>
-            <p className="text-[9px] text-slate-400 mt-1 font-bold">Men</p>
-          </div>
-        </div>
-
-        {/* Total Women */}
-        <div className="relative overflow-hidden bg-white p-5 rounded-3xl border border-rose-100 text-left shadow-xl hover:scale-[1.02] transition-all duration-300 group">
-          {/* Decorative Circles */}
-          <div className="absolute -right-6 -bottom-6 w-20 h-20 bg-rose-500/5 rounded-full blur-xl pointer-events-none group-hover:scale-150 transition-transform duration-500" />
-          <div className="absolute -left-4 -top-4 w-12 h-12 bg-rose-300/10 rounded-full blur-md pointer-events-none" />
-
-          <div className="relative z-10">
-            <div className="flex justify-between items-start mb-3">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">एकूण महिला</p>
-              <div className="p-1.5 rounded-lg bg-rose-50 text-rose-600 group-hover:bg-rose-100 transition-colors">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </div>
-            </div>
-            <p className="text-2xl font-black text-slate-800 tracking-tight">
-              {families.reduce((acc, f) => acc + (f.womenCount || 0), 0)}
-            </p>
-            <p className="text-[9px] text-slate-400 mt-1 font-bold">Women</p>
-          </div>
-        </div>
-
-        {/* Seniors */}
-        <div className="relative overflow-hidden bg-white p-5 rounded-3xl border border-amber-100 text-left shadow-xl hover:scale-[1.02] transition-all duration-300 group">
-          {/* Decorative Circles */}
-          <div className="absolute -right-6 -bottom-6 w-20 h-20 bg-amber-500/5 rounded-full blur-xl pointer-events-none group-hover:scale-150 transition-transform duration-500" />
-          <div className="absolute -left-4 -top-4 w-12 h-12 bg-amber-300/10 rounded-full blur-md pointer-events-none" />
-
-          <div className="relative z-10">
-            <div className="flex justify-between items-start mb-3">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">ज्येष्ठ नागरिक</p>
-              <div className="p-1.5 rounded-lg bg-amber-50 text-amber-600 group-hover:bg-amber-100 transition-colors">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-              </div>
-            </div>
-            <p className="text-2xl font-black text-slate-800 tracking-tight">
-              {families.reduce((acc, f) => acc + (f.seniorCount || 0), 0)}
-            </p>
-            <p className="text-[9px] text-slate-400 mt-1 font-bold">Seniors (60+)</p>
-          </div>
-        </div>
-
-        {/* Kids */}
-        <div className="relative overflow-hidden bg-white p-5 rounded-3xl border border-purple-100 text-left shadow-xl hover:scale-[1.02] transition-all duration-300 group">
-          {/* Decorative Circles */}
-          <div className="absolute -right-6 -bottom-6 w-20 h-20 bg-purple-500/5 rounded-full blur-xl pointer-events-none group-hover:scale-150 transition-transform duration-500" />
-          <div className="absolute -left-4 -top-4 w-12 h-12 bg-purple-300/10 rounded-full blur-md pointer-events-none" />
-
-          <div className="relative z-10">
-            <div className="flex justify-between items-start mb-3">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">बालके (0-18)</p>
-              <div className="p-1.5 rounded-lg bg-purple-50 text-purple-600 group-hover:bg-purple-100 transition-colors">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                </svg>
-              </div>
-            </div>
-            <p className="text-2xl font-black text-slate-800 tracking-tight">
-              {families.reduce((acc, f) => acc + (f.childrenCount || 0), 0)}
-            </p>
-            <p className="text-[9px] text-slate-400 mt-1 font-bold">Children (0-18)</p>
-          </div>
-        </div>
-      </div>
+      )}
 
       {/* 2. SEARCH & SHOW DETAILS TAB */}
       {activeTab === "search" && (
@@ -415,9 +464,9 @@ export default function VmsFamiliesAdmin() {
                     setFamilyTaxes(null);
                     setFamilyApps([]);
                   }}
-                  className="flex items-center gap-2 text-slate-700 hover:text-slate-900 bg-white border border-slate-300 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow-sm transition hover:shadow"
+                  className="flex items-center gap-2 text-white bg-orange-600 hover:bg-orange-700 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow-md transition-all duration-205 hover:-translate-y-0.5"
                 >
-                  ← कुटुंबांची यादी (Back to Families list)
+                  ← मागे जा / Back to Search
                 </button>
                 <div className="text-right">
                   <h4 className="font-extrabold text-sm md:text-base text-slate-800 leading-tight">
@@ -639,7 +688,7 @@ export default function VmsFamiliesAdmin() {
                         {familyTaxes.bills?.length > 0 && (
                           <div>
                             <p className="text-[10px] font-black text-slate-400 mb-2.5 uppercase tracking-wider">कर आकारणी बिले (Assigned Tax Bills)</p>
-                            <div className="overflow-x-auto border border-slate-150 rounded-2xl">
+                            <div className="overflow-x-auto border border-slate-150 rounded-2xl max-h-[240px] overflow-y-auto pr-1 custom-sass-scrollbar">
                               <table className="w-full text-left text-xs border-collapse">
                                 <thead>
                                   <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-150">
@@ -685,7 +734,7 @@ export default function VmsFamiliesAdmin() {
                         {familyTaxes.payments?.length > 0 && (
                           <div>
                             <p className="text-[10px] font-black text-slate-400 mb-2.5 uppercase tracking-wider">भरणा इतिहास (Receipt History)</p>
-                            <div className="overflow-x-auto border border-slate-150 rounded-2xl">
+                            <div className="overflow-x-auto border border-slate-150 rounded-2xl max-h-[240px] overflow-y-auto pr-1 custom-sass-scrollbar">
                               <table className="w-full text-left text-xs border-collapse">
                                 <thead>
                                   <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-150">
@@ -731,7 +780,7 @@ export default function VmsFamiliesAdmin() {
                     ) : !familyApps || !familyApps.length ? (
                       <p className="text-slate-500 text-center py-6 text-sm">या कुटुंबासाठी कोणताही दाखला अर्ज मिळालेला नाही.</p>
                     ) : (
-                      <div className="overflow-x-auto border border-slate-150 rounded-2xl">
+                      <div className="overflow-x-auto border border-slate-150 rounded-2xl max-h-[240px] overflow-y-auto pr-1 custom-sass-scrollbar">
                         <table className="w-full text-left text-xs border-collapse">
                           <thead>
                             <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-150">
@@ -836,13 +885,7 @@ export default function VmsFamiliesAdmin() {
               ) : filteredFamilies.length === 0 ? (
                 <p className="text-center text-slate-400 py-6 text-sm">शोधलेले कुटुंब सापडले नाही.</p>
               ) : (
-                <div className="overflow-x-auto">
-                  {searchQuery.trim() === "" && (
-                    <p className="text-[10px] text-orange-700 font-extrabold mb-3 bg-orange-50/60 p-2.5 rounded-xl border border-orange-150/40 inline-flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-                      नुकतीच नोंदणीकृत झालेली कुटुंबे (Showing latest 3 registered households):
-                    </p>
-                  )}
+                <div className="overflow-x-auto space-y-4">
                   <table className="w-full text-left text-sm border-collapse">
                     <thead>
                       <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100 text-xs">
@@ -887,6 +930,16 @@ export default function VmsFamiliesAdmin() {
                             </button>
                             <button
                               type="button"
+                              onClick={() => {
+                                setSelectedFamilyForQr(f);
+                                setShowQrModal(true);
+                              }}
+                              className="border border-orange-500 text-orange-655 hover:bg-orange-500 hover:text-white font-extrabold px-3.5 py-2 rounded-xl text-xs shadow-sm transition-all duration-200 hover:-translate-y-0.5 flex items-center gap-1"
+                            >
+                              QR कोड
+                            </button>
+                            <button
+                              type="button"
                               onClick={() => handleDelete(f._id)}
                               className="border border-red-200 text-red-650 hover:bg-red-500 hover:text-white font-extrabold px-3 py-1.5 rounded-xl text-xs transition-all duration-200 hover:-translate-y-0.5"
                             >
@@ -897,6 +950,24 @@ export default function VmsFamiliesAdmin() {
                       ))}
                     </tbody>
                   </table>
+
+                  {searchQuery.trim() === "" && (
+                    <div className="pt-4 border-t border-slate-100 flex justify-center">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveTab("all");
+                          setCurrentPage(1);
+                        }}
+                        className="bg-green-700 hover:bg-green-800 text-white font-extrabold px-6 py-3 rounded-xl text-xs shadow-md transition-all duration-200 hover:-translate-y-0.5 inline-flex items-center gap-2"
+                      >
+                        <span>सर्व नोंदणीकृत कुटुंबे पहा / View All Families</span>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -1035,6 +1106,231 @@ export default function VmsFamiliesAdmin() {
               </button>
             </div>
           </form>
+        </div>
+      )}
+
+      {/* 3. ALL FAMILIES TAB */}
+      {activeTab === "all" && (
+        <div className="bg-white rounded-3xl p-6 shadow-xl border border-green-50 animate-fadeIn space-y-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-4">
+            <div>
+              <h3 className="text-lg font-black text-slate-800 tracking-tight">
+                सर्व नोंदणीकृत कुटुंबे (All Registered Households)
+              </h3>
+              <p className="text-xs text-slate-400 mt-1">
+                ग्रामपंचायतीमध्ये नोंदणीकृत असलेली सर्व कुटुंबे आणि सदस्यांची यादी
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab("search");
+                setSearchQuery("");
+              }}
+              className="flex items-center gap-2 text-white bg-orange-600 hover:bg-orange-700 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow-md transition-all duration-205 hover:-translate-y-0.5"
+            >
+              ← मागे जा / Back to Search
+            </button>
+          </div>
+
+          {loading ? (
+            <div className="text-center py-10 text-sm text-slate-400">लोड होत आहे...</div>
+          ) : latestFamilies.length === 0 ? (
+            <p className="text-center text-slate-400 py-10 text-sm">कोणतेही नोंदणीकृत कुटुंब आढळले नाही.</p>
+          ) : (
+            <>
+              <div className="overflow-x-auto border border-slate-100 rounded-2xl">
+                <table className="w-full text-left text-sm border-collapse">
+                  <thead>
+                    <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100 text-xs">
+                      <th className="p-4 rounded-l-xl">कुटुंब ID</th>
+                      <th className="p-4">कुटुंब प्रमुख (Head Name)</th>
+                      <th className="p-4">मोबाईल</th>
+                      <th className="p-4">व्हॉट्सॲप</th>
+                      <th className="p-4 text-center">सदस्य संख्या (M / F / S / C)</th>
+                      <th className="p-4 rounded-r-xl text-center">क्रिया</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {currentItems.map((f) => (
+                      <tr key={f._id} className="hover:bg-slate-50/40 transition">
+                        <td className="p-4 font-mono font-black text-xs text-green-700">{f.familyId}</td>
+                        <td className="p-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8.5 h-8.5 rounded-full bg-green-50 text-green-700 font-black text-xs flex items-center justify-center border border-green-150/30 shadow-inner select-none">
+                              {f.mainMemberName ? f.mainMemberName.charAt(0) : "U"}
+                            </div>
+                            <div>
+                              <p className="text-slate-800 font-extrabold text-sm leading-snug">{f.mainMemberName}</p>
+                              <span className="text-[9px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-500 font-bold">घर क्र: {f.houseNumber}</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-4 font-mono text-slate-500 text-xs">{f.mobileNumber}</td>
+                        <td className="p-4 font-mono text-slate-500 text-xs">{f.whatsappNumber || "—"}</td>
+                        <td className="p-4 text-center">
+                          <div className="inline-flex flex-col items-center">
+                            <span className="bg-green-50 text-green-700 px-2.5 py-0.5 rounded-full text-xs font-black border border-green-100">
+                              {(f.menCount || 0) + (f.womenCount || 0) + (f.seniorCount || 0) + (f.childrenCount || 0)}
+                            </span>
+                            <span className="text-[9px] text-slate-400 mt-1 font-semibold">
+                              {f.menCount || 0}पु / {f.womenCount || 0}म / {f.seniorCount || 0}व्य / {f.childrenCount || 0}बा
+                            </span>
+                          </div>
+                        </td>
+                        <td className="p-4 flex gap-2 justify-center">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setActiveTab("search");
+                              handleSelectFamily(f);
+                            }}
+                            className="border border-green-600 text-green-700 hover:bg-green-700 hover:text-white font-extrabold px-3 py-1.5 rounded-xl text-xs shadow-sm transition-all duration-200 hover:-translate-y-0.5"
+                          >
+                            पहा / Profile
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedFamilyForQr(f);
+                              setShowQrModal(true);
+                            }}
+                            className="border border-orange-500 text-orange-655 hover:bg-orange-500 hover:text-white font-extrabold px-3 py-1.5 rounded-xl text-xs shadow-sm transition-all duration-200 hover:-translate-y-0.5 flex items-center gap-1"
+                          >
+                            QR कोड
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* PAGINATION CONTROLS */}
+              {totalPages > 1 && (
+                <div className="flex justify-between items-center pt-4 border-t border-slate-100">
+                  <p className="text-xs text-slate-500 font-bold">
+                    एकूण {latestFamilies.length} पैकी {indexOfFirstItem + 1} ते {Math.min(indexOfLastItem, latestFamilies.length)} कुटुंबे दर्शवत आहे
+                  </p>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                      className="px-3.5 py-2 rounded-xl text-xs font-extrabold border border-slate-200 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    >
+                      ← पूर्वी
+                    </button>
+                    {Array.from({ length: totalPages }).map((_, index) => {
+                      const pageNum = index + 1;
+                      if (totalPages > 6 && Math.abs(pageNum - currentPage) > 2 && pageNum !== 1 && pageNum !== totalPages) {
+                        if (pageNum === 2 || pageNum === totalPages - 1) {
+                          return <span key={pageNum} className="px-2 py-1 text-slate-400 text-xs">...</span>;
+                        }
+                        return null;
+                      }
+                      return (
+                        <button
+                          key={pageNum}
+                          type="button"
+                          onClick={() => setCurrentPage(pageNum)}
+                          className={`w-9 h-9 rounded-xl text-xs font-black transition ${
+                            currentPage === pageNum
+                              ? "bg-green-700 text-white shadow-md"
+                              : "border border-slate-200 hover:bg-slate-50 text-slate-700"
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    })}
+                    <button
+                      type="button"
+                      disabled={currentPage === totalPages}
+                      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                      className="px-3.5 py-2 rounded-xl text-xs font-extrabold border border-slate-200 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    >
+                      पुढील →
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
+      {showQrModal && selectedFamilyForQr && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-sm w-full shadow-2xl border border-green-100 animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
+            {/* Green Header */}
+            <div className="bg-green-900 px-6 py-4 flex items-center justify-between text-white border-b border-green-800">
+              <h4 className="text-base font-black tracking-wide flex items-center gap-1.5">
+                <span className="text-lg">📱</span> कुटुंब QR कोड (Family QR)
+              </h4>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowQrModal(false);
+                  setSelectedFamilyForQr(null);
+                }}
+                className="text-white/80 hover:text-white text-2xl font-bold transition leading-none"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="p-6 text-center space-y-5">
+              {/* Family details with orange border */}
+              <div className="bg-orange-50/50 border border-orange-100 rounded-2xl p-4 text-center">
+                <h5 className="font-black text-slate-800 text-sm leading-snug">
+                  {selectedFamilyForQr.mainMemberName}
+                </h5>
+                <p className="text-[10px] font-black text-orange-650 mt-1 tracking-wider uppercase">
+                  कुटुंब ID: {selectedFamilyForQr.familyId} | घर क्र: {selectedFamilyForQr.houseNumber}
+                </p>
+              </div>
+
+              {/* QR Code Container */}
+              <div className="flex flex-col items-center justify-center p-6 bg-slate-50 border border-slate-100 rounded-2xl">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
+                    `${window.location.origin}/login?familyId=${selectedFamilyForQr.familyId}`
+                  )}`}
+                  alt="Family QR Code"
+                  className="w-44 h-44 object-contain shadow-md rounded-xl bg-white p-2.5 border border-slate-200"
+                />
+                <p className="text-[10px] font-black text-green-800 mt-4 tracking-wider uppercase bg-green-50 px-3 py-1 rounded-full border border-green-200">
+                  लॉगिन करण्यासाठी स्कॅन करा (Scan to Login)
+                </p>
+              </div>
+
+              {/* Bottom buttons: Green and Orange */}
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const url = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(
+                      `${window.location.origin}/login?familyId=${selectedFamilyForQr.familyId}`
+                    )}`;
+                    window.open(url, "_blank");
+                  }}
+                  className="flex-1 bg-green-700 hover:bg-green-800 text-white font-extrabold py-3 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-1.5 hover:-translate-y-0.5 transform duration-150"
+                >
+                  🖨️ मुद्रित करा / Print
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowQrModal(false);
+                    setSelectedFamilyForQr(null);
+                  }}
+                  className="flex-1 bg-orange-500 hover:bg-orange-650 text-white font-extrabold py-3 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-1.5 hover:-translate-y-0.5 transform duration-150"
+                >
+                  बंद करा / Close
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

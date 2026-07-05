@@ -75,6 +75,8 @@ export default function VmsTaxesAdmin() {
   // Selected ledger year & inline fine states
   const [selectedLedgerYear, setSelectedLedgerYear] = useState(getCurrentFinancialYear());
   const [inlineFineAmount, setInlineFineAmount] = useState("");
+  const [inlineFineReason, setInlineFineReason] = useState("");
+  const [showFineReasonModal, setShowFineReasonModal] = useState(false);
   const [assigningInlineFine, setAssigningInlineFine] = useState(false);
 
   // Record payment states
@@ -999,7 +1001,7 @@ export default function VmsTaxesAdmin() {
                         निवडलेल्या कुटुंबाला या आर्थिक वर्षासाठी विलंब शुल्क किंवा दंड (Late Fine) थेट लागू करा.
                       </p>
 
-                      <form
+                                            <form
                         onSubmit={async (e) => {
                           e.preventDefault();
                           if (!selectedFamilyId || !selectedLedgerYear || !inlineFineAmount) {
@@ -1012,9 +1014,11 @@ export default function VmsTaxesAdmin() {
                               taxType: "fine",
                               year: Number(selectedLedgerYear),
                               amount: Number(inlineFineAmount),
+                              reason: inlineFineReason,
                             });
                             toast.success(`Fine of ₹${inlineFineAmount} assigned successfully for year ${selectedLedgerYear}!`);
                             setInlineFineAmount("");
+                            setInlineFineReason("");
                             fetchTaxes(selectedFamilyId);
                           } catch (err) {
                             toast.error(err.response?.data?.error || "Error assigning fine");
@@ -1033,6 +1037,17 @@ export default function VmsTaxesAdmin() {
                             value={inlineFineAmount}
                             onChange={(e) => setInlineFineAmount(e.target.value)}
                             className="border border-green-600 bg-white p-2 rounded-xl w-full text-xs font-semibold outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-gray-550 mb-1">दंड आकारण्याचे कारण (Reason for Fine)</label>
+                          <textarea
+                            rows={2}
+                            placeholder="उदा. विलंब शुल्क किंवा इतर कारण"
+                            value={inlineFineReason}
+                            onChange={(e) => setInlineFineReason(e.target.value)}
+                            className="border border-green-600 bg-white p-2 rounded-xl w-full text-xs font-semibold outline-none resize-none"
                           />
                         </div>
 
@@ -1066,6 +1081,13 @@ export default function VmsTaxesAdmin() {
                           ₹{yearBills.reduce((sum, b) => sum + (b.amount - b.paidAmount), 0)}
                         </span>
                       </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowFineReasonModal(true)}
+                        className="w-full mt-3.5 bg-orange-100 hover:bg-orange-200 text-orange-700 hover:text-orange-850 font-black py-2 rounded-xl text-[10px] transition uppercase tracking-wider flex items-center justify-center gap-1 border border-orange-200"
+                      >
+                        📄 दंडाचे कारण पहा / View Fine Reason
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -1209,6 +1231,59 @@ export default function VmsTaxesAdmin() {
               )}
             </>
           )}
+        </div>
+      )}
+      {showFineReasonModal && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-green-150 animate-in fade-in zoom-in-95 duration-200">
+            <h4 className="text-lg font-black mb-2 flex items-center gap-2" style={{ color: "#14532d" }}>
+              <span>⚠️ दंड आकारणी कारणे (Fine Details)</span>
+            </h4>
+            <p className="text-xs text-gray-400 font-bold mb-4">वर्ष {selectedLedgerYear} - {Number(selectedLedgerYear) + 1}</p>
+            
+            {(() => {
+              const fineBill = bills.find((b) => b.year === Number(selectedLedgerYear) && b.taxType === "fine");
+              if (!fineBill) {
+                return (
+                  <p className="text-gray-500 text-center py-6 text-sm font-semibold">
+                    या वर्षासाठी कोणताही दंड आकारण्यात आलेला नाही.
+                  </p>
+                );
+              }
+              return (
+                <div className="space-y-4">
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs font-semibold space-y-2">
+                    <p className="text-gray-650"><strong>दंड रक्कम:</strong> <span className="text-orange-600 text-sm font-black">₹{fineBill.amount}</span></p>
+                    <p className="text-gray-650">
+                      <strong>कर स्थिती:</strong>{" "}
+                      <span className="font-extrabold">
+                        {fineBill.status === "paid"
+                          ? "पूर्ण भरलेला (Paid)"
+                          : fineBill.status === "partial"
+                            ? "अंशतः भरलेला (Partially Paid)"
+                            : "थकीत (Pending)"}
+                      </span>
+                    </p>
+                    <p className="text-gray-650"><strong>लागू तारीख:</strong> {new Date(fineBill.createdAt).toLocaleDateString()}</p>
+                  </div>
+                  <div className="bg-orange-50/40 border border-orange-100 p-4 rounded-2xl text-xs text-gray-700">
+                    <strong className="block text-[10px] uppercase font-black tracking-wider text-orange-650 mb-1">दंड कारण / शेरा:</strong>
+                    <p className="leading-relaxed font-semibold">{fineBill.reason || "कोणतेही कारण नमूद केलेले नाही."}</p>
+                  </div>
+                </div>
+              );
+            })()}
+
+            <div className="mt-6 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowFineReasonModal(false)}
+                className="bg-green-700 hover:bg-green-800 text-white font-bold px-5 py-2 rounded-xl text-xs transition"
+              >
+                बंद करा (Close)
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

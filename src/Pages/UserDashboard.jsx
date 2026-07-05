@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axioesInstance from "../utils/axioesInstance";
+import { useSiteConfig } from "../utils/SiteConfigContext";
 
 const TAX_CATEGORIES = [
   {
@@ -238,7 +239,7 @@ const translations = {
     submitFree: "मोफत सबमिट करा",
     applicationsStatus: "अर्जांची स्थिती",
     date: "तारीख",
-    remarks: "अधिकारी रिमार्क",
+    remarks: "अधिकारी शेरा",
     downloadCert: "दाखला डाऊनलोड करा",
     freeExempt: "मोफत सवलत",
     noBills: "कराची बिले उपलब्ध नाहीत.",
@@ -261,13 +262,18 @@ const translations = {
 };
 
 export default function UserDashboard() {
+  const { config } = useSiteConfig();
   const [loading, setLoading] = useState(true);
   const [family, setFamily] = useState(null);
   const [bills, setBills] = useState([]);
   const [payments, setPayments] = useState([]);
   const [applications, setApplications] = useState([]);
+  const [filterStatus, setFilterStatus] = useState("pending");
   const [activeTab, setActiveTab] = useState("overview"); // 'overview', 'taxes', 'applications'
   const [selectedFinancialYear, setSelectedFinancialYear] = useState(null);
+  const [editingApplication, setEditingApplication] = useState(null);
+  const [showFineModal, setShowFineModal] = useState(false);
+  const [selectedFineForModal, setSelectedFineForModal] = useState(null);
   const [language, setLanguage] = useState(() => localStorage.getItem("lang") || "mr");
   const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem("darkMode") === "true");
 
@@ -336,7 +342,7 @@ export default function UserDashboard() {
           const [taxRes, appRes, notifRes] = responses;
           setBills(taxRes.data.bills || []);
           setPayments(taxRes.data.payments || []);
-          setApplications(appRes.data.applications || []);
+          setApplications(Array.isArray(appRes.data) ? appRes.data : (appRes.data.applications || []));
           if (notifRes) {
             setNotifications(notifRes.data.notifications || []);
             setUnreadNotifCount(notifRes.data.unreadCount || 0);
@@ -518,6 +524,44 @@ export default function UserDashboard() {
     }
   };
 
+  const startEditing = (app) => {
+    setEditingApplication(app);
+    setForm({
+      forName: app.applicantName || "",
+      type: app.type || "जन्म नोंद",
+      whatsappNo: app.details?.whatsappNo || "",
+      email: app.details?.email || "",
+      dob: app.details?.dob || "",
+      childName: app.details?.childName || "",
+      deathName: app.details?.deathName || "",
+      deathDate: app.details?.deathDate || "",
+      coupleName: app.details?.coupleName || "",
+      marriageYear: app.details?.marriageYear || "",
+      propertyNo: app.details?.propertyNo || "",
+      certificateName: app.details?.certificateName || "",
+      niradharName: app.details?.niradharName || "",
+    });
+  };
+
+  const cancelEditing = () => {
+    setEditingApplication(null);
+    setForm({
+      forName: family?.mainMemberName || "",
+      whatsappNo: family?.whatsappNumber || family?.mobileNumber || "",
+      email: "",
+      type: "जन्म नोंद",
+      dob: "",
+      childName: "",
+      deathName: "",
+      deathDate: "",
+      coupleName: "",
+      marriageYear: "",
+      propertyNo: "",
+      certificateName: "",
+      niradharName: "",
+    });
+  };
+
   const submitApplicationRequest = async (transactionId) => {
     try {
       await axioesInstance.post("/user/applications", {
@@ -560,7 +604,7 @@ export default function UserDashboard() {
 
       // Refresh applications list
       const appRes = await axioesInstance.get("/user/applications");
-      setApplications(appRes.data.applications || []);
+      setApplications(Array.isArray(appRes.data) ? appRes.data : (appRes.data.applications || []));
     } catch {
       toast.error("Failed to submit application.");
     } finally {
@@ -600,6 +644,38 @@ export default function UserDashboard() {
       case 'ग्रामपंचायत येणे बाकी दाखला':
         if (!form.certificateName) return toast.error("Please enter recipient name.");
         break;
+    }
+
+    if (editingApplication) {
+      setSubmittingApp(true);
+      try {
+        await axioesInstance.put(`/user/applications/${editingApplication._id}`, {
+          applicantName: form.forName,
+          details: {
+            whatsappNo: form.whatsappNo,
+            email: form.email,
+            dob: form.dob,
+            childName: form.childName,
+            deathName: form.deathName,
+            deathDate: form.deathDate,
+            coupleName: form.coupleName,
+            marriageYear: form.marriageYear,
+            propertyNo: form.propertyNo,
+            certificateName: form.certificateName,
+            niradharName: form.niradharName,
+          },
+        });
+
+        toast.success(language === "mr" ? "अर्ज यशस्वीरीत्या अद्ययावत केला!" : "Application updated successfully!");
+        cancelEditing();
+        const appRes = await axioesInstance.get("/user/applications");
+        setApplications(Array.isArray(appRes.data) ? appRes.data : (appRes.data.applications || []));
+      } catch {
+        toast.error(language === "mr" ? "अर्ज अद्ययावत करण्यात अयशस्वी." : "Failed to update application.");
+      } finally {
+        setSubmittingApp(false);
+      }
+      return;
     }
 
     const isFeeRequired = ['जन्म नोंद', 'मृत्यू नोंद', 'विवाह नोंदणी दाखला', '८ अ उतारा', 'ग्रामपंचायत येणे बाकी दाखला'].includes(form.type);
@@ -1018,6 +1094,20 @@ export default function UserDashboard() {
                     <p className="font-black text-sm text-orange-600 mt-0.5">{money(totals.remaining)}</p>
                   </div>
                 </div>
+
+                {isFine && categoryBills.find((b) => b.taxType === "fine") && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const fineBill = categoryBills.find((b) => b.taxType === "fine");
+                      setSelectedFineForModal(fineBill);
+                      setShowFineModal(true);
+                    }}
+                    className="w-full mt-3.5 bg-orange-100 hover:bg-orange-200 text-orange-700 font-extrabold py-2 rounded-xl text-[10px] transition uppercase tracking-wider flex items-center justify-center gap-1 border border-orange-200"
+                  >
+                    📄 दंडाचे कारण पहा / View Fine Reason
+                  </button>
+                )}
               </article>
             );
           })}
@@ -1025,6 +1115,13 @@ export default function UserDashboard() {
       )}
     </section>
   );
+
+  const filteredApplications = applications.filter((app) => {
+    if (filterStatus === "all") return true;
+    if (filterStatus === "completed") return app.status === "completed";
+    if (filterStatus === "pending") return app.status === "pending" || app.status === "need_documents";
+    return true;
+  });
 
   if (loading) {
     return (
@@ -1045,17 +1142,30 @@ export default function UserDashboard() {
         }`}>
         <div className="space-y-8">
           {/* LOGO */}
-          <div className={`flex items-center gap-3 border-b pb-4 ${isDarkMode ? "border-slate-800" : "border-green-800"}`}>
-            <img
-              src="/images/satyamev.jpg"
-              alt="Logo"
-              className="h-12 w-12 rounded-full object-cover border-2 border-white shadow"
-            />
-            <div>
-              <h2 className="font-bold text-lg leading-tight">Gomevadi GP</h2>
-              <span className={`text-xs ${isDarkMode ? "text-slate-400" : "text-white/60"}`}>
-                {language === "mr" ? "नागरिक डॅशबोर्ड" : "Citizen Dashboard"}
-              </span>
+          <div className={`flex flex-col border-b pb-4 gap-3 ${isDarkMode ? "border-slate-800" : "border-green-800"}`}>
+            {/* Row for Logo Circle + Grampanchayat Name */}
+            {(() => {
+              const gpVillageName = config?.gpName ? config.gpName.replace(/ग्रामपंचायत/g, "").trim() : "गोमेवाडी";
+              return (
+                <div className="flex items-center gap-3">
+                  <img
+                    src="/images/satyamev.jpg"
+                    alt="Logo"
+                    className="h-14 w-14 rounded-full object-cover border-2 border-white shadow shrink-0"
+                  />
+                  <div className="min-w-0">
+                    <h2 className="font-black text-[17px] leading-tight text-white tracking-wide">ग्रामपंचायत</h2>
+                    <h3 className="font-black text-[17px] leading-tight text-white mt-0.5 tracking-wide">{gpVillageName}</h3>
+                  </div>
+                </div>
+              );
+            })()}
+            
+            {/* Full width bottom info: Tal & Dist dynamic in Marathi */}
+            <div className="flex justify-between items-center text-xs font-black text-gray-100 mt-1">
+              <span>ता. {config?.taluka || "आटपाडी"}</span>
+              <span>जि. {config?.district || "सांगली"}</span>
+              <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider ${isDarkMode ? "bg-slate-800 text-green-400 border border-slate-700" : "bg-white/10 text-orange-300 border border-white/10"}`}>Citizen</span>
             </div>
           </div>
 
@@ -1686,14 +1796,21 @@ export default function UserDashboard() {
               <div className={`rounded-3xl shadow p-6 border ${isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-green-100"
                 }`}>
                 <h3 className={`text-lg font-black mb-4 pb-2 border-b-2 transition-colors duration-300 ${isDarkMode ? "border-emerald-800/80 text-emerald-400" : "border-emerald-700 text-emerald-700"
-                  }`}>{t.applyCertificate}</h3>
+                  }`}>
+                  {editingApplication 
+                    ? (language === "mr" ? "अर्ज दुरुस्ती करा (Edit Application)" : "Edit Application Details")
+                    : t.applyCertificate}
+                </h3>
                 <form onSubmit={handleApplyCertificate} className="space-y-4">
                   <div>
                     <label className="block text-xs font-bold text-gray-500 mb-1">{t.selectType}</label>
                     <select
                       value={form.type}
                       onChange={(e) => setForm({ ...form, type: e.target.value })}
-                      className={`border p-2.5 rounded-xl w-full text-xs font-bold outline-none ${isDarkMode ? "bg-slate-900 border-slate-700 text-white" : "border-green-600 text-gray-800"
+                      disabled={!!editingApplication}
+                      className={`border p-2.5 rounded-xl w-full text-xs font-bold outline-none ${
+                        editingApplication ? "bg-slate-100 text-gray-500 opacity-80 cursor-not-allowed" : ""
+                      } ${isDarkMode ? "bg-slate-900 border-slate-700 text-white" : "border-green-600 text-gray-800"
                         }`}
                     >
                       <option value="जन्म नोंद">{t.birthReg}</option>
@@ -1890,15 +2007,26 @@ export default function UserDashboard() {
                     </div>
                   )}
 
-                  <button
+                                    <button
                     type="submit"
                     disabled={submittingApp}
                     className="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 rounded-xl shadow transition text-xs uppercase tracking-wider flex items-center justify-center gap-2"
                   >
-                    {!submittingApp && <RazorpayMark />}
-                    {!submittingApp && ['à¤œà¤¨à¥à¤® à¤¨à¥‹à¤‚à¤¦', 'à¤®à¥ƒà¤¤à¥à¤¯à¥‚ à¤¨à¥‹à¤‚à¤¦', 'à¤µà¤¿à¤µà¤¾à¤¹ à¤¨à¥‹à¤‚à¤¦à¤£à¥€ à¤¦à¤¾à¤–à¤²à¤¾', 'à¥® à¤… à¤‰à¤¤à¤¾à¤°à¤¾', 'à¤—à¥à¤°à¤¾à¤®à¤ªà¤‚à¤šà¤¾à¤¯à¤¤ à¤¯à¥‡à¤£à¥‡ à¤¬à¤¾à¤•à¥€ à¤¦à¤¾à¤–à¤²à¤¾'].includes(form.type) && <RazorpayMark />}
-                    {submittingApp ? t.submitting : ['जन्म नोंद', 'मृत्यू नोंद', 'विवाह नोंदणी दाखला', '८ अ उतारा', 'ग्रामपंचायत येणे बाकी दाखला'].includes(form.type) ? t.submitPay : t.submitFree}
+                    {!submittingApp && !editingApplication && <RazorpayMark />}
+                    {!submittingApp && !editingApplication && ['à¤œà¤¨à¥ à¤® à¤¨à¥‹à¤‚à¤¦', 'à¤®à¥ƒà¤¤à¥ à¤¯à¥‚ à¤¨à¥‹à¤‚à¤¦', 'à¤µà¤¿à¤µà¤¾à¤¹ à¤¨à¥‹à¤‚à¤¦à¤£à¥€ à¤¦à¤¾à¤–à¤²à¤¾', 'à¥® à¤… à¤‰à¤¤à¤¾à¤°à¤¾', 'à¤—à¥ à¤°à¤¾à¤®à¤ªà¤‚à¤šà¤¾à¤¯à¤¤ à¤¯à¥‡à¤£à¥‡ à¤¬à¤¾à¤•à¥€ à¤¦à¤¾à¤–à¤²à¤¾'].includes(form.type) && <RazorpayMark />}
+                    {submittingApp 
+                      ? (editingApplication ? (language === "mr" ? "अद्ययावत होत आहे..." : "Updating...") : t.submitting) 
+                      : (editingApplication ? (language === "mr" ? "बदल जतन करा / Save" : "Save Changes") : ['जन्म नोंद', 'मृत्यू नोंद', 'विवाह नोंदणी दाखला', '८ अ उतारा', 'ग्रामपंचायत येणे बाकी दाखला'].includes(form.type) ? t.submitPay : t.submitFree)}
                   </button>
+                  {editingApplication && (
+                    <button
+                      type="button"
+                      onClick={cancelEditing}
+                      className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition mt-2 border"
+                    >
+                      {language === "mr" ? "रद्द करा / Cancel" : "Cancel Edit"}
+                    </button>
+                  )}
                 </form>
               </div>
             </div>
@@ -1907,14 +2035,47 @@ export default function UserDashboard() {
             <div className="lg:col-span-2 space-y-6">
               <div className={`rounded-3xl shadow p-6 border ${isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-green-100"
                 }`}>
-                <h3 className={`text-lg font-black mb-4 pb-2 border-b-2 transition-colors duration-300 ${isDarkMode ? "border-emerald-800/80 text-emerald-400" : "border-emerald-700 text-emerald-700"
-                  }`}>{t.applicationsStatus}</h3>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 pb-2 border-b-2 border-emerald-700/80">
+                  <h3 className={`text-lg font-black transition-colors duration-300 ${isDarkMode ? "text-emerald-400" : "text-emerald-700"}`}>
+                    {t.applicationsStatus}
+                  </h3>
+                  <div className="flex bg-green-700 dark:bg-green-800 p-1 rounded-xl gap-1 mt-2 sm:mt-0 shadow-inner">
+                    <button
+                      type="button"
+                      onClick={() => setFilterStatus("pending")}
+                      className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase transition-all duration-200 ${
+                        filterStatus === "pending"
+                          ? "bg-white text-green-700 shadow-sm"
+                          : "text-white/80 hover:text-white"
+                      }`}
+                    >
+                      {language === "mr" ? "प्रलंबित" : "Pending"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFilterStatus("completed")}
+                      className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase transition-all duration-200 ${
+                        filterStatus === "completed"
+                          ? "bg-white text-green-700 shadow-sm"
+                          : "text-white/80 hover:text-white"
+                      }`}
+                    >
+                      {language === "mr" ? "पूर्ण" : "Completed"}
+                    </button>
+                  </div>
+                </div>
 
-                {applications.length === 0 ? (
-                  <p className="text-gray-500 text-center py-10">{t.noApplications}</p>
+                {filteredApplications.length === 0 ? (
+                  <p className="text-gray-500 text-center py-10">
+                    {applications.length === 0
+                      ? t.noApplications
+                      : language === "mr"
+                        ? "या स्थितीचे कोणतेही अर्ज उपलब्ध नाहीत."
+                        : "No applications with this status found."}
+                  </p>
                 ) : (
                   <div className="space-y-6 max-h-[500px] overflow-y-auto pr-1">
-                    {applications.map((app) => (
+                    {filteredApplications.map((app) => (
                       <div key={app._id} className={`border rounded-3xl p-5 flex flex-col justify-between hover:shadow transition duration-200 ${isDarkMode ? "border-slate-800 bg-slate-950/40" : "border-green-100 bg-white"
                         }`}>
                         <div className="flex justify-between items-start mb-3">
@@ -1933,14 +2094,25 @@ export default function UserDashboard() {
                             <p className="text-[10px] text-gray-400 mt-1">{t.date}: {new Date(app.createdAt).toLocaleDateString()}</p>
                           </div>
 
-                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${app.status === "completed"
-                            ? "bg-green-100 text-green-700"
-                            : app.status === "need_documents"
-                              ? "bg-red-100 text-red-600"
-                              : "bg-orange-100 text-orange-600"
-                            }`}>
-                            {app.status === "completed" ? "Completed" : app.status === "need_documents" ? "Need Documents" : "Pending"}
-                          </span>
+                          <div className="flex flex-col items-end gap-2 shrink-0">
+                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${app.status === "completed"
+                              ? "bg-green-100 text-green-700"
+                              : app.status === "need_documents"
+                                ? "bg-red-100 text-red-600"
+                                : "bg-orange-100 text-orange-600"
+                              }`}>
+                              {app.status === "completed" ? "Completed" : app.status === "need_documents" ? "Need Documents" : "Pending"}
+                            </span>
+                            {app.status === "pending" && (
+                              <button
+                                type="button"
+                                onClick={() => startEditing(app)}
+                                className="text-[10px] font-black text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2.5 py-1.5 rounded-xl transition"
+                              >
+                                {language === "mr" ? "दुरुस्ती करा" : "Edit"}
+                              </button>
+                            )}
+                          </div>
                         </div>
 
                         {app.details && (
@@ -2143,6 +2315,66 @@ export default function UserDashboard() {
           <span>{language === "mr" ? "बाहेर पडा" : "Logout"}</span>
         </button>
       </div>
+      {showFineModal && selectedFineForModal && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className={`rounded-3xl p-6 max-w-md w-full shadow-2xl border animate-in fade-in zoom-in-95 duration-200 ${
+            isDarkMode ? "bg-slate-900 border-slate-800 text-white" : "bg-white border-green-150 text-gray-800"
+          }`}>
+            <h4 className="text-lg font-black mb-2 flex items-center gap-2" style={{ color: isDarkMode ? "#4ade80" : "#14532d" }}>
+              <span>⚠️ दंड आकारणी कारणे (Fine Details)</span>
+            </h4>
+            <p className="text-xs text-gray-400 font-bold mb-4">
+              FY {selectedFineForModal.year} - {Number(selectedFineForModal.year) + 1}
+            </p>
+            
+            <div className="space-y-4">
+              <div className={`p-4 rounded-2xl border text-xs font-semibold space-y-2 ${
+                isDarkMode ? "bg-slate-950 border-slate-800" : "bg-slate-50 border-slate-100"
+              }`}>
+                <p className={`${isDarkMode ? "text-slate-350" : "text-gray-650"}`}>
+                  <strong>दंड रक्कम:</strong> <span className="text-orange-600 text-sm font-black">₹{selectedFineForModal.amount}</span>
+                </p>
+                <p className={`${isDarkMode ? "text-slate-350" : "text-gray-650"}`}>
+                  <strong>कर स्थिती:</strong>{" "}
+                  <span className="font-extrabold">
+                    {selectedFineForModal.status === "paid"
+                      ? (language === "mr" ? "पूर्ण भरलेला (Paid)" : "Paid")
+                      : selectedFineForModal.status === "partial"
+                        ? (language === "mr" ? "अंशतः भरलेला (Partially Paid)" : "Partially Paid")
+                        : (language === "mr" ? "थकीत (Pending)" : "Pending")}
+                  </span>
+                </p>
+                <p className={`${isDarkMode ? "text-slate-350" : "text-gray-650"}`}>
+                  <strong>लागू तारीख:</strong> {new Date(selectedFineForModal.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+              <div className={`p-4 rounded-2xl border text-xs ${
+                isDarkMode ? "bg-slate-955 border-slate-855 text-slate-300" : "bg-orange-50/40 border-orange-100 text-gray-700"
+              }`}>
+                <strong className="block text-[10px] uppercase font-black tracking-wider text-orange-650 mb-1">
+                  दंड कारण / शेरा (Reason):
+                </strong>
+                <p className="leading-relaxed font-semibold">
+                  {selectedFineForModal.reason || "कोणतेही कारण नमूद केलेले नाही."}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-end">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowFineModal(false);
+                  setSelectedFineForModal(null);
+                }}
+                className="bg-green-700 hover:bg-green-800 text-white font-bold px-5 py-2 rounded-xl text-xs transition"
+              >
+                {language === "mr" ? "बंद करा" : "Close"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
