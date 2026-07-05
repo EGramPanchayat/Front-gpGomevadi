@@ -4,6 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axioesInstance from "../utils/axioesInstance";
 import { useSiteConfig } from "../utils/SiteConfigContext";
 import { useSearchParams } from "react-router-dom";
+import { User, Receipt, IndianRupee, ShieldCheck, AlertCircle, CheckCircle2, ChevronRight, FileText } from "lucide-react";
 
 const TAX_CATEGORIES = [
   {
@@ -249,126 +250,213 @@ export default function QrPartialPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent"></div>
+      <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center p-4">
+        <div className="w-12 h-12 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mb-4"></div>
+        <p className="text-green-900 font-medium animate-pulse">लोड होत आहे...</p>
       </div>
     );
   }
 
+  const totalDue = paymentGroups.reduce((sum, group) => sum + group.remaining, 0);
+
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header with GP Details */}
-      <div className="bg-white shadow-md">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
-          <img
-            src={gpDetails?.logo || "/images/satyamev.jpg"}
-            alt="GP Logo"
-            className="h-16 w-16 rounded-full object-cover border-2 border-green-600"
-          />
-          <div>
-            <h1 className="text-2xl font-bold text-green-800">{gpDetails?.name || "ग्रामपंचायत गोमेवाडी"}</h1>
-            <p className="text-gray-600 text-sm">Gram Panchayat Gomewadi</p>
+    <div className="min-h-screen bg-slate-100 flex justify-center font-sans sm:py-8">
+      {/* Mobile App Container */}
+      <div className="w-full max-w-md bg-slate-50 sm:rounded-[2.5rem] shadow-2xl overflow-hidden relative flex flex-col min-h-screen sm:min-h-0 sm:h-[850px]">
+        
+        {/* Header Section (Curved Background) */}
+        <div className="bg-gradient-to-br from-green-700 via-emerald-600 to-green-900 pt-12 pb-20 px-6 rounded-b-[2.5rem] shadow-md relative z-0">
+          <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full">
+            <ShieldCheck className="w-4 h-4 text-white" />
+            <span className="text-xs font-medium text-white tracking-wide">सुरक्षित</span>
           </div>
-        </div>
-      </div>
-
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        {/* Family Information Card */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">कुटुंब माहिती</h2>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm text-gray-500">कुटुंब प्रमुख</p>
-              <p className="text-lg font-semibold text-gray-800">{family?.mainMemberName || "-"}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">कुटुंब सदस्य संख्या</p>
-              <p className="text-lg font-semibold text-gray-800">{family?.familySize || 0}</p>
-            </div>
+          <div className="text-center mt-4">
+            <h1 className="text-2xl font-bold text-white mb-1 tracking-tight">
+              {gpDetails?.name || "ग्रामपंचायत गोमेवाडी"}
+            </h1>
+            <p className="text-green-200 text-sm font-medium uppercase tracking-widest">
+              डिजिटल कर पोर्टल
+            </p>
           </div>
         </div>
 
-        {/* Payment Summary */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">कर व देयके</h2>
+        {/* Overlapping Logo */}
+        <div className="flex justify-center -mt-12 relative z-10">
+          <div className="bg-white p-3 rounded-full shadow-xl border border-slate-100">
+            <div className="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center bg-slate-50">
+              <img 
+                src={gpDetails?.logo || "/images/satyamev.jpg"} 
+                alt="Logo" 
+                className="w-16 h-16 object-contain"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Scrollable Content Body */}
+        <div className="px-5 pt-6 pb-28 flex-1 overflow-y-auto">
           
-          {paymentGroups.map((group) => (
-            <div key={group.id} className="border rounded-lg p-4 mb-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <TaxCategoryIcon categoryId={group.id} />
-                  <h3 className="font-semibold text-gray-800">{CATEGORY_NAMES[group.id][language]}</h3>
-                </div>
-                <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                  group.remaining === 0 
-                    ? 'bg-green-100 text-green-800' 
-                    : 'bg-red-100 text-red-800'
-                }`}>
-                  {group.remaining === 0 ? 'जमा' : 'थकीत'}
-                </span>
+          {/* Family Card (Neumorphic/Clean) */}
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/60 mb-6">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
+                <User className="w-6 h-6 text-green-600" />
               </div>
-              
-              <div className="grid grid-cols-3 gap-4 mb-4 text-sm">
-                <div>
-                  <p className="text-gray-500">मागील वर्षांची थकबाकी</p>
-                  <p className="font-semibold text-gray-800">{money(group.previousDue)}</p>
-                </div>
-                <div>
-                  <p className="text-gray-500">चालू वर्ष {currentFinancialYear}-{currentFinancialYear + 1}</p>
-                  <p className="font-semibold text-gray-800">{money(group.currentDue)}</p>
-                </div>
-                <div>
-                  <p className="text-gray-500">एकूण देय रक्कम</p>
-                  <p className={`font-bold ${group.remaining === 0 ? 'text-green-700' : 'text-red-700'}`}>
-                    {money(group.remaining)}
-                  </p>
-                </div>
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">कुटुंब प्रमुख</p>
+                <h2 className="text-lg font-bold text-slate-800 leading-tight">
+                  {family?.mainMemberName}
+                </h2>
               </div>
-
-              {group.remaining > 0 && (
-                <div className="flex items-center gap-3">
-                  <input
-                    type="number"
-                    value={payAmounts[group.id] || ""}
-                    onChange={(e) => setPayAmounts({ ...payAmounts, [group.id]: e.target.value })}
-                    placeholder="रक्कम टाका"
-                    className="flex-1 px-4 py-2 border rounded-lg focus:ring focus:ring-green-300 focus:outline-none"
-                  />
-                  <button
-                    onClick={() => handlePayCategory(group)}
-                    disabled={processingId === group.id}
-                    className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition disabled:opacity-50 flex items-center gap-2"
-                  >
-                    {processingId === group.id ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                        <span>Processing...</span>
-                      </>
-                    ) : (
-                      <>
-                        <RazorpayMark />
-                        <span>ऑनलाइन भरा</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              )}
             </div>
-          ))}
+            
+            <div className="mt-5 pt-4 border-t border-slate-100 flex gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-1.5 text-slate-500 mb-1">
+                  <User className="w-3.5 h-3.5" />
+                  <span className="text-xs font-medium">एकूण सदस्य</span>
+                </div>
+                <p className="font-semibold text-slate-700">{family?.familySize || 0} व्यक्ती</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Tax Bills Header */}
+          <div className="flex items-center justify-between mb-4 px-1">
+            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+              <FileText className="w-4 h-4 text-slate-400" />
+              कर बिले
+            </h3>
+            <span className="bg-orange-100 text-orange-700 text-xs font-bold px-2.5 py-1 rounded-md">
+              {paymentGroups.length} आयटम
+            </span>
+          </div>
+
+          {/* Tax Bills List */}
+          {paymentGroups.length > 0 ? (
+            <div className="space-y-3">
+              {paymentGroups.map((group) => (
+                <div key={group.id} className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/60 flex flex-col gap-3">
+                  {/* Bill Header */}
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                      <Receipt className="w-5 h-5 text-emerald-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-slate-800">{CATEGORY_NAMES[group.id][language]}</h4>
+                    </div>
+                    <div className="text-right">
+                      <span className={`inline-block text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wide ${group.remaining === 0 ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
+                        {group.remaining === 0 ? 'जमा' : 'थकीत'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Detailed Breakdown */}
+                  <div className="bg-slate-50 rounded-xl p-3 mt-1 space-y-2 text-sm border border-slate-100">
+                    <div className="flex justify-between text-slate-600">
+                      <span>चालू वर्ष ({currentFinancialYear}-{currentFinancialYear + 1})</span>
+                      <span className="font-medium text-slate-800 flex items-center">
+                        <IndianRupee className="w-3 h-3 mr-0.5" /> {money(group.currentDue)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-slate-600">
+                      <span>मागील वर्षांची थकबाकी</span>
+                      <span className="font-medium text-slate-800 flex items-center">
+                        <IndianRupee className="w-3 h-3 mr-0.5" /> {money(group.previousDue)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between border-t border-slate-200 pt-2 mt-2">
+                      <span className="font-bold text-slate-800">एकूण देय रक्कम</span>
+                      <span className={`font-bold flex items-center text-base ${group.remaining === 0 ? 'text-green-700' : 'text-slate-900'}`}>
+                        <IndianRupee className="w-4 h-4 mr-0.5" /> {money(group.remaining)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {group.remaining > 0 && (
+                    <div className="flex items-center gap-2 mt-2">
+                      <input
+                        type="number"
+                        value={payAmounts[group.id] || ""}
+                        onChange={(e) => setPayAmounts({ ...payAmounts, [group.id]: e.target.value })}
+                        placeholder="रक्कम टाका"
+                        className="flex-1 px-4 py-2 border rounded-lg focus:ring focus:ring-green-300 focus:outline-none text-sm"
+                      />
+                      <button
+                        onClick={() => handlePayCategory(group)}
+                        disabled={processingId === group.id}
+                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition disabled:opacity-50 flex items-center gap-2 text-sm font-medium"
+                      >
+                        {processingId === group.id ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                            <span>प्रक्रिया...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>ऑनलाइन भरा</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-2xl p-8 border border-slate-200/60 text-center">
+              <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                <CheckCircle2 className="w-8 h-8 text-green-500" />
+              </div>
+              <h4 className="font-bold text-slate-800">कोणतेही बिल नाहीत</h4>
+              <p className="text-sm text-slate-500 mt-1">या कुटुंबासाठी सध्या कोणतेही कर रेकॉर्ड नाहीत.</p>
+            </div>
+          )}
         </div>
 
-        {/* Login Button for Full Access */}
-        <div className="bg-white rounded-xl shadow-md p-6 text-center">
-          <p className="text-gray-600 mb-4">संपूर्ण माहिती पाहण्यासाठी लॉगिन करा</p>
+        {/* Sticky Bottom Action Bar */}
+        <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-5 pt-4 rounded-b-[2.5rem] shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)]">
+          <div className="flex items-end justify-between mb-4">
+            <div>
+              <p className="text-sm font-medium text-slate-500 mb-1">एकूण देय रक्कम</p>
+              <h2 className="text-3xl font-black text-slate-900 flex items-center tracking-tight">
+                <IndianRupee className="w-7 h-7 mr-1 text-slate-400" />
+                {totalDue.toLocaleString('en-IN')}
+              </h2>
+            </div>
+          </div>
+          
+          <button 
+            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl flex items-center justify-between px-6 transition-all shadow-lg shadow-green-600/30 active:scale-[0.98]"
+            disabled={totalDue === 0}
+            onClick={() => {
+              if (totalDue > 0) {
+                const firstUnpaid = paymentGroups.find(g => g.remaining > 0);
+                if (firstUnpaid) handlePayCategory(firstUnpaid);
+              }
+            }}
+          >
+            <span className="text-lg">
+              {totalDue > 0 ? "आता भरा" : "भरायचे काहीही नाही"}
+            </span>
+            {totalDue > 0 ? (
+              <ChevronRight className="w-6 h-6" />
+            ) : (
+              <CheckCircle2 className="w-6 h-6 text-green-300" />
+            )}
+          </button>
+
+          {/* Login Button for Full Access */}
           <button
             onClick={() => (window.location.href = "/user-login")}
-            className="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 transition font-semibold"
+            className="w-full mt-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-3 rounded-xl transition text-sm"
           >
-            लॉगिन करा
+            संपूर्ण माहिती पाहण्यासाठी लॉगिन करा
           </button>
         </div>
-      </div>
 
+      </div>
       <ToastContainer position="top-right" autoClose={4000} theme="colored" />
     </div>
   );
