@@ -232,9 +232,14 @@ export default function QrPartialPage() {
     const inputKey = group.id;
     const payAmt = Number(payAmounts[inputKey]);
     const maxPayable = group.remaining;
+    const minPayable = Math.min(500, maxPayable);
 
-    if (isNaN(payAmt) || payAmt <= 0 || payAmt > maxPayable) {
-      return toast.error(`Please enter a valid amount between ₹1 and ₹${maxPayable}`);
+    if (isNaN(payAmt) || payAmt < minPayable || payAmt > maxPayable) {
+      return toast.error(
+        language === "mr"
+          ? `कृपया ₹${minPayable} आणि ₹${maxPayable} दरम्यानची रक्कम प्रविष्ट करा.`
+          : `Please enter a valid amount between ₹${minPayable} and ₹${maxPayable}`
+      );
     }
 
     setProcessingId(inputKey);
