@@ -125,45 +125,45 @@ export default function SiteSettingsAdmin() {
             <label className="block text-sm font-semibold text-gray-700 mb-1">गावचे नाव</label>
             <input
               type="text"
+              readOnly
               value={villageName}
-              onChange={(e) => setVillageName(e.target.value)}
-              className="border border-green-600 p-2 rounded w-full font-medium"
+              className="border border-green-600 p-2 rounded w-full font-medium bg-slate-100 cursor-not-allowed"
             />
           </div>
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1">ग्रामपंचायत नाव</label>
             <input
               type="text"
+              readOnly
               value={gpName}
-              onChange={(e) => setGpName(e.target.value)}
-              className="border border-green-600 p-2 rounded w-full font-medium"
+              className="border border-green-600 p-2 rounded w-full font-medium bg-slate-100 cursor-not-allowed"
             />
           </div>
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1">तालुका</label>
             <input
               type="text"
+              readOnly
               value={taluka}
-              onChange={(e) => setTaluka(e.target.value)}
-              className="border border-green-600 p-2 rounded w-full font-medium"
+              className="border border-green-600 p-2 rounded w-full font-medium bg-slate-100 cursor-not-allowed"
             />
           </div>
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1">जिल्हा</label>
             <input
               type="text"
+              readOnly
               value={district}
-              onChange={(e) => setDistrict(e.target.value)}
-              className="border border-green-600 p-2 rounded w-full font-medium"
+              className="border border-green-600 p-2 rounded w-full font-medium bg-slate-100 cursor-not-allowed"
             />
           </div>
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1">पिनकोड</label>
             <input
               type="text"
+              readOnly
               value={pincode}
-              onChange={(e) => setPincode(e.target.value)}
-              className="border border-green-600 p-2 rounded w-full font-medium"
+              className="border border-green-600 p-2 rounded w-full font-medium bg-slate-100 cursor-not-allowed"
             />
           </div>
         </div>
