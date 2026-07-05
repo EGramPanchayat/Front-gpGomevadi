@@ -293,28 +293,39 @@ export default function QrPartialPage() {
           <h2 className="text-xl font-bold text-gray-800 mb-4">कर व देयके</h2>
           
           {paymentGroups.map((group) => (
-            group.remaining > 0 && (
-              <div key={group.id} className="border rounded-lg p-4 mb-4">
-                <div className="flex items-center gap-2 mb-3">
+            <div key={group.id} className="border rounded-lg p-4 mb-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
                   <TaxCategoryIcon categoryId={group.id} />
                   <h3 className="font-semibold text-gray-800">{CATEGORY_NAMES[group.id][language]}</h3>
                 </div>
-                
-                <div className="grid grid-cols-3 gap-4 mb-4 text-sm">
-                  <div>
-                    <p className="text-gray-500">मागील वर्षांची थकबाकी</p>
-                    <p className="font-semibold text-gray-800">{money(group.previousDue)}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-500">चालू वर्ष {currentFinancialYear}-{currentFinancialYear + 1}</p>
-                    <p className="font-semibold text-gray-800">{money(group.currentDue)}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-500">एकूण देय रक्कम</p>
-                    <p className="font-bold text-green-700">{money(group.remaining)}</p>
-                  </div>
+                <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                  group.remaining === 0 
+                    ? 'bg-green-100 text-green-800' 
+                    : 'bg-red-100 text-red-800'
+                }`}>
+                  {group.remaining === 0 ? 'जमा' : 'थकीत'}
+                </span>
+              </div>
+              
+              <div className="grid grid-cols-3 gap-4 mb-4 text-sm">
+                <div>
+                  <p className="text-gray-500">मागील वर्षांची थकबाकी</p>
+                  <p className="font-semibold text-gray-800">{money(group.previousDue)}</p>
                 </div>
+                <div>
+                  <p className="text-gray-500">चालू वर्ष {currentFinancialYear}-{currentFinancialYear + 1}</p>
+                  <p className="font-semibold text-gray-800">{money(group.currentDue)}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500">एकूण देय रक्कम</p>
+                  <p className={`font-bold ${group.remaining === 0 ? 'text-green-700' : 'text-red-700'}`}>
+                    {money(group.remaining)}
+                  </p>
+                </div>
+              </div>
 
+              {group.remaining > 0 && (
                 <div className="flex items-center gap-3">
                   <input
                     type="number"
@@ -341,13 +352,9 @@ export default function QrPartialPage() {
                     )}
                   </button>
                 </div>
-              </div>
-            )
+              )}
+            </div>
           ))}
-
-          {paymentGroups.every(g => g.remaining === 0) && (
-            <p className="text-gray-500 text-center py-4">कोणतेही थकीत कर नाहीत</p>
-          )}
         </div>
 
         {/* Login Button for Full Access */}
