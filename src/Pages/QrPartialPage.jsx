@@ -351,7 +351,7 @@ export default function QrPartialPage() {
             </span>
           </div>
           <div className="text-center mt-4 space-y-1.5">
-            <h4 className="text-sm font-black text-white/95 uppercase tracking-widest select-none">
+            <h4 className="text-lg font-black text-white/95 uppercase tracking-widest select-none">
               {language === "mr" ? "महाराष्ट्र शासन" : "Government of Maharashtra"}
             </h4>
             <h1 className="text-2xl font-bold text-white tracking-tight">
