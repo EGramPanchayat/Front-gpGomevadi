@@ -16,6 +16,7 @@ import SiteSettingsAdmin from "../AdminComponents/SiteSettingsAdmin";
 import VmsFamiliesAdmin from "../AdminComponents/VmsFamiliesAdmin";
 import VmsTaxesAdmin from "../AdminComponents/VmsTaxesAdmin";
 import VmsApplicationsAdmin from "../AdminComponents/VmsApplicationsAdmin";
+import QrPrintAdmin from "../AdminComponents/QrPrintAdmin";
 
 export default function AdminDashboard() {
   const { config } = useSiteConfig();
@@ -57,6 +58,7 @@ export default function AdminDashboard() {
     { key: "families", label: "कुटुंब नोंदणी" },
     { key: "taxes", label: "कर विवरण" },
     { key: "vms-apps", label: "दाखले मागणी अर्ज" },
+    { key: "print-qr", label: "QR प्रिंट" },
   ];
 
   const memberItems = [
@@ -72,6 +74,7 @@ export default function AdminDashboard() {
     families: "गाव कुटुंब नोंदणी केंद्र",
     taxes: "कर आकारणी आणि वसुली व्यवस्थापन",
     "vms-apps": "दाखले मागणी अर्ज मंजुरी केंद्र",
+    "print-qr": "QR कोड प्रिंट",
     members: "अधिकारी, कार्यकारिणी आणि गाव माहिती",
   };
 
@@ -349,6 +352,8 @@ export default function AdminDashboard() {
             {activeTab === "taxes" && <VmsTaxesAdmin />}
 
             {activeTab === "vms-apps" && <VmsApplicationsAdmin />}
+
+            {activeTab === "print-qr" && <QrPrintAdmin />}
 
             {activeTab === "members" && (
               <div className="space-y-4 max-w-7xl mx-auto">
