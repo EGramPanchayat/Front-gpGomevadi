@@ -1294,13 +1294,13 @@ export default function VmsFamiliesAdmin() {
               <div className="flex flex-col items-center justify-center p-6 bg-slate-50 border border-slate-100 rounded-2xl">
                 <img
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
-                    `${window.location.origin}/login?familyId=${selectedFamilyForQr.familyId}`
+                    `${window.location.origin}/qr-partial?familyId=${selectedFamilyForQr.familyId}&token=${selectedFamilyForQr.qrToken}`
                   )}`}
                   alt="Family QR Code"
                   className="w-44 h-44 object-contain shadow-md rounded-xl bg-white p-2.5 border border-slate-200"
                 />
                 <p className="text-[10px] font-black text-green-800 mt-4 tracking-wider uppercase bg-green-50 px-3 py-1 rounded-full border border-green-200">
-                  लॉगिन करण्यासाठी स्कॅन करा (Scan to Login)
+                  स्कॅन करा (Scan to View)
                 </p>
               </div>
 
@@ -1310,7 +1310,7 @@ export default function VmsFamiliesAdmin() {
                   type="button"
                   onClick={() => {
                     const url = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(
-                      `${window.location.origin}/login?familyId=${selectedFamilyForQr.familyId}`
+                      `${window.location.origin}/qr-partial?familyId=${selectedFamilyForQr.familyId}&token=${selectedFamilyForQr.qrToken}`
                     )}`;
                     window.open(url, "_blank");
                   }}
