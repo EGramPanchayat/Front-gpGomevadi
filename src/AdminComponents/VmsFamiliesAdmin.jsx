@@ -204,9 +204,9 @@ export default function VmsFamiliesAdmin() {
   // Sort families to show latest first
   const latestFamilies = [...families].reverse();
 
-  // Efficient search filter
-  const filteredFamilies = searchQuery.trim() === ""
-    ? latestFamilies.slice(0, 3)
+  // Search filter applies to the "all" tab
+  const filteredFamiliesAll = searchQuery.trim() === ""
+    ? latestFamilies
     : latestFamilies.filter((f) => {
         const q = searchQuery.toLowerCase().trim();
         return (
@@ -216,12 +216,12 @@ export default function VmsFamiliesAdmin() {
         );
       });
 
-  // Pagination for all families view
+  // Pagination for all families view based on filtered results
   const itemsPerPage = 15;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = latestFamilies.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(latestFamilies.length / itemsPerPage);
+  const currentItems = filteredFamiliesAll.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredFamiliesAll.length / itemsPerPage);
 
   return (
     <div className="space-y-8">
@@ -860,29 +860,11 @@ export default function VmsFamiliesAdmin() {
           ) : (
             /* SEARCH AND RESULTS TABLE */
             <div className="bg-white rounded-3xl p-6 shadow-xl border border-green-100 space-y-6">
-              <div>
-                <label className="block text-xs font-black text-slate-500 mb-2 uppercase tracking-wide">
-                  कुटुंब प्रमुखाचे नाव किंवा मोबाईल नंबरने शोधा (Search Household)
-                </label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  </span>
-                  <input
-                    type="text"
-                    placeholder="शोधण्यासाठी नाव / मोबाईल नंबर / कुटुंब ID प्रविष्ट करा..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-11 pr-4 py-3.5 bg-white border border-green-600 rounded-2xl w-full text-sm outline-none font-semibold transition-all duration-300 focus:border-green-700 focus:ring-4 focus:ring-green-100"
-                  />
-                </div>
-              </div>
+
 
               {loading ? (
                 <div className="text-center py-6 text-sm text-slate-400">लोड होत आहे...</div>
-              ) : filteredFamilies.length === 0 ? (
+              ) : filteredFamiliesAll.length === 0 ? (
                 <p className="text-center text-slate-400 py-6 text-sm">शोधलेले कुटुंब सापडले नाही.</p>
               ) : (
                 <div className="overflow-x-auto space-y-4">
@@ -897,7 +879,7 @@ export default function VmsFamiliesAdmin() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      {filteredFamilies.map((f) => (
+                      {latestFamilies.slice(0, 3).map((f) => (
                         <tr key={f._id} className="hover:bg-slate-50/40 transition">
                           <td className="p-4 font-mono font-black text-xs text-green-700">{f.familyId}</td>
                           <td className="p-4">
@@ -1133,6 +1115,30 @@ export default function VmsFamiliesAdmin() {
             </button>
           </div>
 
+          {/* Moved Search Bar */}
+          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+            <label className="block text-xs font-black text-slate-500 mb-2 uppercase tracking-wide">
+              कुटुंब प्रमुखाचे नाव किंवा मोबाईल नंबरने शोधा (Search Household)
+            </label>
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </span>
+              <input
+                type="text"
+                placeholder="शोधण्यासाठी नाव / मोबाईल नंबर / कुटुंब ID प्रविष्ट करा..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1); // Reset page to 1 on search
+                }}
+                className="pl-11 pr-4 py-3.5 bg-white border border-green-600 rounded-2xl w-full text-sm outline-none font-semibold transition-all duration-300 focus:border-green-700 focus:ring-4 focus:ring-green-100"
+              />
+            </div>
+          </div>
+
           {loading ? (
             <div className="text-center py-10 text-sm text-slate-400">लोड होत आहे...</div>
           ) : latestFamilies.length === 0 ? (
@@ -1210,7 +1216,7 @@ export default function VmsFamiliesAdmin() {
               {totalPages > 1 && (
                 <div className="flex justify-between items-center pt-4 border-t border-slate-100">
                   <p className="text-xs text-slate-500 font-bold">
-                    एकूण {latestFamilies.length} पैकी {indexOfFirstItem + 1} ते {Math.min(indexOfLastItem, latestFamilies.length)} कुटुंबे दर्शवत आहे
+                    एकूण {filteredFamiliesAll.length} पैकी {indexOfFirstItem + 1} ते {Math.min(indexOfLastItem, latestFamilies.length)} कुटुंबे दर्शवत आहे
                   </p>
                   <div className="flex gap-2">
                     <button
