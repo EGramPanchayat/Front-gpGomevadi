@@ -13,7 +13,7 @@ const TAX_TYPE_LABELS = {
   fine: { mr: "दंड", en: "Fine / Penalty" },
 };
 
-export default function VmsFamiliesAdmin() {
+export default function VmsFamiliesAdmin({ onRedirectToTax }) {
   const { lang } = useLanguage();
   const taxTypeLabel = (type) => TAX_TYPE_LABELS[type]?.[lang] || TAX_TYPE_LABELS[type]?.mr || type;
   const [families, setFamilies] = useState([]);
@@ -469,7 +469,7 @@ export default function VmsFamiliesAdmin() {
                     setFamilyTaxes(null);
                     setFamilyApps([]);
                   }}
-                  className="flex items-center gap-2 text-white bg-orange-600 hover:bg-orange-700 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow-md transition-all duration-205 hover:-translate-y-0.5"
+                  className="flex items-center gap-2 text-white bg-orange-500 hover:bg-orange-600 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow-md transition-all duration-205 hover:-translate-y-0.5"
                 >
                   {lang === "mr" ? "← मागे जा" : "← Back"}
                 </button>
@@ -1056,7 +1056,7 @@ export default function VmsFamiliesAdmin() {
                 setActiveTab("search");
                 setSearchQuery("");
               }}
-              className="flex items-center gap-2 text-white bg-orange-600 hover:bg-orange-700 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow-md transition-all duration-205 hover:-translate-y-0.5"
+              className="flex items-center gap-2 text-white bg-orange-500 hover:bg-orange-600 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow-md transition-all duration-205 hover:-translate-y-0.5"
             >
               {lang === "mr" ? "← मागे जा" : "← Back"}
             </button>
@@ -1088,12 +1088,12 @@ export default function VmsFamiliesAdmin() {
                 }}
                 className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
                   taxFilter === "pending"
-                    ? "bg-red-500 text-white shadow-sm"
+                    ? "bg-orange-500 text-white shadow-sm"
                     : "text-slate-500 hover:text-slate-800"
                 }`}
               >
                 <span>{lang === "mr" ? "कर आकारणी शिल्लक" : "Pending Tax"}</span>
-                <span className={`px-1.5 py-0.5 rounded text-[9px] font-black ${taxFilter === "pending" ? "bg-white/20 text-white" : "bg-red-100 text-red-600"}`}>
+                <span className={`px-1.5 py-0.5 rounded text-[9px] font-black ${taxFilter === "pending" ? "bg-white/20 text-white" : "bg-orange-100 text-orange-600"}`}>
                   {latestFamilies.filter(f => !f.hasTaxAssigned).length}
                 </span>
               </button>
@@ -1156,9 +1156,18 @@ export default function VmsFamiliesAdmin() {
                               ✓ {lang === "mr" ? "पूर्ण" : "Done"}
                             </span>
                           ) : (
-                            <span className="inline-flex items-center justify-center gap-1 bg-red-50 text-red-655 border border-red-200 w-24 py-1.5 rounded-xl text-xs font-black select-none">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (onRedirectToTax) {
+                                  onRedirectToTax(f);
+                                }
+                              }}
+                              title={lang === "mr" ? "थेट कर आकारणी करा" : "Assign Tax Directly"}
+                              className="inline-flex items-center justify-center gap-1 bg-red-50 text-red-655 border border-red-200 w-24 py-1.5 rounded-xl text-xs font-black hover:bg-orange-500 hover:text-white hover:border-orange-500 transition-all cursor-pointer shadow-sm active:scale-95 select-none animate-pulse"
+                            >
                               ✗ {lang === "mr" ? "प्रलंबित" : "Pending"}
-                            </span>
+                            </button>
                           )}
                         </td>
                         <td className="p-4 flex gap-2 justify-center">
@@ -1178,7 +1187,7 @@ export default function VmsFamiliesAdmin() {
                               setSelectedFamilyForQr(f);
                               setShowQrModal(true);
                             }}
-                            className="border border-orange-500 text-orange-655 hover:bg-orange-500 hover:text-white font-extrabold px-3 py-1.5 rounded-xl text-xs shadow-sm transition-all duration-200 hover:-translate-y-0.5 flex items-center gap-1"
+                            className="border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white font-extrabold px-3 py-1.5 rounded-xl text-xs shadow-sm transition-all duration-200 hover:-translate-y-0.5 flex items-center gap-1"
                           >
                             QR कोड
                           </button>

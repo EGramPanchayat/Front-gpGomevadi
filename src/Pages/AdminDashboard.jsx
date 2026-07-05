@@ -24,6 +24,7 @@ export default function AdminDashboard() {
   const { lang, setLang } = useLanguage();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [openSection, setOpenSection] = useState(null);
+  const [preselectedFamilyForTax, setPreselectedFamilyForTax] = useState(null);
 
   const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem("darkMode") === "true");
 
@@ -362,9 +363,21 @@ export default function AdminDashboard() {
 
             {activeTab === "submissions" && <DakhalaSubmissions />}
 
-            {activeTab === "families" && <VmsFamiliesAdmin />}
+            {activeTab === "families" && (
+              <VmsFamiliesAdmin
+                onRedirectToTax={(family) => {
+                  setPreselectedFamilyForTax(family);
+                  setActiveTab("taxes");
+                }}
+              />
+            )}
 
-            {activeTab === "taxes" && <VmsTaxesAdmin />}
+            {activeTab === "taxes" && (
+              <VmsTaxesAdmin
+                preselectedFamily={preselectedFamilyForTax}
+                clearPreselectedFamily={() => setPreselectedFamilyForTax(null)}
+              />
+            )}
 
             {activeTab === "vms-apps" && <VmsApplicationsAdmin />}
 

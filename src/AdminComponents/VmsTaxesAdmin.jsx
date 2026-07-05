@@ -39,7 +39,7 @@ const notifTypeLabels = {
   auto_release: { label: "स्वयंचलित कर", color: "bg-indigo-100 text-indigo-800" },
 };
 
-export default function VmsTaxesAdmin() {
+export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamily }) {
   const { lang } = useLanguage();
   const taxTypeLabel = (type) => TAX_TYPE_LABELS[type]?.[lang] || TAX_TYPE_LABELS[type]?.mr || type;
   const [activeTab, setActiveTab] = useState("stats");
@@ -114,7 +114,13 @@ export default function VmsTaxesAdmin() {
       .get("/admin/families")
       .then((res) => {
         setFamilies(res.data || []);
-        if (res.data && res.data.length > 0) {
+        if (preselectedFamily) {
+          setSelectedFamilyId(preselectedFamily.familyId);
+          setActiveTab("ledger");
+          if (clearPreselectedFamily) {
+            clearPreselectedFamily();
+          }
+        } else if (res.data && res.data.length > 0) {
           setSelectedFamilyId(res.data[0].familyId);
         }
       })
@@ -122,6 +128,17 @@ export default function VmsTaxesAdmin() {
         toast.error("Failed to load family list");
       });
   }, []);
+
+  // Update selected ledger if preselected family changes during dashboard lifecycle
+  useEffect(() => {
+    if (preselectedFamily) {
+      setSelectedFamilyId(preselectedFamily.familyId);
+      setActiveTab("ledger");
+      if (clearPreselectedFamily) {
+        clearPreselectedFamily();
+      }
+    }
+  }, [preselectedFamily]);
 
   // Fetch Global Stats
   const fetchGlobalStats = () => {
