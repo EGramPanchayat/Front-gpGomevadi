@@ -1131,9 +1131,7 @@ export default function VmsFamiliesAdmin() {
                       <th className="p-4 rounded-l-xl">कुटुंब ID</th>
                       <th className="p-4">कुटुंब प्रमुख (Head Name)</th>
                       <th className="p-4">मोबाईल</th>
-                      <th className="p-4">व्हॉट्सॲप</th>
                       <th className="p-4 text-center">{lang === "mr" ? "कर आकारणी" : "Tax Assignment"}</th>
-                      <th className="p-4 text-center">सदस्य संख्या (M / F / S / C)</th>
                       <th className="p-4 rounded-r-xl text-center">क्रिया</th>
                     </tr>
                   </thead>
@@ -1153,7 +1151,6 @@ export default function VmsFamiliesAdmin() {
                           </div>
                         </td>
                         <td className="p-4 font-mono text-slate-500 text-xs">{f.mobileNumber}</td>
-                        <td className="p-4 font-mono text-slate-500 text-xs">{f.whatsappNumber || "—"}</td>
                         <td className="p-4 text-center">
                           {f.hasTaxAssigned ? (
                             <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 border border-green-200 px-2.5 py-1 rounded-md text-[10px] font-extrabold uppercase select-none">
@@ -1164,16 +1161,6 @@ export default function VmsFamiliesAdmin() {
                               ✗ {lang === "mr" ? "प्रलंबित" : "Pending"}
                             </span>
                           )}
-                        </td>
-                        <td className="p-4 text-center">
-                          <div className="inline-flex flex-col items-center">
-                            <span className="bg-green-50 text-green-700 px-2.5 py-0.5 rounded-full text-xs font-black border border-green-100">
-                              {(f.menCount || 0) + (f.womenCount || 0) + (f.seniorCount || 0) + (f.childrenCount || 0)}
-                            </span>
-                            <span className="text-[9px] text-slate-400 mt-1 font-semibold">
-                              {f.menCount || 0}पु / {f.womenCount || 0}म / {f.seniorCount || 0}व्य / {f.childrenCount || 0}बा
-                            </span>
-                          </div>
                         </td>
                         <td className="p-4 flex gap-2 justify-center">
                           <button
@@ -1195,6 +1182,13 @@ export default function VmsFamiliesAdmin() {
                             className="border border-orange-500 text-orange-655 hover:bg-orange-500 hover:text-white font-extrabold px-3 py-1.5 rounded-xl text-xs shadow-sm transition-all duration-200 hover:-translate-y-0.5 flex items-center gap-1"
                           >
                             QR कोड
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(f._id)}
+                            className="border border-red-200 text-red-650 hover:bg-red-500 hover:text-white font-extrabold px-3 py-1.5 rounded-xl text-xs transition-all duration-200 hover:-translate-y-0.5"
+                          >
+                            {lang === "mr" ? "हटवा" : "Delete"}
                           </button>
                         </td>
                       </tr>
