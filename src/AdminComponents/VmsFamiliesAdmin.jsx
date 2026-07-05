@@ -1146,18 +1146,17 @@ export default function VmsFamiliesAdmin() {
                             </div>
                             <div>
                               <p className="text-slate-800 font-extrabold text-sm leading-snug">{f.mainMemberName}</p>
-                              <span className="text-[9px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-500 font-bold">घर क्र: {f.houseNumber}</span>
                             </div>
                           </div>
                         </td>
                         <td className="p-4 font-mono text-slate-500 text-xs">{f.mobileNumber}</td>
                         <td className="p-4 text-center">
                           {f.hasTaxAssigned ? (
-                            <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 border border-green-200 px-2.5 py-1 rounded-md text-[10px] font-extrabold uppercase select-none">
+                            <span className="inline-flex items-center justify-center gap-1 bg-green-50 text-green-700 border border-green-200 w-24 py-1.5 rounded-xl text-xs font-black select-none">
                               ✓ {lang === "mr" ? "पूर्ण" : "Done"}
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 bg-red-50 text-red-655 border border-red-200 px-2.5 py-1 rounded-md text-[10px] font-extrabold uppercase select-none">
+                            <span className="inline-flex items-center justify-center gap-1 bg-red-50 text-red-655 border border-red-200 w-24 py-1.5 rounded-xl text-xs font-black select-none">
                               ✗ {lang === "mr" ? "प्रलंबित" : "Pending"}
                             </span>
                           )}
