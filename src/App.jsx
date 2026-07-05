@@ -11,6 +11,7 @@ import './App.css';
 import UserLoginPage from './Pages/UserLoginPage.jsx';
 
 import UserDashboard from './Pages/UserDashboard.jsx';
+import QrPartialPage from './Pages/QrPartialPage.jsx';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/user-login" element={<UserLoginPage />} />
 
           <Route path="/user/dashboard" element={<UserDashboard />} />
+          <Route path="/qr-partial" element={<QrPartialPage />} />
         </Routes>
       </Router>
     </SiteConfigProvider>
