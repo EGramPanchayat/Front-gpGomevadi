@@ -99,7 +99,7 @@ export default function QrPrintAdmin() {
         checkLoaded();
       };
 
-      const loginUrl = `${window.location.origin}/login?familyId=${family.familyId}`;
+      const loginUrl = `${window.location.origin}/qr-partial?familyId=${family.familyId}&token=${family.qrToken}`;
       qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(loginUrl)}`;
       qrImg.crossOrigin = "anonymous";
 
@@ -495,7 +495,7 @@ export default function QrPrintAdmin() {
                   <div className="col-span-5 bg-slate-50 border border-slate-200 rounded-2xl p-2.5 flex flex-col items-center justify-center">
                     <img
                       src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
-                        `${window.location.origin}/login?familyId=${previewFamily.familyId}`
+                        `${window.location.origin}/qr-partial?familyId=${previewFamily.familyId}&token=${previewFamily.qrToken}`
                       )}`}
                       alt="Preview QR"
                       className="w-20 h-20 object-contain p-1 bg-white border border-slate-100 rounded-lg shadow-sm"
