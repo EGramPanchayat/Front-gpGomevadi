@@ -1,89 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axioesInstance from "../utils/axioesInstance";
 import { useSiteConfig } from "../utils/SiteConfigContext";
 import { useSearchParams } from "react-router-dom";
-import { User, Receipt, IndianRupee, ShieldCheck, AlertCircle, CheckCircle2, ChevronRight, FileText } from "lucide-react";
-
-const TAX_CATEGORIES = [
-  {
-    id: "water",
-    types: ["samanya_water", "vishesh_water"],
-    number: "01",
-  },
-  {
-    id: "house",
-    types: ["house", "health", "electricity"],
-    number: "02",
-  },
-  {
-    id: "fine",
-    types: ["fine"],
-    number: "03",
-  },
-];
-
-const TaxCategoryIcon = ({ categoryId, className = "h-5 w-5" }) => {
-  if (categoryId === "water") {
-    return (
-      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3.75S6.75 9.4 6.75 14a5.25 5.25 0 0010.5 0C17.25 9.4 12 3.75 12 3.75z" />
-        <path strokeLinecap="round" d="M9.5 15.2a2.8 2.8 0 002.8 2.3" />
-      </svg>
-    );
-  }
-
-  if (categoryId === "house") {
-    return (
-      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 10.5L12 3.75l8.25 6.75M5.75 9.25v10.5h12.5V9.25M9.5 19.75v-6.5h5v6.5" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.25l8.25 14.25H3.75L12 4.25zM12 9v4.5M12 17h.01" />
-    </svg>
-  );
-};
-
-const RazorpayMark = () => (
-  <span className="inline-flex h-6 w-6 items-center justify-center rounded-lg bg-white text-green-800 shadow-inner">
-    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M7 20L11.5 4H18L13.5 20H7Z" fill="currentColor" />
-      <path d="M5 20L8.8 7H12L8.2 20H5Z" fill="#F97316" />
-    </svg>
-  </span>
-);
-
-const CATEGORY_NAMES = {
-  water: { en: "Water Tax (General + Special)", mr: "पाणीपट्टी (सामान्य + विशेष)" },
-  house: { en: "House + Health + Electricity Tax", mr: "घरपट्टी + आरोग्य कर + वीज कर" },
-  fine: { en: "All Fines / Penalties", mr: "सर्व दंड" },
-};
-
-const money = (value) =>
-  `₹${Number(value || 0).toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
-
-const billTotals = (billList) =>
-  billList.reduce(
-    (totals, bill) => {
-      const amount = Number(bill.amount) || 0;
-      const paid = Math.min(Math.max(Number(bill.paidAmount) || 0, 0), amount);
-      totals.total += amount;
-      totals.paid += paid;
-      totals.remaining += Math.max(amount - paid, 0);
-      return totals;
-    },
-    { total: 0, paid: 0, remaining: 0 },
-  );
-
-const getCurrentFinancialYear = () => {
-  const today = new Date();
-  return today.getMonth() >= 3 ? today.getFullYear() : today.getFullYear() - 1;
-};
+import { User, ShieldCheck, CheckCircle2, Home, LayoutDashboard, Send, Lock } from "lucide-react";
 
 export default function QrPartialPage() {
   const { config } = useSiteConfig();
@@ -91,10 +12,16 @@ export default function QrPartialPage() {
   const [loading, setLoading] = useState(true);
   const [gpDetails, setGpDetails] = useState(null);
   const [family, setFamily] = useState(null);
-  const [bills, setBills] = useState([]);
-  const [language, setLanguage] = useState(() => localStorage.getItem("lang") || "mr");
-  const [payAmounts, setPayAmounts] = useState({});
-  const [processingId, setProcessingId] = useState(null);
+  const [otpSent, setOtpSent] = useState(false);
+  const [requestingOtp, setRequestingOtp] = useState(false);
+  const [verifyingOtp, setVerifyingOtp] = useState(false);
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [maskedMobile, setMaskedMobile] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpValues, setOtpValues] = useState(Array(6).fill(""));
+  const [countdown, setCountdown] = useState(0);
+
+  const inputRefs = useRef([]);
 
   const familyId = searchParams.get("familyId");
   const token = searchParams.get("token");
@@ -111,19 +38,9 @@ export default function QrPartialPage() {
         if (res.data.success) {
           setGpDetails(res.data.gpDetails);
           setFamily(res.data.family);
-          setBills(res.data.bills || []);
-
-          const loadedBills = res.data.bills || [];
-          const initialCategoryAmounts = {};
-          TAX_CATEGORIES.forEach((category) => {
-            initialCategoryAmounts[category.id] = billTotals(
-              loadedBills.filter((bill) => category.types.includes(bill.taxType)),
-            ).remaining;
-          });
-          setPayAmounts(initialCategoryAmounts);
         }
       } catch (err) {
-        toast.error("Failed to load data. Invalid QR code.");
+        toast.error("Failed to load family data.");
       } finally {
         setLoading(false);
       }
@@ -132,121 +49,103 @@ export default function QrPartialPage() {
     fetchData();
   }, [familyId, token]);
 
-  const loadRazorpayScript = () => {
-    return new Promise((resolve) => {
-      if (window.Razorpay) {
-        resolve(true);
-        return;
-      }
-      const script = document.createElement("script");
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
-    });
-  };
-
-  const handlePayCategory = async (group) => {
-    const inputKey = group.id;
-    const payAmt = Number(payAmounts[inputKey]);
-    const maxPayable = group.remaining;
-
-    if (isNaN(payAmt) || payAmt <= 0 || payAmt > maxPayable) {
-      return toast.error(`Please enter a valid amount between ₹1 and ₹${maxPayable}`);
-    }
-
-    setProcessingId(inputKey);
-    try {
-      const scriptLoaded = await loadRazorpayScript();
-      if (!scriptLoaded) {
-        throw new Error("Razorpay SDK load failed");
-      }
-
-      const { data: orderData } = await axioesInstance.post("/payments/order", {
-        category: group.id,
-        familyId: familyId,
-        amount: payAmt,
+  const startCountdown = () => {
+    setCountdown(60);
+    const interval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
       });
+    }, 1000);
+  };
 
-      if (orderData.mock) {
-        toast.info("Sandbox Mode: Simulating secure checkout...");
-        setTimeout(async () => {
-          try {
-            await axioesInstance.post("/payments/verify", {
-              category: group.id,
-              familyId: familyId,
-              amount: payAmt,
-              razorpayOrderId: orderData.orderId,
-              razorpayPaymentId: `pay_mock_${Math.random().toString(36).substring(7)}`,
-              mock: true,
-            });
-            toast.success("Payment of ₹" + payAmt + " successful!");
-            setTimeout(() => window.location.reload(), 1500);
-          } catch {
-            toast.error("Payment verification failed");
-          }
-        }, 1500);
-        return;
+  const handleGoDashboard = async () => {
+    setRequestingOtp(true);
+    try {
+      const { data } = await axioesInstance.post("/auth/otp/request-by-qr", {
+        familyId,
+        token
+      });
+      if (data.success) {
+        setMobileNumber(data.mobileNumber);
+        setMaskedMobile(data.maskedMobile);
+        setOtpSent(true);
+        startCountdown();
+        toast.success("OTP sent to registered mobile number!");
+        if (data.otp) {
+          console.log(`[TESTING OTP]: ${data.otp}`);
+          toast.info(`Sandbox Mode: Your OTP is ${data.otp}`, { autoClose: 10000 });
+        }
       }
-
-      const options = {
-        key: orderData.keyId,
-        amount: orderData.amount * 100,
-        currency: orderData.currency,
-        name: gpDetails?.name || "ग्रामपंचायत गोमेवाडी",
-        description: `${CATEGORY_NAMES[group.id][language]} — oldest dues first`,
-        image: gpDetails?.logo || "/images/satyamev.jpg",
-        order_id: orderData.orderId,
-        handler: async function (response) {
-          try {
-            await axioesInstance.post("/payments/verify", {
-              category: group.id,
-              familyId: familyId,
-              amount: payAmt,
-              razorpayOrderId: response.razorpay_order_id,
-              razorpayPaymentId: response.razorpay_payment_id,
-              razorpaySignature: response.razorpay_signature,
-            });
-            toast.success("Payment completed successfully!");
-            setTimeout(() => window.location.reload(), 1500);
-          } catch {
-            toast.error("Payment verification failed");
-          }
-        },
-        prefill: {
-          name: family?.mainMemberName,
-        },
-        theme: {
-          color: "#15803d",
-        },
-      };
-
-      const paymentObject = new window.Razorpay(options);
-      paymentObject.open();
     } catch (err) {
-      toast.error(err.message || "Failed to initiate payment");
+      toast.error(err.response?.data?.error || "Failed to request OTP");
     } finally {
-      setProcessingId(null);
+      setRequestingOtp(false);
     }
   };
 
-  const currentFinancialYear = getCurrentFinancialYear();
-  const paymentGroups = TAX_CATEGORIES.map((category) => {
-    const categoryBills = bills.filter((bill) => category.types.includes(bill.taxType));
-    return {
-      ...category,
-      ...billTotals(categoryBills),
-      previousDue: billTotals(
-        categoryBills.filter((bill) => Number(bill.year) < currentFinancialYear),
-      ).remaining,
-      currentDue: billTotals(
-        categoryBills.filter((bill) => Number(bill.year) === currentFinancialYear),
-      ).remaining,
-      futureDue: billTotals(
-        categoryBills.filter((bill) => Number(bill.year) > currentFinancialYear),
-      ).remaining,
-    };
-  });
+  const handleVerifyOtp = async (e) => {
+    if (e) e.preventDefault();
+    if (!otp || otp.length !== 6) {
+      return toast.error("Please enter a valid 6-digit OTP code");
+    }
+
+    setVerifyingOtp(true);
+    try {
+      const { data } = await axioesInstance.post("/auth/otp/verify", {
+        mobileNumber,
+        code: otp,
+      });
+      if (data.token) {
+        localStorage.setItem("userToken", data.token);
+      }
+      toast.success("Login successful!");
+      setTimeout(() => {
+        window.location.href = "/user/dashboard";
+      }, 1000);
+    } catch (err) {
+      toast.error(err.response?.data?.error || "Invalid OTP code");
+    } finally {
+      setVerifyingOtp(false);
+    }
+  };
+
+  const handleOtpChange = (value, index) => {
+    const cleanValue = value.replace(/\D/g, "");
+    const newOtp = [...otpValues];
+    newOtp[index] = cleanValue.substring(cleanValue.length - 1);
+    setOtpValues(newOtp);
+    setOtp(newOtp.join(""));
+
+    if (cleanValue && index < 5) {
+      inputRefs.current[index + 1].focus();
+    }
+  };
+
+  useEffect(() => {
+    if (otp.length === 6) {
+      handleVerifyOtp();
+    }
+  }, [otp]);
+
+  const handleOtpKeyDown = (e, index) => {
+    if (e.key === "Backspace" && !otpValues[index] && index > 0) {
+      inputRefs.current[index - 1].focus();
+    }
+  };
+
+  const handleOtpPaste = (e) => {
+    e.preventDefault();
+    const data = e.clipboardData.getData("text").replace(/\D/g, "");
+    if (!/^\d{6}$/.test(data)) return;
+    const newOtp = data.split("");
+    setOtpValues(newOtp);
+    setOtp(data);
+    inputRefs.current[5].focus();
+  };
 
   if (loading) {
     return (
@@ -257,25 +156,23 @@ export default function QrPartialPage() {
     );
   }
 
-  const totalDue = paymentGroups.reduce((sum, group) => sum + group.remaining, 0);
-
   return (
     <div className="min-h-screen bg-slate-100 flex justify-center font-sans sm:py-8">
       {/* Mobile App Container */}
-      <div className="w-full max-w-md bg-slate-50 sm:rounded-[2.5rem] shadow-2xl overflow-hidden relative flex flex-col min-h-screen sm:min-h-0 sm:h-[850px]">
+      <div className="w-full max-w-md bg-slate-50 sm:rounded-[2.5rem] shadow-2xl overflow-hidden relative flex flex-col min-h-screen sm:min-h-0 sm:h-[800px]">
         
-        {/* Header Section (Curved Background) */}
-        <div className="bg-gradient-to-br from-green-700 via-emerald-600 to-green-900 pt-12 pb-20 px-6 rounded-b-[2.5rem] shadow-md relative z-0">
+        {/* Header Section */}
+        <div className="bg-gradient-to-br from-green-800 via-green-700 to-emerald-900 pt-12 pb-20 px-6 rounded-b-[2.5rem] shadow-md relative z-0">
           <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full">
-            <ShieldCheck className="w-4 h-4 text-white" />
-            <span className="text-xs font-medium text-white tracking-wide">सुरक्षित</span>
+            <ShieldCheck className="w-4 h-4 text-white animate-pulse" />
+            <span className="text-[10px] font-bold text-white tracking-wide uppercase">QR सत्यापित</span>
           </div>
           <div className="text-center mt-4">
-            <h1 className="text-2xl font-bold text-white mb-1 tracking-tight">
+            <h1 className="text-2xl font-black text-white mb-1 tracking-tight">
               {gpDetails?.name || "ग्रामपंचायत गोमेवाडी"}
             </h1>
-            <p className="text-green-200 text-sm font-medium uppercase tracking-widest">
-              डिजिटल कर पोर्टल
+            <p className="text-orange-200 text-xs font-bold uppercase tracking-widest">
+              डिजिटल नागरिक केंद्र
             </p>
           </div>
         </div>
@@ -287,173 +184,145 @@ export default function QrPartialPage() {
               <img 
                 src={gpDetails?.logo || "/images/satyamev.jpg"} 
                 alt="Logo" 
-                className="w-16 h-16 object-contain"
+                className="w-16 h-16 object-cover"
               />
             </div>
           </div>
         </div>
 
         {/* Scrollable Content Body */}
-        <div className="px-5 pt-6 pb-28 flex-1 overflow-y-auto">
+        <div className="px-6 pt-6 pb-28 flex-1 overflow-y-auto space-y-6">
           
-          {/* Family Card (Neumorphic/Clean) */}
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/60 mb-6">
+          {/* Scan success confirmation */}
+          <div className="bg-green-50/50 border border-green-150 rounded-2xl p-4 flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-5 h-5 text-green-700" />
+            </div>
+            <div>
+              <h4 className="font-extrabold text-green-900 text-xs">स्कॅन यशस्वी!</h4>
+              <p className="text-[10px] text-green-700 mt-0.5 font-bold">QR कोड सुरक्षितपणे ओळखला गेला आहे</p>
+            </div>
+          </div>
+
+          {/* Household Info Card */}
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/60 space-y-4">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
-                <User className="w-6 h-6 text-green-600" />
+              <div className="w-11 h-11 bg-orange-50 rounded-full flex items-center justify-center shrink-0 border border-orange-100">
+                <User className="w-5 h-5 text-orange-600" />
               </div>
               <div className="flex-1">
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">कुटुंब प्रमुख</p>
-                <h2 className="text-lg font-bold text-slate-800 leading-tight">
-                  {family?.mainMemberName}
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-0.5">कुटुंब प्रमुख</p>
+                <h2 className="text-base font-black text-slate-800 leading-tight">
+                  {family?.mainMemberName || "—"}
                 </h2>
               </div>
             </div>
-            
-            <div className="mt-5 pt-4 border-t border-slate-100 flex gap-4">
-              <div className="flex-1">
-                <div className="flex items-center gap-1.5 text-slate-500 mb-1">
-                  <User className="w-3.5 h-3.5" />
-                  <span className="text-xs font-medium">एकूण सदस्य</span>
-                </div>
-                <p className="font-semibold text-slate-700">{family?.familySize || 0} व्यक्ती</p>
-              </div>
-            </div>
           </div>
 
-          {/* Tax Bills Header */}
-          <div className="flex items-center justify-between mb-4 px-1">
-            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-              <FileText className="w-4 h-4 text-slate-400" />
-              कर बिले
-            </h3>
-            <span className="bg-orange-100 text-orange-700 text-xs font-bold px-2.5 py-1 rounded-md">
-              {paymentGroups.length} आयटम
-            </span>
-          </div>
+          {!otpSent ? (
+            /* Action Choice Buttons */
+            <div className="space-y-3.5 pt-4">
+              <button
+                type="button"
+                onClick={() => (window.location.href = "/")}
+                className="w-full py-4 bg-white border-2 border-slate-200 hover:border-slate-300 text-slate-700 font-extrabold rounded-2xl flex items-center justify-center gap-2.5 transition active:scale-[0.98] shadow-sm text-sm"
+              >
+                <Home className="w-5 h-5 text-slate-500" />
+                मुख्य वेबसाईटवर जा
+              </button>
 
-          {/* Tax Bills List */}
-          {paymentGroups.length > 0 ? (
-            <div className="space-y-3">
-              {paymentGroups.map((group) => (
-                <div key={group.id} className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/60 flex flex-col gap-3">
-                  {/* Bill Header */}
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0">
-                      <Receipt className="w-5 h-5 text-emerald-600" />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-slate-800">{CATEGORY_NAMES[group.id][language]}</h4>
-                    </div>
-                    <div className="text-right">
-                      <span className={`inline-block text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wide ${group.remaining === 0 ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
-                        {group.remaining === 0 ? 'जमा' : 'थकीत'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Detailed Breakdown */}
-                  <div className="bg-slate-50 rounded-xl p-3 mt-1 space-y-2 text-sm border border-slate-100">
-                    <div className="flex justify-between text-slate-600">
-                      <span>चालू वर्ष ({currentFinancialYear}-{currentFinancialYear + 1})</span>
-                      <span className="font-medium text-slate-800 flex items-center">
-                        <IndianRupee className="w-3 h-3 mr-0.5" /> {money(group.currentDue)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-slate-600">
-                      <span>मागील वर्षांची थकबाकी</span>
-                      <span className="font-medium text-slate-800 flex items-center">
-                        <IndianRupee className="w-3 h-3 mr-0.5" /> {money(group.previousDue)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between border-t border-slate-200 pt-2 mt-2">
-                      <span className="font-bold text-slate-800">एकूण देय रक्कम</span>
-                      <span className={`font-bold flex items-center text-base ${group.remaining === 0 ? 'text-green-700' : 'text-slate-900'}`}>
-                        <IndianRupee className="w-4 h-4 mr-0.5" /> {money(group.remaining)}
-                      </span>
-                    </div>
-                  </div>
-
-                  {group.remaining > 0 && (
-                    <div className="flex items-center gap-2 mt-2">
-                      <input
-                        type="number"
-                        value={payAmounts[group.id] || ""}
-                        onChange={(e) => setPayAmounts({ ...payAmounts, [group.id]: e.target.value })}
-                        placeholder="रक्कम टाका"
-                        className="flex-1 px-4 py-2 border rounded-lg focus:ring focus:ring-green-300 focus:outline-none text-sm"
-                      />
-                      <button
-                        onClick={() => handlePayCategory(group)}
-                        disabled={processingId === group.id}
-                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition disabled:opacity-50 flex items-center gap-2 text-sm font-medium"
-                      >
-                        {processingId === group.id ? (
-                          <>
-                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                            <span>प्रक्रिया...</span>
-                          </>
-                        ) : (
-                          <>
-                            <span>ऑनलाइन भरा</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
+              <button
+                type="button"
+                onClick={handleGoDashboard}
+                disabled={requestingOtp}
+                className="w-full py-4 bg-orange-500 hover:bg-orange-600 text-white font-extrabold rounded-2xl flex items-center justify-center gap-2.5 transition active:scale-[0.98] disabled:opacity-75 shadow-md shadow-orange-500/20 text-sm"
+              >
+                {requestingOtp ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                    <span>ओटीपी पाठवत आहे...</span>
+                  </>
+                ) : (
+                  <>
+                    <LayoutDashboard className="w-5 h-5" />
+                    डॅशबोर्डवर जा
+                  </>
+                )}
+              </button>
             </div>
           ) : (
-            <div className="bg-white rounded-2xl p-8 border border-slate-200/60 text-center">
-              <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-3">
-                <CheckCircle2 className="w-8 h-8 text-green-500" />
+            /* OTP Verification Container */
+            <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/60 space-y-6 animate-fadeIn">
+              <div className="text-center space-y-1.5">
+                <div className="w-12 h-12 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center mx-auto mb-2 border border-orange-100">
+                  <Lock className="w-6 h-6" />
+                </div>
+                <h3 className="font-extrabold text-slate-800 text-sm">मोबाईल पडताळणी (OTP Verification)</h3>
+                <p className="text-xs text-slate-400 font-bold leading-normal">
+                  नोंदणीकृत मोबाईल नंबर <span className="text-slate-850">{maskedMobile}</span> वर OTP पाठवला आहे
+                </p>
               </div>
-              <h4 className="font-bold text-slate-800">कोणतेही बिल नाहीत</h4>
-              <p className="text-sm text-slate-500 mt-1">या कुटुंबासाठी सध्या कोणतेही कर रेकॉर्ड नाहीत.</p>
+
+              <form onSubmit={handleVerifyOtp} className="space-y-6">
+                {/* 6 Digit Box input fields */}
+                <div className="flex justify-between gap-2 max-w-xs mx-auto">
+                  {otpValues.map((val, idx) => (
+                    <input
+                      key={idx}
+                      ref={(el) => (inputRefs.current[idx] = el)}
+                      type="text"
+                      maxLength={1}
+                      value={val}
+                      onChange={(e) => handleOtpChange(e.target.value, idx)}
+                      onKeyDown={(e) => handleOtpKeyDown(e, idx)}
+                      onPaste={handleOtpPaste}
+                      className="w-11 h-12 border-2 rounded-xl text-center font-extrabold text-base focus:ring-2 focus:ring-orange-400 focus:border-transparent outline-none bg-slate-50 transition"
+                    />
+                  ))}
+                </div>
+
+                <div className="text-center text-xs font-bold">
+                  {countdown > 0 ? (
+                    <span className="text-slate-400">
+                      पुन्हा पाठवा {countdown} सेकंदात
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleGoDashboard}
+                      className="text-orange-600 hover:text-orange-700 transition underline"
+                    >
+                      OTP पुन्हा पाठवा (Resend OTP)
+                    </button>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={verifyingOtp || otp.length !== 6}
+                  className="w-full py-3.5 bg-green-750 hover:bg-green-800 text-white font-extrabold rounded-2xl transition disabled:opacity-50 active:scale-[0.98] shadow-md shadow-green-700/20 text-xs flex items-center justify-center gap-1.5"
+                >
+                  {verifyingOtp ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                      <span>सत्यापित करत आहे...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      ओटीपी सत्यापित करा (Verify & Login)
+                    </>
+                  )}
+                </button>
+              </form>
             </div>
           )}
+
         </div>
 
-        {/* Sticky Bottom Action Bar */}
-        <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-5 pt-4 rounded-b-[2.5rem] shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)]">
-          <div className="flex items-end justify-between mb-4">
-            <div>
-              <p className="text-sm font-medium text-slate-500 mb-1">एकूण देय रक्कम</p>
-              <h2 className="text-3xl font-black text-slate-900 flex items-center tracking-tight">
-                <IndianRupee className="w-7 h-7 mr-1 text-slate-400" />
-                {totalDue.toLocaleString('en-IN')}
-              </h2>
-            </div>
-          </div>
-          
-          <button 
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl flex items-center justify-between px-6 transition-all shadow-lg shadow-green-600/30 active:scale-[0.98]"
-            disabled={totalDue === 0}
-            onClick={() => {
-              if (totalDue > 0) {
-                const firstUnpaid = paymentGroups.find(g => g.remaining > 0);
-                if (firstUnpaid) handlePayCategory(firstUnpaid);
-              }
-            }}
-          >
-            <span className="text-lg">
-              {totalDue > 0 ? "आता भरा" : "भरायचे काहीही नाही"}
-            </span>
-            {totalDue > 0 ? (
-              <ChevronRight className="w-6 h-6" />
-            ) : (
-              <CheckCircle2 className="w-6 h-6 text-green-300" />
-            )}
-          </button>
-
-          {/* Login Button for Full Access */}
-          <button
-            onClick={() => (window.location.href = "/user-login")}
-            className="w-full mt-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-3 rounded-xl transition text-sm"
-          >
-            संपूर्ण माहिती पाहण्यासाठी लॉगिन करा
-          </button>
+        {/* Brand footer */}
+        <div className="absolute bottom-5 left-0 right-0 text-center text-[10px] text-slate-400 font-bold pointer-events-none">
+          © {new Date().getFullYear()} {gpDetails?.name || "ग्रामपंचायत गोमेवाडी"} | सर्व हक्क राखीव.
         </div>
 
       </div>
