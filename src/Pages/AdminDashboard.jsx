@@ -56,7 +56,7 @@ export default function AdminDashboard() {
   const vmsItems = [
     { key: "families", label: "कुटुंब नोंदणी" },
     { key: "taxes", label: "कर विवरण" },
-    { key: "vms-apps", label: "नागरिक दाखला विनंती" },
+    { key: "vms-apps", label: "दाखले मागणी अर्ज" },
   ];
 
   const memberItems = [
@@ -71,7 +71,7 @@ export default function AdminDashboard() {
     submissions: "सार्वजनिक दाखले मागण्या यादी",
     families: "गाव कुटुंब नोंदणी केंद्र",
     taxes: "कर आकारणी आणि वसुली व्यवस्थापन",
-    "vms-apps": "नागरिक दाखला विनंती मंजुरी केंद्र",
+    "vms-apps": "दाखले मागणी अर्ज मंजुरी केंद्र",
     members: "अधिकारी, कार्यकारिणी आणि गाव माहिती",
   };
 
@@ -151,106 +151,8 @@ export default function AdminDashboard() {
         {/* MAIN CONTENT */}
         <main className="flex-1 pt-6 px-4 md:pt-8 md:px-8 pb-28 md:pb-10 space-y-4 md:space-y-6 overflow-y-auto relative">
 
-          {/* Floating Settings capsule - Available globally across all tabs */}
-          <div className={`absolute top-9 right-6 md:top-12 md:right-10 flex items-center gap-2 p-1 rounded-full border transition-all duration-500 z-30 shadow-md ${isDarkMode
-              ? "border-slate-800 bg-slate-950 backdrop-blur-lg"
-              : "border-gray-200 bg-white"
-            }`}>
-            
-            {/* Sliding Language Switcher Cylinder */}
-            <div className={`relative flex items-center p-[2px] rounded-full h-7 w-24 overflow-hidden transition-all duration-300 ${
-              isDarkMode ? "bg-slate-900" : "bg-white border border-gray-100 shadow-inner"
-            }`}>
-              {/* Sliding background pill */}
-              <div
-                className={`absolute top-[2px] bottom-[2px] w-[44px] rounded-full transition-all duration-300 ease-out bg-gradient-to-r from-green-700 to-emerald-800 shadow-md ${
-                  language === "en" ? "left-[46px]" : "left-[2px]"
-                }`}
-              />
-              <button
-                onClick={() => setLanguage("mr")}
-                className={`relative z-10 flex-1 text-center text-[10px] font-black transition-colors duration-300 ${
-                  language === "mr" ? "text-white" : isDarkMode ? "text-slate-400" : "text-green-800"
-                }`}
-              >
-                मराठी
-              </button>
-              <button
-                onClick={() => setLanguage("en")}
-                className={`relative z-10 flex-1 text-center text-[10px] font-black transition-colors duration-300 ${
-                  language === "en" ? "text-white" : isDarkMode ? "text-slate-400" : "text-green-800"
-                }`}
-              >
-                En
-              </button>
-            </div>
 
-            {/* Divider line */}
-            <div className={`h-4 w-px ${isDarkMode ? "bg-slate-800" : "bg-green-200"}`}></div>
 
-            {/* Dark Mode toggle button */}
-            <button
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group ${isDarkMode ? "hover:bg-slate-800 text-yellow-300" : "hover:bg-green-50 text-amber-500"
-                }`}
-              title={isDarkMode ? "Light Mode" : "Dark Mode"}
-            >
-              {isDarkMode ? (
-                <div className="relative w-5 h-5 flex items-center justify-center">
-                  <svg className="w-4 h-4 text-yellow-300 drop-shadow-[0_0_5px_rgba(253,224,71,0.6)] transition-all duration-300 transform group-hover:rotate-12 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-                  </svg>
-                  <span className="absolute -top-1 -right-0.5 text-[8px] text-yellow-200 animate-pulse select-none">✦</span>
-                </div>
-              ) : (
-                <div className="relative w-5 h-5 flex items-center justify-center">
-                  <svg className="w-4 h-4 text-amber-500 drop-shadow-[0_0_4px_rgba(245,158,11,0.4)] transition-all duration-300 transform group-hover:rotate-45 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m0 13.5V21M4.93 4.93l1.59 1.59m10.96 10.96l1.59 1.59M3 12h2.25m13.5 0H21m-16.07 7.07l1.59-1.59M16.93 7.07l1.59-1.59M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                  </svg>
-                </div>
-              )}
-            </button>
-          </div>
-
-          {/* HEADER BAR */}
-
-          {activeTab !== "dashboard" && activeTab !== "overview" && activeTab !== "development" && activeTab !== "submissions" && (
-            <header className={`relative flex justify-between items-center py-2.5 px-4 mb-4 border rounded-3xl overflow-hidden shadow-sm transition-all duration-300 ${
-              isDarkMode 
-                ? "bg-gradient-to-r from-slate-950 via-slate-900/60 to-slate-950 border-slate-850" 
-                : "bg-gradient-to-r from-green-50/50 via-white to-emerald-50/30 border-green-100/60"
-            }`}>
-              {/* Background decorative circles */}
-              <div className="absolute -left-6 -top-6 w-16 h-16 rounded-full bg-green-500/5 blur-sm pointer-events-none"></div>
-              <div className="absolute right-1/4 -top-8 w-20 h-20 rounded-full bg-emerald-400/5 blur-md pointer-events-none"></div>
-              <div className="absolute -right-6 -top-6 w-14 h-14 rounded-full bg-green-500/10 blur-sm pointer-events-none"></div>
-
-              {/* Left Side: Icon & Title Group */}
-              <div className="flex items-center gap-2.5 relative z-10">
-                <div className={`w-8.5 h-8.5 rounded-full flex items-center justify-center shadow-inner transition-colors duration-300 ${
-                  isDarkMode 
-                    ? "bg-slate-900 border border-slate-800 text-green-400" 
-                    : "bg-green-100/60 border border-green-200/50 text-green-750"
-                }`}>
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
-                  </svg>
-                </div>
-                <div>
-                  <h2 className={`text-sm font-black tracking-tight leading-tight ${isDarkMode ? "text-slate-105" : "text-green-900"}`}>
-                    {tabTitles[activeTab]}
-                  </h2>
-                </div>
-              </div>
-
-              {/* Right Side: Action Trigger */}
-              {activeTab === "overview" && (
-                <div className="relative z-10 flex gap-2">
-                  {/* The Notice Modal button has been removed since Notice upload is integrated into NewsUpload */}
-                </div>
-              )}
-            </header>
-          )}
 
           {/* TAB CONTENT */}
           <div className="space-y-6">
@@ -436,6 +338,22 @@ export default function AdminDashboard() {
 
             {activeTab === "members" && (
               <div className="space-y-4 max-w-7xl mx-auto">
+                <div className="relative overflow-hidden bg-green-900 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+                  <div className="absolute -top-20 -right-20 w-72 h-72 bg-emerald-600/30 rounded-full pointer-events-none z-0"></div>
+                  <div className="absolute -bottom-24 -left-16 w-56 h-56 bg-orange-500/30 rounded-full pointer-events-none z-0"></div>
+                  <div className="absolute top-1/2 left-[60%] w-16 h-16 bg-yellow-400/30 rounded-full -translate-y-1/2 pointer-events-none z-0"></div>
+
+                  <div className="relative z-10">
+                    <h2 className="text-2xl font-black text-white drop-shadow-md">सदस्य, अधिकारी आणि गाव माहिती केंद्र (Village Administration Hub)</h2>
+                    <p className="text-sm text-green-100 font-semibold mt-1">ग्रामपंचायत कार्यकारिणी, अधिकारी, शासकीय अधिकारी आणि सामान्य माहिती व्यवस्थापन पॅनेल</p>
+                  </div>
+
+                  <div className="relative z-10 bg-slate-100 p-1.5 rounded-2xl shrink-0">
+                    <div className="bg-green-700 text-white shadow-md px-4 py-2.5 rounded-xl font-bold text-xs">
+                      ४ व्यवस्थापन विभाग
+                    </div>
+                  </div>
+                </div>
 
                 {/* 1: गाव कार्यकारिणी */}
                 <div className="bg-white rounded-3xl shadow-md border border-green-200 overflow-hidden">

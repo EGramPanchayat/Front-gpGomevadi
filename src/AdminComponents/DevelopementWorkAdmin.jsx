@@ -66,18 +66,20 @@ const DevelopementWorkAdmin = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-8 animate-fadeIn">
-      {/* SaaS Header */}
-      <div className="bg-gradient-to-r from-green-800 to-emerald-600 rounded-3xl p-8 text-white shadow-lg relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4"></div>
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2 flex items-center gap-3">
-              <BiBuildingHouse className="text-4xl" /> विकास कामे व्यवस्थापन
-            </h1>
-            <p className="text-emerald-100/90 text-sm md:text-base max-w-2xl mt-2 leading-relaxed">
-              ग्रामपंचायतीच्या अंतर्गत सुरू असलेली व पूर्ण झालेली सर्व विकास कामे येथे जोडा. 
-              नागरिकांना गावाच्या प्रगतीची पारदर्शक माहिती देण्यासाठी हे व्यासपीठ वापरा.
-            </p>
+      {/* HEADER SECTION */}
+      <div className="relative overflow-hidden bg-green-900 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="absolute -top-20 -right-20 w-72 h-72 bg-emerald-600/30 rounded-full pointer-events-none z-0"></div>
+        <div className="absolute -bottom-24 -left-16 w-56 h-56 bg-orange-500/30 rounded-full pointer-events-none z-0"></div>
+        <div className="absolute top-1/2 left-[60%] w-16 h-16 bg-yellow-400/30 rounded-full -translate-y-1/2 pointer-events-none z-0"></div>
+
+        <div className="relative z-10">
+          <h2 className="text-2xl font-black text-white drop-shadow-md">विकास कामे व्यवस्थापन (Development Works Hub)</h2>
+          <p className="text-sm text-green-100 font-semibold mt-1">ग्रामपंचायत विकास कामे, फोटो नोंदणी आणि नागरिकांसाठी प्रगती माहिती व्यवस्थापन पॅनेल</p>
+        </div>
+
+        <div className="relative z-10 bg-slate-100 p-1.5 rounded-2xl shrink-0">
+          <div className="bg-green-700 text-white shadow-md px-4 py-2.5 rounded-xl font-bold text-xs">
+            {savedWorks.length} विकास कामे
           </div>
         </div>
       </div>

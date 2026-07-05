@@ -103,18 +103,24 @@ const NewsUpload = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-8 animate-fadeIn">
-      {/* SaaS Header */}
-      <div className="bg-gradient-to-r from-green-800 to-emerald-600 rounded-3xl p-8 text-white shadow-lg relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4"></div>
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">बातम्या आणि सूचना व्यवस्थापन</h1>
-            <p className="text-green-100/90 text-sm md:text-base max-w-2xl">
-              गावच्या ताज्या बातम्या आणि महत्त्वाच्या सूचना नागरिकांपर्यंत पोहोचवण्यासाठी हे व्यवस्थापन केंद्र वापरा. 
-              येथून तुम्ही नवीन माहिती जोडू शकता आणि जुनी माहिती काढून टाकू शकता.
-            </p>
-          </div>
+      {/* HEADER SECTION */}
+      <div className="relative overflow-hidden bg-green-900 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="absolute -top-20 -right-20 w-72 h-72 bg-emerald-600/30 rounded-full pointer-events-none z-0"></div>
+        <div className="absolute -bottom-24 -left-16 w-56 h-56 bg-orange-500/30 rounded-full pointer-events-none z-0"></div>
+        <div className="absolute top-1/2 left-[60%] w-16 h-16 bg-yellow-400/30 rounded-full -translate-y-1/2 pointer-events-none z-0"></div>
 
+        <div className="relative z-10">
+          <h2 className="text-2xl font-black text-white drop-shadow-md">बातम्या आणि सूचना व्यवस्थापन (News & Notices Hub)</h2>
+          <p className="text-sm text-green-100 font-semibold mt-1">गावच्या ताज्या बातम्या, सूचना पत्रे आणि नागरिकांपर्यंत माहिती पोहोचवण्याचे व्यवस्थापन पॅनेल</p>
+        </div>
+
+        <div className="relative z-10 flex bg-slate-100 p-1.5 rounded-2xl gap-1 shrink-0 w-full md:w-auto">
+          <div className="flex-1 md:flex-none bg-green-700 text-white shadow-md px-4 py-2.5 rounded-xl font-bold text-xs text-center">
+            {newsList.length} बातम्या
+          </div>
+          <div className="flex-1 md:flex-none bg-green-700 text-white shadow-md px-4 py-2.5 rounded-xl font-bold text-xs text-center">
+            {noticeList.length} सूचना
+          </div>
         </div>
       </div>
 
