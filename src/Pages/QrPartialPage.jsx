@@ -343,15 +343,21 @@ export default function QrPartialPage() {
       <div className="w-full max-w-md bg-slate-50 sm:rounded-[2.5rem] shadow-2xl overflow-hidden relative flex flex-col min-h-screen sm:min-h-0 sm:h-[850px]">
         
         {/* Header Section (Curved Background) */}
-        <div className="bg-gradient-to-br from-green-700 via-emerald-600 to-green-900 pt-12 pb-20 px-6 rounded-b-[2.5rem] shadow-md relative z-0">
-          <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full">
+        <div className="bg-gradient-to-br from-green-700 via-emerald-600 to-green-900 pt-12 pb-20 px-6 rounded-b-[2.5rem] shadow-md relative z-0 overflow-hidden">
+          {/* Decorative Translucent Circles */}
+          <div className="absolute -top-12 -right-12 w-44 h-44 bg-white/10 rounded-full pointer-events-none z-0"></div>
+          <div className="absolute -bottom-16 -left-10 w-36 h-36 bg-white/5 rounded-full pointer-events-none z-0"></div>
+          <div className="absolute top-1/4 left-1/3 w-16 h-16 bg-white/10 rounded-full pointer-events-none z-0"></div>
+          <div className="absolute top-6 left-6 w-24 h-24 bg-white/5 rounded-full pointer-events-none z-0"></div>
+
+          <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full z-10">
             <ShieldCheck className="w-4 h-4 text-white animate-pulse" />
             <span className="text-xs font-medium text-white tracking-wide uppercase">
               {language === "mr" ? "सुरक्षित" : "Secure"}
             </span>
           </div>
-          <div className="text-center mt-4 space-y-1.5">
-            <h4 className="text-lg font-black text-white/95 uppercase tracking-widest select-none">
+          <div className="text-center mt-4 space-y-1.5 relative z-10">
+            <h4 className={`text-lg font-black text-white/95 uppercase select-none ${language === "mr" ? "" : "tracking-widest"}`}>
               {language === "mr" ? "महाराष्ट्र शासन" : "Government of Maharashtra"}
             </h4>
             <h1 className="text-2xl font-bold text-white tracking-tight">
@@ -457,7 +463,7 @@ export default function QrPartialPage() {
                   type="button"
                   onClick={handleRequestOtp}
                   disabled={requestingOtp}
-                  className="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-lg shadow-green-600/30 active:scale-[0.98] disabled:opacity-75 text-sm"
+                  className="w-full py-4 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-lg shadow-orange-500/30 active:scale-[0.98] disabled:opacity-75 text-sm"
                 >
                   {requestingOtp ? (
                     <>
