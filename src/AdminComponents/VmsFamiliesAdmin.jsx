@@ -32,6 +32,7 @@ export default function VmsFamiliesAdmin() {
   const [isEditing, setIsEditing] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false);
   const [selectedFamilyForQr, setSelectedFamilyForQr] = useState(null);
+  const [taxFilter, setTaxFilter] = useState("all"); // "all", "pending"
 
   // Form states
   const [familyId, setFamilyId] = useState("");
@@ -208,17 +209,17 @@ export default function VmsFamiliesAdmin() {
   // Sort families to show latest first
   const latestFamilies = [...families].reverse();
 
-  // Search filter applies to the "all" tab
-  const filteredFamiliesAll = searchQuery.trim() === ""
-    ? latestFamilies
-    : latestFamilies.filter((f) => {
-        const q = searchQuery.toLowerCase().trim();
-        return (
-          f.mainMemberName?.toLowerCase().includes(q) ||
-          f.mobileNumber?.includes(q) ||
-          f.familyId?.toLowerCase().includes(q)
-        );
-      });
+  // Search & Tax filter applies to the "all" tab
+  const filteredFamiliesAll = latestFamilies.filter((f) => {
+    const q = searchQuery.toLowerCase().trim();
+    const matchesSearch = q === "" || (
+      f.mainMemberName?.toLowerCase().includes(q) ||
+      f.mobileNumber?.includes(q) ||
+      f.familyId?.toLowerCase().includes(q)
+    );
+    const matchesTax = taxFilter === "all" || !f.hasTaxAssigned;
+    return matchesSearch && matchesTax;
+  });
 
   // Pagination for all families view based on filtered results
   const itemsPerPage = 15;
@@ -862,100 +863,42 @@ export default function VmsFamiliesAdmin() {
               </div>
             </div>
           ) : (
-            /* SEARCH AND RESULTS TABLE */
-            <div className="bg-white rounded-3xl p-6 shadow-xl border border-green-100 space-y-6">
-
-
-              {loading ? (
-                <div className="text-center py-6 text-sm text-slate-400">लोड होत आहे...</div>
-              ) : filteredFamiliesAll.length === 0 ? (
-                <p className="text-center text-slate-400 py-6 text-sm">शोधलेले कुटुंब सापडले नाही.</p>
-              ) : (
-                <div className="overflow-x-auto space-y-4">
-                  <table className="w-full text-left text-sm border-collapse">
-                    <thead>
-                      <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100 text-xs">
-                        <th className="p-4 rounded-l-xl">कुटुंब ID</th>
-                        <th className="p-4">कुटुंब प्रमुख (Head Name)</th>
-                        <th className="p-4">मोबाईल</th>
-                        <th className="p-4 text-center">सदस्य संख्या</th>
-                        <th className="p-4 rounded-r-xl text-center">क्रिया</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {latestFamilies.slice(0, 3).map((f) => (
-                        <tr key={f._id} className="hover:bg-slate-50/40 transition">
-                          <td className="p-4 font-mono font-black text-xs text-green-700">{f.familyId}</td>
-                          <td className="p-4">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8.5 h-8.5 rounded-full bg-green-50 text-green-700 font-black text-xs flex items-center justify-center border border-green-150/30 shadow-inner select-none">
-                                {f.mainMemberName ? f.mainMemberName.charAt(0) : "U"}
-                              </div>
-                              <div>
-                                <p className="text-slate-800 font-extrabold text-sm leading-snug">{f.mainMemberName}</p>
-                                <span className="text-[9px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-500 font-bold">घर क्र: {f.houseNumber}</span>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="p-4 font-mono text-slate-500 text-xs">{f.mobileNumber}</td>
-                          <td className="p-4 text-center">
-                            <span className="bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full text-xs font-black border border-slate-200/40">
-                              {(f.menCount || 0) +
-                                (f.womenCount || 0) +
-                                (f.seniorCount || 0) +
-                                (f.childrenCount || 0)}
-                            </span>
-                          </td>
-                          <td className="p-4 flex gap-2.5 justify-center">
-                            <button
-                              type="button"
-                              onClick={() => handleSelectFamily(f)}
-                              className="border border-green-600 text-green-700 hover:bg-green-700 hover:text-white font-extrabold px-3.5 py-2 rounded-xl text-xs shadow-sm transition-all duration-200 hover:-translate-y-0.5"
-                            >
-                              {lang === "mr" ? "प्रोफाइल पहा" : "View Profile"}
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setSelectedFamilyForQr(f);
-                                setShowQrModal(true);
-                              }}
-                              className="border border-orange-500 text-orange-655 hover:bg-orange-500 hover:text-white font-extrabold px-3.5 py-2 rounded-xl text-xs shadow-sm transition-all duration-200 hover:-translate-y-0.5 flex items-center gap-1"
-                            >
-                              QR कोड
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleDelete(f._id)}
-                              className="border border-red-200 text-red-650 hover:bg-red-500 hover:text-white font-extrabold px-3 py-1.5 rounded-xl text-xs transition-all duration-200 hover:-translate-y-0.5"
-                            >
-                              हटवा
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-
-                  {searchQuery.trim() === "" && (
-                    <div className="pt-4 border-t border-slate-100 flex justify-center">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setActiveTab("all");
-                          setCurrentPage(1);
-                        }}
-                        className="bg-green-700 hover:bg-green-800 text-white font-extrabold px-6 py-3 rounded-xl text-xs shadow-md transition-all duration-200 hover:-translate-y-0.5 inline-flex items-center gap-2"
-                      >
-                        <span>{lang === "mr" ? "सर्व नोंदणीकृत कुटुंबे पहा" : "View All Families"}</span>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                        </svg>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
+            /* SEARCH TAB EMPTY STATE GUIDE - Families list removed from here */
+            <div className="bg-white rounded-3xl p-8 border border-green-100 shadow-xl text-center space-y-4 animate-fadeIn">
+              <div className="w-16 h-16 rounded-full bg-green-50 text-green-700 flex items-center justify-center mx-auto shadow-inner">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.125L12 17l-3 2.25m3-2.25l3 2.25M12 17V3M4 20h16a1 1 0 001-1V9a1 1 0 00-1-1h-4m-4 0H4a1 1 0 00-1 1v10a1 1 0 001 1z" />
+                </svg>
+              </div>
+              <div className="max-w-md mx-auto space-y-2">
+                <h3 className="text-lg font-black text-slate-800">
+                  {lang === "mr" ? "कुटुंब व्यवस्थापन केंद्र" : "Household Management Hub"}
+                </h3>
+                <p className="text-slate-400 text-xs font-semibold leading-relaxed">
+                  {lang === "mr" 
+                    ? "कुटुंबांचे शोध घेण्यासाठी, कर भरणे, किंवा QR कोड मुद्रित करण्यासाठी 'सर्व कुटुंब यादी' टॅबवर जा. नवीन कुटुंब जोडण्यासाठी 'नवीन कुटुंब नोंदणी' टॅब वापरा." 
+                    : "Navigate to 'All Families List' tab to search, assign taxes, view profiles or print QR codes. Go to 'Register Household' to add a new family."}
+                </p>
+              </div>
+              <div className="pt-2 flex justify-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab("all");
+                    setTaxFilter("all");
+                  }}
+                  className="bg-green-700 hover:bg-green-800 text-white font-extrabold px-5 py-2.5 rounded-xl text-xs shadow-md transition hover:-translate-y-0.5"
+                >
+                  {lang === "mr" ? "सर्व कुटुंब यादी पहा" : "View All Families"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("add")}
+                  className="bg-orange-500 hover:bg-orange-600 text-white font-extrabold px-5 py-2.5 rounded-xl text-xs shadow-md transition hover:-translate-y-0.5"
+                >
+                  {lang === "mr" ? "नवीन कुटुंब नोंदणी" : "Register Household"}
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -1119,26 +1062,58 @@ export default function VmsFamiliesAdmin() {
             </button>
           </div>
 
-          {/* Moved Search Bar */}
-          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-            <label className="block text-xs font-black text-slate-500 mb-2 uppercase tracking-wide">
-              कुटुंब प्रमुखाचे नाव किंवा मोबाईल नंबरने शोधा (Search Household)
-            </label>
-            <div className="relative">
+
+          {/* Tax Filter and Search Pills */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+            <div className="flex bg-slate-200/60 p-1 rounded-xl w-fit border border-slate-300/30">
+              <button
+                type="button"
+                onClick={() => {
+                  setTaxFilter("all");
+                  setCurrentPage(1);
+                }}
+                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                  taxFilter === "all"
+                    ? "bg-white text-slate-800 shadow-sm"
+                    : "text-slate-500 hover:text-slate-800"
+                }`}
+              >
+                {lang === "mr" ? "सर्व कुटुंबे" : "All Households"}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setTaxFilter("pending");
+                  setCurrentPage(1);
+                }}
+                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  taxFilter === "pending"
+                    ? "bg-red-500 text-white shadow-sm"
+                    : "text-slate-500 hover:text-slate-800"
+                }`}
+              >
+                <span>{lang === "mr" ? "कर आकारणी शिल्लक" : "Pending Tax"}</span>
+                <span className={`px-1.5 py-0.5 rounded text-[9px] font-black ${taxFilter === "pending" ? "bg-white/20 text-white" : "bg-red-100 text-red-600"}`}>
+                  {latestFamilies.filter(f => !f.hasTaxAssigned).length}
+                </span>
+              </button>
+            </div>
+
+            <div className="relative flex-1 max-w-md">
               <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </span>
               <input
                 type="text"
-                placeholder="शोधण्यासाठी नाव / मोबाईल नंबर / कुटुंब ID प्रविष्ट करा..."
+                placeholder={lang === "mr" ? "शोधण्यासाठी नाव / मोबाईल / कुटुंब ID प्रविष्ट करा..." : "Search name, mobile or family ID..."}
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
-                  setCurrentPage(1); // Reset page to 1 on search
+                  setCurrentPage(1);
                 }}
-                className="pl-11 pr-4 py-3.5 bg-white border border-green-600 rounded-2xl w-full text-sm outline-none font-semibold transition-all duration-300 focus:border-green-700 focus:ring-4 focus:ring-green-100"
+                className="pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl w-full text-xs font-semibold focus:border-green-600 focus:outline-none"
               />
             </div>
           </div>
@@ -1157,6 +1132,7 @@ export default function VmsFamiliesAdmin() {
                       <th className="p-4">कुटुंब प्रमुख (Head Name)</th>
                       <th className="p-4">मोबाईल</th>
                       <th className="p-4">व्हॉट्सॲप</th>
+                      <th className="p-4 text-center">{lang === "mr" ? "कर आकारणी" : "Tax Assignment"}</th>
                       <th className="p-4 text-center">सदस्य संख्या (M / F / S / C)</th>
                       <th className="p-4 rounded-r-xl text-center">क्रिया</th>
                     </tr>
@@ -1178,6 +1154,17 @@ export default function VmsFamiliesAdmin() {
                         </td>
                         <td className="p-4 font-mono text-slate-500 text-xs">{f.mobileNumber}</td>
                         <td className="p-4 font-mono text-slate-500 text-xs">{f.whatsappNumber || "—"}</td>
+                        <td className="p-4 text-center">
+                          {f.hasTaxAssigned ? (
+                            <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 border border-green-200 px-2.5 py-1 rounded-md text-[10px] font-extrabold uppercase select-none">
+                              ✓ {lang === "mr" ? "पूर्ण" : "Done"}
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 bg-red-50 text-red-655 border border-red-200 px-2.5 py-1 rounded-md text-[10px] font-extrabold uppercase select-none">
+                              ✗ {lang === "mr" ? "प्रलंबित" : "Pending"}
+                            </span>
+                          )}
+                        </td>
                         <td className="p-4 text-center">
                           <div className="inline-flex flex-col items-center">
                             <span className="bg-green-50 text-green-700 px-2.5 py-0.5 rounded-full text-xs font-black border border-green-100">
