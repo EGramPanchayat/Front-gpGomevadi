@@ -204,17 +204,38 @@ export default function QrPartialPage() {
             </div>
           </div>
 
-          {/* Household Info Card */}
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/60 space-y-4">
-            <div className="flex items-start gap-4">
-              <div className="w-11 h-11 bg-orange-50 rounded-full flex items-center justify-center shrink-0 border border-orange-100">
-                <User className="w-5 h-5 text-orange-600" />
+          {/* Household Info Cards - Clean SaaS style */}
+          <div className="bg-white rounded-3xl p-5 shadow-lg border border-slate-100/80 space-y-4">
+            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1 select-none border-b pb-2">
+              कुटुंब माहिती (Household Profile)
+            </h3>
+            
+            <div className="space-y-3.5">
+              {/* Family ID badge */}
+              <div className="flex items-center gap-3.5 bg-orange-50/40 border border-orange-200/40 px-4 py-3 rounded-2xl text-orange-700 font-extrabold text-sm transition hover:bg-orange-50">
+                <span className="w-8 h-8 rounded-xl bg-orange-100/80 text-orange-700 flex items-center justify-center font-black text-xs shrink-0 select-none">ID</span>
+                <div className="flex flex-col text-left">
+                  <span className="text-[9px] font-black text-orange-400 uppercase leading-none">कुटुंब ID</span>
+                  <span className="text-orange-950 font-black mt-1 text-sm">{family?.familyId || "—"}</span>
+                </div>
               </div>
-              <div className="flex-1">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-0.5">कुटुंब प्रमुख</p>
-                <h2 className="text-base font-black text-slate-800 leading-tight">
-                  {family?.mainMemberName || "—"}
-                </h2>
+
+              {/* Main Member name */}
+              <div className="flex items-center gap-3.5 bg-orange-50/40 border border-orange-200/40 px-4 py-3 rounded-2xl text-orange-700 font-extrabold text-sm transition hover:bg-orange-50">
+                <span className="w-8 h-8 rounded-xl bg-orange-100/80 text-orange-700 flex items-center justify-center font-black text-xs shrink-0 select-none">👤</span>
+                <div className="flex flex-col text-left">
+                  <span className="text-[9px] font-black text-orange-400 uppercase leading-none">कुटुंब प्रमुख</span>
+                  <span className="text-orange-950 font-black mt-1 text-sm">{family?.mainMemberName || "—"}</span>
+                </div>
+              </div>
+
+              {/* House Number */}
+              <div className="flex items-center gap-3.5 bg-orange-50/40 border border-orange-200/40 px-4 py-3 rounded-2xl text-orange-700 font-extrabold text-sm transition hover:bg-orange-50">
+                <span className="w-8 h-8 rounded-xl bg-orange-100/80 text-orange-700 flex items-center justify-center font-black text-xs shrink-0 select-none">🏠</span>
+                <div className="flex flex-col text-left">
+                  <span className="text-[9px] font-black text-orange-400 uppercase leading-none">घर क्रमांक</span>
+                  <span className="text-orange-950 font-black mt-1 text-sm">{family?.houseNumber || "—"}</span>
+                </div>
               </div>
             </div>
           </div>
