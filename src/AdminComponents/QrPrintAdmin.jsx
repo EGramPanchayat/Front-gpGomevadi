@@ -302,11 +302,7 @@ export default function QrPrintAdmin() {
               गावातील कुटुंबांचे QR कोड प्लेट्स प्रिंट करा आणि PDF स्वरूपात डाउनलोड करा
             </p>
           </div>
-          <div className="flex gap-2">
-            <span className="bg-orange-500/30 border border-orange-400/40 text-orange-200 text-xs font-bold px-3 py-1.5 rounded-full select-none animate-pulse">
-              A4 वर २ प्लेट्स
-            </span>
-          </div>
+          {/* Removed A4 Layout Badge */}
         </div>
       </div>
 
@@ -470,7 +466,7 @@ export default function QrPrintAdmin() {
             </div>
 
             {previewFamily ? (
-              <div className="relative border-4 border-green-900 rounded-3xl p-5 bg-white shadow-lg space-y-4 max-w-sm mx-auto select-none">
+              <div className="relative border-4 border-green-900 rounded-3xl p-5 pb-8 bg-white shadow-lg space-y-4 max-w-sm mx-auto select-none">
                 {/* Inner Orange outline */}
                 <div className="absolute inset-1.5 border border-orange-500 rounded-2xl pointer-events-none" />
 
