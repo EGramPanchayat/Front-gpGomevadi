@@ -154,48 +154,94 @@ export default function AdminDashboard() {
                 <NavButton key={item.key} tabKey={item.key} label={navLabel(item)} />
               ))}
             </nav>
-
-            {/* Language Toggle */}
-            <div className="flex items-center gap-1 mt-4 bg-white/10 rounded-full px-1 py-0.5 border border-white/20 self-start">
-              <button
-                onClick={() => setLang("mr")}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition ${lang === "mr" ? "bg-orange-500 text-white shadow" : "text-green-200 hover:text-white"}`}
-              >
-                मर
-              </button>
-              <button
-                onClick={() => setLang("en")}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition ${lang === "en" ? "bg-orange-500 text-white shadow" : "text-green-200 hover:text-white"}`}
-              >
-                EN
-              </button>
-            </div>
           </div>
 
           {/* LOGOUT */}
-          <button
-            onClick={handleLogout}
-            className="w-full mt-8 bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl font-bold transition border border-white/20 shadow-md flex items-center justify-center gap-2"
-          >
-            {lang === "mr" ? "बाहेर पडा" : "Logout"}
-          </button>
-        </aside>
-
-        {/* MAIN CONTENT */}
-        <main className="flex-1 pt-6 px-4 md:pt-8 md:px-8 pb-28 md:pb-10 space-y-4 md:space-y-6 overflow-y-auto relative">
-
-
-
-
-          {/* TAB CONTENT */}
-          <div className="space-y-6">
-
-            {activeTab === "dashboard" && (
-              <div className="space-y-6">
-
-                {/* VILLAGE IDENTITY HEADER */}
-                <div className="relative bg-gradient-to-r from-green-900 via-green-800 to-emerald-900 rounded-3xl p-8 text-white overflow-hidden shadow-xl">
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4" />
+             <button
+               onClick={handleLogout}
+               className="w-full mt-8 bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl font-bold transition border border-white/20 shadow-md flex items-center justify-center gap-2"
+             >
+               {lang === "mr" ? "बाहेर पडा" : "Logout"}
+             </button>
+           </aside>
+ 
+           {/* MAIN CONTENT */}
+           <main className="flex-1 pt-6 px-4 md:pt-8 md:px-8 pb-28 md:pb-10 space-y-4 md:space-y-6 overflow-y-auto relative">
+ 
+ 
+ 
+ 
+             {/* TAB CONTENT */}
+             <div className="space-y-6">
+ 
+               {activeTab === "dashboard" && (
+                 <div className="space-y-6">
+ 
+                   {/* VILLAGE IDENTITY HEADER */}
+                   <div className="relative bg-gradient-to-r from-green-900 via-green-800 to-emerald-900 rounded-3xl p-8 text-white overflow-hidden shadow-xl">
+                     {/* Floating Language/Control Pill in Top Right Corner */}
+                     <div className="absolute top-6 right-6 z-20 bg-white shadow-lg rounded-full px-4 py-2 flex items-center gap-3.5 border border-slate-200/50 select-none">
+                       {/* Language Toggle buttons */}
+                       <div className="flex items-center gap-1">
+                         <button
+                           onClick={() => setLang("mr")}
+                           className={`px-3.5 py-1.5 rounded-full text-xs font-black transition-all duration-200 ${
+                             lang === "mr"
+                               ? "bg-green-800 text-white shadow-sm"
+                               : "text-green-800 hover:bg-slate-50"
+                           }`}
+                         >
+                           मराठी
+                         </button>
+                         <button
+                           onClick={() => setLang("en")}
+                           className={`px-3.5 py-1.5 rounded-full text-xs font-black transition-all duration-200 ${
+                             lang === "en"
+                               ? "bg-green-800 text-white shadow-sm"
+                               : "text-green-800 hover:bg-slate-50"
+                           }`}
+                         >
+                           En
+                         </button>
+                       </div>
+ 
+                       <div className="w-px h-5 bg-slate-200" />
+ 
+                       {/* Notification Bell */}
+                       <button
+                         onClick={() => setActiveTab("vms-apps")}
+                         className="relative text-green-800 hover:scale-105 transition-transform"
+                         title={lang === "mr" ? "अर्ज व सूचना" : "Requests & Notifications"}
+                       >
+                         <svg className="w-5 h-5 stroke-current fill-none" strokeWidth="2.5" viewBox="0 0 24 24">
+                           <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                         </svg>
+                         <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white font-black text-[9px] w-4.5 h-4.5 rounded-full flex items-center justify-center border border-white">
+                           2
+                         </span>
+                       </button>
+ 
+                       <div className="w-px h-5 bg-slate-200" />
+ 
+                       {/* Theme Toggle (Dark/Light) */}
+                       <button
+                         onClick={() => setIsDarkMode(!isDarkMode)}
+                         className="text-green-800 hover:scale-105 transition-transform"
+                         title={lang === "mr" ? "थीम बदला" : "Toggle Theme"}
+                       >
+                         {isDarkMode ? (
+                           <svg className="w-5 h-5 text-amber-500 fill-amber-500" viewBox="0 0 20 20" fill="currentColor">
+                             <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
+                           </svg>
+                         ) : (
+                           <svg className="w-5 h-5 text-amber-500 stroke-current fill-none" strokeWidth="2.5" viewBox="0 0 24 24">
+                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                           </svg>
+                         )}
+                       </button>
+                     </div>
+ 
+                     <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4" />
                   <div className="absolute bottom-0 left-1/3 w-40 h-40 bg-orange-400/10 rounded-full translate-y-1/2" />
                   <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-6">
                     <img src="/images/satyamev.jpg" alt="GP Logo" className="h-20 w-20 rounded-full border-4 border-white/30 shadow-lg object-cover" />
