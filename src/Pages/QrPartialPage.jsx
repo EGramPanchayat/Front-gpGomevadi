@@ -167,12 +167,15 @@ export default function QrPartialPage() {
             <ShieldCheck className="w-4 h-4 text-white animate-pulse" />
             <span className="text-[10px] font-bold text-white tracking-wide uppercase">QR सत्यापित</span>
           </div>
-          <div className="text-center mt-4">
-            <h1 className="text-2xl font-black text-white mb-1 tracking-tight">
+          <div className="text-center mt-4 space-y-1">
+            <h4 className="text-xs font-black text-white/90 tracking-wide uppercase select-none">
+              महाराष्ट्र शासन
+            </h4>
+            <h1 className="text-xl font-black text-white tracking-tight">
               {gpDetails?.name || "ग्रामपंचायत गोमेवाडी"}
             </h1>
-            <p className="text-orange-200 text-xs font-bold uppercase tracking-widest">
-              डिजिटल नागरिक केंद्र
+            <p className="text-orange-200 text-[10px] font-black tracking-wider uppercase select-none">
+              ता. आटपाडी, जि. सांगली
             </p>
           </div>
         </div>
