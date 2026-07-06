@@ -60,6 +60,7 @@ const RazorpayMark = () => (
 const TAX_TYPE_NAMES = {
   samanya_water: { en: "General Water Tax", mr: "सामान्य पाणीपट्टी" },
   vishesh_water: { en: "Special Water Tax", mr: "विशेष पाणीपट्टी" },
+  water: { en: "Water Tax", mr: "पाणीपट्टी" },
   house: { en: "House Tax", mr: "घरपट्टी" },
   health: { en: "Health Tax", mr: "आरोग्य कर" },
   electricity: { en: "Electricity Tax", mr: "वीज कर" },

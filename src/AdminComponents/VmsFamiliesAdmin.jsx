@@ -7,6 +7,7 @@ import { getCertificateTypeName } from "../utils/translations";
 const TAX_TYPE_LABELS = {
   samanya_water: { mr: "सामान्य पाणीपट्टी", en: "General Water Tax" },
   vishesh_water: { mr: "विशेष पाणीपट्टी", en: "Special Water Tax" },
+  water: { mr: "पाणीपट्टी", en: "Water Tax" },
   house: { mr: "घरपट्टी", en: "House Tax" },
   health: { mr: "आरोग्य कर", en: "Health Tax" },
   electricity: { mr: "वीज कर", en: "Electricity Tax" },
