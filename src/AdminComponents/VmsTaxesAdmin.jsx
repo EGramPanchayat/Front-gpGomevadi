@@ -1900,7 +1900,8 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
             </p>
           ) : (
             <>
-              <div className="overflow-x-auto">
+              {/* DESKTOP VIEW */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left text-sm border-collapse">
                   <thead>
                     <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
@@ -1938,6 +1939,43 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                     })}
                   </tbody>
                 </table>
+              </div>
+
+              {/* MOBILE VIEW CARD LIST */}
+              <div className="block md:hidden space-y-4">
+                {notifications.map((n) => {
+                  const typeInfo = notifTypeLabels[n.type] || { mr: n.type, en: n.type, color: "bg-gray-100 text-gray-700" };
+                  const translated = translateNotification(n);
+                  return (
+                    <div
+                      key={n._id}
+                      className="bg-white border border-green-700 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all space-y-3"
+                    >
+                      <div className="flex justify-between items-center">
+                        <span className={`px-2.5 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider ${typeInfo.color}`}>
+                          {lang === "mr" ? typeInfo.mr : typeInfo.en}
+                        </span>
+                        <span className="text-[10px] text-gray-400 font-semibold">
+                          {new Date(n.createdAt).toLocaleDateString(lang === "mr" ? "mr-IN" : "en-IN")}{" "}
+                          {new Date(n.createdAt).toLocaleTimeString(lang === "mr" ? "mr-IN" : "en-IN", { hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between items-start gap-2">
+                        <h5 className="font-bold text-gray-800 text-xs">
+                          {translated.title}
+                        </h5>
+                        <span className="font-mono font-black text-green-700 text-[10px] shrink-0">
+                          {n.familyId}
+                        </span>
+                      </div>
+
+                      <p className="text-gray-550 text-xs leading-relaxed">
+                        {translated.message}
+                      </p>
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Pagination */}
