@@ -20,11 +20,11 @@ const getCurrentFinancialYear = () => {
   return now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1;
 };
 
-// Generate financial year options (past 5 + next 2)
+// Generate financial year options (past 5 + current)
 const getFinancialYearOptions = () => {
   const current = getCurrentFinancialYear();
   const years = [];
-  for (let i = current + 2; i >= current - 5; i--) {
+  for (let i = current; i >= current - 5; i--) {
     years.push(i);
   }
   return years;
