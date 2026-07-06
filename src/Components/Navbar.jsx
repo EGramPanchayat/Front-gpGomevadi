@@ -17,7 +17,7 @@ const NAV_LINKS = [
 
 const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => {
   const { config } = useSiteConfig();
-  const { lang, setLang } = useLanguage();
+  const { lang } = useLanguage();
 
   const gpName = config?.gpName || "ग्रामपंचायत";
   const subtitle = config ? `ता. ${config.taluka}, जि. ${config.district}` : "";
@@ -36,21 +36,7 @@ const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => {
           </div>
         </div>
 
-        {/* Language Toggle — desktop */}
-        <div className="hidden md:flex items-center gap-1 bg-green-800 rounded-full px-1 py-0.5 mr-1 border border-green-500">
-          <button
-            onClick={() => setLang("mr")}
-            className={`px-3 py-1 rounded-full text-sm font-bold transition ${lang === "mr" ? "bg-orange-500 text-white shadow" : "text-green-200 hover:text-white"}`}
-          >
-            मर
-          </button>
-          <button
-            onClick={() => setLang("en")}
-            className={`px-3 py-1 rounded-full text-sm font-bold transition ${lang === "en" ? "bg-orange-500 text-white shadow" : "text-green-200 hover:text-white"}`}
-          >
-            EN
-          </button>
-        </div>
+
 
         {/* Hamburger for mobile only */}
         {!mobileNavOpen && (
@@ -96,21 +82,7 @@ const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => {
             ×
           </button>
 
-          {/* Language toggle — mobile */}
-          <div className="flex justify-center gap-2 pt-10 pb-2">
-            <button
-              onClick={() => setLang("mr")}
-              className={`px-4 py-1.5 rounded-full text-sm font-bold transition border ${lang === "mr" ? "bg-orange-500 text-white border-orange-500" : "text-green-200 border-green-500 hover:text-white"}`}
-            >
-              मराठी
-            </button>
-            <button
-              onClick={() => setLang("en")}
-              className={`px-4 py-1.5 rounded-full text-sm font-bold transition border ${lang === "en" ? "bg-orange-500 text-white border-orange-500" : "text-green-200 border-green-500 hover:text-white"}`}
-            >
-              English
-            </button>
-          </div>
+
 
           <div className="flex flex-col gap-3 w-full max-w-xs mx-auto pb-6">
             {NAV_LINKS.map((link) => (
