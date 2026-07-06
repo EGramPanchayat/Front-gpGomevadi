@@ -432,12 +432,16 @@ export default function AdminDashboard() {
                     <h2 className="text-2xl font-black text-white drop-shadow-md">
                       {lang === "mr" ? "सदस्य, अधिकारी आणि गाव माहिती केंद्र" : "Village Administration Hub"}
                     </h2>
-                    <p className="text-sm text-green-100 font-semibold mt-1">ग्रामपंचायत कार्यकारिणी, अधिकारी, शासकीय अधिकारी आणि सामान्य माहिती व्यवस्थापन पॅनेल</p>
+                    <p className="text-sm text-green-100 font-semibold mt-1">
+                      {lang === "mr" 
+                        ? "ग्रामपंचायत कार्यकारिणी, अधिकारी, शासकीय अधिकारी आणि सामान्य माहिती व्यवस्थापन पॅनेल" 
+                        : "Gram Panchayat executive board, officers, government officials and settings management panel"}
+                    </p>
                   </div>
 
                   <div className="relative z-10 bg-slate-100 p-1.5 rounded-2xl shrink-0">
                     <div className="bg-green-700 text-white shadow-md px-4 py-2.5 rounded-xl font-bold text-xs">
-                      ४ व्यवस्थापन विभाग
+                      {lang === "mr" ? "४ व्यवस्थापन विभाग" : "4 Management Sections"}
                     </div>
                   </div>
                 </div>
@@ -449,7 +453,7 @@ export default function AdminDashboard() {
                     onClick={() => toggleSection("exec")}
                     className="w-full px-6 py-4 flex items-center justify-between text-left font-bold text-green-700 text-lg bg-green-50 hover:bg-green-100 transition duration-300"
                   >
-                    <span>गाव कार्यकारिणी व्यवस्थापन</span>
+                    <span>{lang === "mr" ? "गाव कार्यकारिणी व्यवस्थापन" : "Village Executive Board Management"}</span>
                     <span className={`transform transition-transform duration-300 ${openSection === "exec" ? "rotate-180" : "rotate-0"}`}>
                       ▼
                     </span>
@@ -468,7 +472,7 @@ export default function AdminDashboard() {
                     onClick={() => toggleSection("officers")}
                     className="w-full px-6 py-4 flex items-center justify-between text-left font-bold text-green-700 text-lg bg-green-50 hover:bg-green-100 transition duration-300"
                   >
-                    <span>अधिकारी व्यवस्थापन</span>
+                    <span>{lang === "mr" ? "अधिकारी व्यवस्थापन" : "Grampanchayat Officers Management"}</span>
                     <span className={`transform transition-transform duration-300 ${openSection === "officers" ? "rotate-180" : "rotate-0"}`}>
                       ▼
                     </span>
@@ -487,7 +491,7 @@ export default function AdminDashboard() {
                     onClick={() => toggleSection("gov")}
                     className="w-full px-6 py-4 flex items-center justify-between text-left font-bold text-green-700 text-lg bg-green-50 hover:bg-green-100 transition duration-300"
                   >
-                    <span>शासकीय अधिकारी व्यवस्थापन</span>
+                    <span>{lang === "mr" ? "शासकीय अधिकारी व्यवस्थापन" : "Government Officials Management"}</span>
                     <span className={`transform transition-transform duration-300 ${openSection === "gov" ? "rotate-180" : "rotate-0"}`}>
                       ▼
                     </span>
@@ -506,7 +510,7 @@ export default function AdminDashboard() {
                     onClick={() => toggleSection("site-settings")}
                     className="w-full px-6 py-4 flex items-center justify-between text-left font-bold text-green-700 text-lg bg-green-50 hover:bg-green-100 transition duration-300"
                   >
-                    <span>सामान्य माहिती व्यवस्थापन</span>
+                    <span>{lang === "mr" ? "सामान्य माहिती व्यवस्थापन" : "General Information / Settings Management"}</span>
                     <span className={`transform transition-transform duration-300 ${openSection === "site-settings" ? "rotate-180" : "rotate-0"}`}>
                       ▼
                     </span>

@@ -32,17 +32,88 @@ const getFinancialYearOptions = () => {
 
 // Notification type labels & icons
 const notifTypeLabels = {
-  tax_assigned: { label: "नवीन कर", color: "bg-blue-100 text-blue-800" },
-  tax_updated: { label: "कर अद्ययावत", color: "bg-amber-100 text-amber-800" },
-  payment_received: { label: "भरणा जमा", color: "bg-green-100 text-green-800" },
-  fine_assigned: { label: "दंड आकारणी", color: "bg-red-100 text-red-800" },
-  bulk_release: { label: "वार्षिक कर", color: "bg-purple-100 text-purple-800" },
-  auto_release: { label: "स्वयंचलित कर", color: "bg-indigo-100 text-indigo-800" },
+  tax_assigned: { mr: "नवीन कर", en: "New Tax", color: "bg-blue-100 text-blue-800" },
+  tax_updated: { mr: "कर अद्ययावत", en: "Tax Updated", color: "bg-amber-100 text-amber-800" },
+  payment_received: { mr: "भरणा जमा", en: "Payment Recd.", color: "bg-green-100 text-green-800" },
+  fine_assigned: { mr: "दंड आकारणी", en: "Penalty Charged", color: "bg-red-100 text-red-800" },
+  bulk_release: { mr: "वार्षिक कर", en: "Annual Tax", color: "bg-purple-100 text-purple-800" },
+  auto_release: { mr: "स्वयंचलित कर", en: "Auto Tax", color: "bg-indigo-100 text-indigo-800" },
 };
 
 export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamily }) {
   const { lang } = useLanguage();
   const taxTypeLabel = (type) => TAX_TYPE_LABELS[type]?.[lang] || TAX_TYPE_LABELS[type]?.mr || type;
+
+  const translateNotification = (n) => {
+    if (lang === "mr") {
+      return { title: n.title, message: n.message };
+    }
+
+    const taxTypeNames = {
+      water: "Water Tax",
+      property: "Property Tax",
+      fine: "Fine / Penalty",
+      house: "House Tax",
+      overall: "Total Tax"
+    };
+
+    const type = n.type;
+    const metadata = n.metadata || {};
+    const taxLabel = taxTypeNames[metadata.taxType] || metadata.taxType || "";
+    const yearLabel = metadata.year ? `${metadata.year}-${metadata.year + 1}` : "";
+
+    if (type === "fine_assigned") {
+      return {
+        title: `Penalty Assigned - Year ${yearLabel}`,
+        message: `A penalty of ₹${metadata.amount || ""} has been assigned for year ${yearLabel}.${metadata.reason ? ` Reason: ${metadata.reason}` : ""}`
+      };
+    }
+    if (type === "tax_updated") {
+      return {
+        title: `Tax Updated - ${taxLabel}`,
+        message: `The amount for ${taxLabel} has been updated to ₹${metadata.amount || ""} for year ${yearLabel}.`
+      };
+    }
+    if (type === "tax_assigned") {
+      return {
+        title: `New Tax Assigned - ${taxLabel}`,
+        message: `A tax of ₹${metadata.amount || ""} for ${taxLabel} has been assigned for year ${yearLabel}.`
+      };
+    }
+    if (type === "payment_received") {
+      const methodLabel = metadata.paymentMethod === "offline" ? "Offline" : "Online";
+      return {
+        title: `${methodLabel} Payment Recd. - ${taxLabel}`,
+        message: `${methodLabel} payment of ₹${metadata.amountPaid || ""} for ${taxLabel} category was successfully deposited.${metadata.transactionId ? ` (Receipt/Txn: ${metadata.transactionId})` : ""}`
+      };
+    }
+
+    let title = n.title;
+    let message = n.message;
+
+    title = title
+      .replace("नवीन कर आकारणी -", "New Tax Assigned -")
+      .replace("कर अद्ययावत -", "Tax Updated -")
+      .replace("ऑनलाइन भरणा जमा -", "Online Payment Recd. -")
+      .replace("भरणा जमा -", "Payment Recd. -")
+      .replace("दंड आकारणी - वर्ष", "Penalty Assigned - Year");
+
+    message = message
+      .replace("यशस्वीरित्या जमा झाली.", "successfully deposited.")
+      .replace("ऑनलाइन भरणा यशस्वीरित्या जमा झाली.", "online payment successfully deposited.")
+      .replace("ऑफलाइन भरणा यशस्वीरित्या नोंदवली गेली.", "offline payment successfully registered.")
+      .replace("साठी", "for")
+      .replace("रक्कम", "amount")
+      .replace("ची", "of")
+      .replace("साठी ₹", "for ₹")
+      .replace("दंड आकारण्यात आला आहे.", "penalty has been assigned.")
+      .replace("कारण:", "Reason:")
+      .replace("अद्ययावत केली आहे.", "has been updated.")
+      .replace("आकारण्यात आला आहे.", "has been assigned.")
+      .replace("श्रेणीसाठी", "category");
+
+    return { title, message };
+  };
 
   const getPaymentBucketLabel = (taxType) => {
     if (taxType === "water" || taxType === "samanya_water" || taxType === "vishesh_water") {
@@ -1157,7 +1228,9 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
           <div className="bg-white rounded-3xl p-6 shadow-xl border border-green-50 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h3 className="text-xl font-bold text-green-700">{lang === "mr" ? "कुटुंबनिहाय खाते" : "Household Accounts"}</h3>
-              <p className="text-sm text-gray-500">कुटुंब निवडून कर लागू करा किंवा पेमेंट नोंदवा</p>
+              <p className="text-sm text-gray-500">
+                {lang === "mr" ? "कुटुंब निवडून कर लागू करा किंवा पेमेंट नोंदवा" : "Select a family to assign tax or record a payment"}
+              </p>
             </div>
             {/* SEARCHABLE FAMILY DROPDOWN */}
             <div className="w-full md:w-96" ref={familyDropdownRef}>
@@ -1679,11 +1752,17 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
       {/* ──────────────── TAB 3: TRANSACTION LOGS ──────────────── */}
       {activeTab === "logs" && (
         <div className="bg-white rounded-3xl p-6 shadow-xl border border-green-50">
-          <h4 className="text-lg font-bold text-green-700 mb-4 border-b pb-2">पेमेंट जमा इतिहास (Payment Transaction Log)</h4>
+          <h4 className="text-lg font-bold text-green-700 mb-4 border-b pb-2">
+            {lang === "mr" ? "पेमेंट जमा इतिहास (Payment Transaction Log)" : "Payment Transaction Logs"}
+          </h4>
           {loading ? (
-            <div className="text-center py-6 text-gray-500 font-bold">लोड होत आहे...</div>
+            <div className="text-center py-6 text-gray-500 font-bold">
+              {lang === "mr" ? "लोड होत आहे..." : "Loading..."}
+            </div>
           ) : payments.length === 0 ? (
-            <p className="text-gray-500 text-center py-6 font-bold">अद्याप कोणताही व्यवहार झालेला नाही.</p>
+            <p className="text-gray-500 text-center py-6 font-bold">
+              {lang === "mr" ? "अद्याप कोणताही व्यवहार झालेला नाही." : "No transactions recorded yet."}
+            </p>
           ) : (
             <>
               {/* DESKTOP VIEW */}
@@ -1691,12 +1770,12 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                 <table className="w-full text-left text-sm border-collapse">
                   <thead>
                     <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
-                      <th className="p-4 rounded-l-xl">तारीख</th>
-                      <th className="p-4">कुटुंब आयडी</th>
-                      <th className="p-4">कर प्रकार</th>
-                      <th className="p-4">भरलेली रक्कम</th>
-                      <th className="p-4">भरणा पद्धती</th>
-                      <th className="p-4 rounded-r-xl">व्यवहार आयडी</th>
+                      <th className="p-4 rounded-l-xl">{lang === "mr" ? "तारीख" : "Date"}</th>
+                      <th className="p-4">{lang === "mr" ? "कुटुंब आयडी" : "Family ID"}</th>
+                      <th className="p-4">{lang === "mr" ? "कर प्रकार" : "Tax Type"}</th>
+                      <th className="p-4">{lang === "mr" ? "भरलेली रक्कम" : "Amount Paid"}</th>
+                      <th className="p-4">{lang === "mr" ? "भरणा पद्धती" : "Payment Method"}</th>
+                      <th className="p-4 rounded-r-xl">{lang === "mr" ? "व्यवहार आयडी" : "Transaction ID"}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
@@ -1759,13 +1838,17 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                       {isExpanded && (
                         <div className="mt-4 pt-4 border-t border-slate-100 space-y-2.5 text-xs">
                           <div className="flex justify-between">
-                            <span className="text-slate-500 font-bold">भरणा पद्धती (Method):</span>
+                            <span className="text-slate-500 font-bold">
+                              {lang === "mr" ? "भरणा पद्धती (Method):" : "Payment Method:"}
+                            </span>
                             <span className="uppercase font-bold bg-slate-100 px-2 py-0.5 rounded text-slate-700 text-[10px]">
                               {p.paymentMethod}
                             </span>
                           </div>
                           <div className="flex flex-col gap-1">
-                            <span className="text-slate-500 font-bold">व्यवहार आयडी (Transaction ID):</span>
+                            <span className="text-slate-500 font-bold">
+                              {lang === "mr" ? "व्यवहार आयडी (Transaction ID):" : "Transaction ID:"}
+                            </span>
                             <span className="font-mono text-slate-400 text-[10px] break-all bg-slate-50 p-2 rounded-lg border border-slate-100">
                               {p.transactionId || "—"}
                             </span>
@@ -1785,61 +1868,70 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
         <div className="bg-white rounded-3xl p-6 shadow-xl border border-green-50">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-4 mb-6 gap-4">
             <div>
-              <h4 className="text-lg font-bold text-green-700">सूचना केंद्र (Notification Center)</h4>
+              <h4 className="text-lg font-bold text-green-700">
+                {lang === "mr" ? "सूचना केंद्र (Notification Center)" : "Notification Center"}
+              </h4>
               <p className="text-xs text-gray-400 font-semibold mt-1">
-                सर्व कर आकारणी, भरणा, दंड आणि बदलांच्या सूचना (All tax, payment & change notifications)
+                {lang === "mr" 
+                  ? "सर्व कर आकारणी, भरणा, दंड आणि बदलांच्या सूचना (All tax, payment & change notifications)" 
+                  : "All tax, payment, penalty, and adjustment notifications"}
               </p>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-gray-500">
-                एकूण: {notifTotal} सूचना
+                {lang === "mr" ? `एकूण: ${notifTotal} सूचना` : `Total: ${notifTotal} Notifications`}
               </span>
               <button
                 onClick={() => fetchNotifications(notifPage)}
                 className="text-xs bg-green-700 hover:bg-green-800 text-white font-bold px-3 py-1.5 rounded-lg shadow transition duration-300"
               >
-                ↻ ताजे करा / Refresh
+                {lang === "mr" ? "↻ ताजे करा / Refresh" : "↻ Refresh"}
               </button>
             </div>
           </div>
 
           {loadingNotifs ? (
-            <div className="text-center py-12 text-gray-500 font-bold">सूचना लोड होत आहे...</div>
+            <div className="text-center py-12 text-gray-500 font-bold">
+              {lang === "mr" ? "सूचना लोड होत आहे..." : "Loading notifications..."}
+            </div>
           ) : notifications.length === 0 ? (
-            <p className="text-gray-500 text-center py-12 font-bold">अद्याप कोणतीही सूचना नाही.</p>
+            <p className="text-gray-500 text-center py-12 font-bold">
+              {lang === "mr" ? "अद्याप कोणतीही सूचना नाही." : "No notifications available yet."}
+            </p>
           ) : (
             <>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm border-collapse">
                   <thead>
                     <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
-                      <th className="p-4 rounded-l-xl">तारीख व वेळ</th>
-                      <th className="p-4">प्रकार (Type)</th>
-                      <th className="p-4">कुटुंब आयडी</th>
-                      <th className="p-4">शीर्षक (Title)</th>
-                      <th className="p-4 rounded-r-xl">तपशील (Details)</th>
+                      <th className="p-4 rounded-l-xl">{lang === "mr" ? "तारीख व वेळ" : "Date & Time"}</th>
+                      <th className="p-4">{lang === "mr" ? "प्रकार (Type)" : "Type"}</th>
+                      <th className="p-4">{lang === "mr" ? "कुटुंब आयडी" : "Family ID"}</th>
+                      <th className="p-4">{lang === "mr" ? "शीर्षक (Title)" : "Title"}</th>
+                      <th className="p-4 rounded-r-xl">{lang === "mr" ? "तपशील (Details)" : "Details"}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
                     {notifications.map((n) => {
-                      const typeInfo = notifTypeLabels[n.type] || { label: n.type, color: "bg-gray-100 text-gray-700" };
+                      const typeInfo = notifTypeLabels[n.type] || { mr: n.type, en: n.type, color: "bg-gray-100 text-gray-700" };
+                      const translated = translateNotification(n);
                       return (
                         <tr key={n._id} className="hover:bg-gray-50/50 transition">
                           <td className="p-4 text-gray-600 font-medium text-xs whitespace-nowrap">
-                            {new Date(n.createdAt).toLocaleDateString("mr-IN")}
+                            {new Date(n.createdAt).toLocaleDateString(lang === "mr" ? "mr-IN" : "en-IN")}
                             <p className="text-[10px] text-gray-400 mt-0.5">
-                              {new Date(n.createdAt).toLocaleTimeString("mr-IN", { hour: "2-digit", minute: "2-digit" })}
+                              {new Date(n.createdAt).toLocaleTimeString(lang === "mr" ? "mr-IN" : "en-IN", { hour: "2-digit", minute: "2-digit" })}
                             </p>
                           </td>
                           <td className="p-4">
                             <span className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider ${typeInfo.color}`}>
-                              {typeInfo.label}
+                              {lang === "mr" ? typeInfo.mr : typeInfo.en}
                             </span>
                           </td>
                           <td className="p-4 font-mono font-bold text-green-700 text-xs">{n.familyId}</td>
-                          <td className="p-4 font-bold text-gray-800 text-xs">{n.title}</td>
+                          <td className="p-4 font-bold text-gray-800 text-xs">{translated.title}</td>
                           <td className="p-4 text-gray-600 text-xs max-w-xs">
-                            <p className="line-clamp-2">{n.message}</p>
+                            <p className="line-clamp-2">{translated.message}</p>
                           </td>
                         </tr>
                       );
@@ -1856,17 +1948,17 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                     onClick={() => fetchNotifications(notifPage - 1)}
                     className="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-3 py-1.5 rounded-lg disabled:opacity-40 transition"
                   >
-                    ◀ मागील
+                    {lang === "mr" ? "◀ मागील" : "◀ Prev"}
                   </button>
                   <span className="text-xs font-bold text-gray-600">
-                    पान {notifPage} / {Math.ceil(notifTotal / 30)}
+                    {lang === "mr" ? `पान ${notifPage} / ${Math.ceil(notifTotal / 30)}` : `Page ${notifPage} / ${Math.ceil(notifTotal / 30)}`}
                   </span>
                   <button
                     disabled={notifPage >= Math.ceil(notifTotal / 30)}
                     onClick={() => fetchNotifications(notifPage + 1)}
                     className="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-3 py-1.5 rounded-lg disabled:opacity-40 transition"
                   >
-                    पुढील ▶
+                    {lang === "mr" ? "पुढील ▶" : "Next ▶"}
                   </button>
                 </div>
               )}

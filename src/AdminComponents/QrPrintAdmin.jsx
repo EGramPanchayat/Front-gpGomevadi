@@ -137,7 +137,7 @@ export default function QrPrintAdmin() {
         ctx.fillStyle = "#ffffff";
         ctx.textAlign = "center";
         ctx.font = "bold 44px sans-serif";
-        ctx.fillText("महाराष्ट्र शासन", 900, 110);
+        ctx.fillText(lang === "mr" ? "महाराष्ट्र शासन" : "Govt. of Maharashtra", 900, 110);
 
         // 2. Satyamev Circle Logo (Centered at X = 900, Y = 205, Radius = 60px)
         ctx.save();
@@ -165,15 +165,15 @@ export default function QrPrintAdmin() {
         ctx.fillStyle = "#ffffff";
         ctx.textAlign = "center";
         ctx.font = "bold 40px sans-serif";
-        const gpName = config?.gpName || "ग्रामपंचायत गोमेवाडी";
+        const gpName = lang === "mr" ? (config?.gpName || "ग्रामपंचायत गोमेवाडी") : "Gram Panchayat Gomevadi";
         ctx.fillText(gpName, 900, 312);
 
         // 4. Taluka, District (Centered at Y = 365)
         ctx.fillStyle = "#ffedd5"; // Light orange
         ctx.font = "bold 28px sans-serif";
-        const taluka = config?.taluka || "आटपाडी";
-        const district = config?.district || "सांगली";
-        ctx.fillText(`ता. ${taluka}, जि. ${district}`, 900, 365);
+        const taluka = lang === "mr" ? (config?.taluka || "आटपाडी") : "Atpadi";
+        const district = lang === "mr" ? (config?.district || "सांगली") : "Sangli";
+        ctx.fillText(lang === "mr" ? `ता. ${taluka}, जि. ${district}` : `Tal. ${taluka}, Dist. ${district}`, 900, 365);
 
         // Draw white card for QR Code (shifted down slightly)
         ctx.fillStyle = "#f8fafc";
@@ -196,7 +196,7 @@ export default function QrPrintAdmin() {
         ctx.fillStyle = "#166534";
         ctx.font = "bold 30px sans-serif";
         ctx.textAlign = "center";
-        ctx.fillText("लॉगिन करण्यासाठी स्कॅन करा", 380, 995);
+        ctx.fillText(lang === "mr" ? "लॉगिन करण्यासाठी स्कॅन करा" : "Scan to Login", 380, 995);
 
         // Draw Right Details (aligned inline)
         ctx.textAlign = "left";
@@ -225,13 +225,13 @@ export default function QrPrintAdmin() {
         };
 
         // Render strips
-        drawDataStrip("कुटुंब ID:", family.familyId);
+        drawDataStrip(lang === "mr" ? "कुटुंब ID:" : "Family ID:", family.familyId);
         startY += lineGap;
-        drawDataStrip("कुटुंब प्रमुख:", family.mainMemberName || "—");
+        drawDataStrip(lang === "mr" ? "कुटुंब प्रमुख:" : "Family Head:", family.mainMemberName || "—");
         startY += lineGap;
-        drawDataStrip("सदस्य संख्या:", `${membersCount} सदस्य`);
+        drawDataStrip(lang === "mr" ? "सदस्य संख्या:" : "Total Members:", lang === "mr" ? `${membersCount} सदस्य` : `${membersCount} Members`);
         startY += lineGap;
-        drawDataStrip("घर क्रमांक:", family.houseNumber || "—");
+        drawDataStrip(lang === "mr" ? "घर क्रमांक:" : "House No:", family.houseNumber || "—");
 
         resolve(canvas.toDataURL("image/png"));
       };
@@ -302,7 +302,9 @@ export default function QrPrintAdmin() {
               <span>🖨️</span> {lang === "mr" ? "QR कोड प्रिंट केंद्र" : "QR Print Station"}
             </h2>
             <p className="text-green-200 mt-1 text-xs font-semibold">
-              गावातील कुटुंबांचे QR कोड प्लेट्स प्रिंट करा आणि PDF स्वरूपात डाउनलोड करा
+              {lang === "mr" 
+                ? "गावातील कुटुंबांचे QR कोड प्लेट्स प्रिंट करा आणि PDF स्वरूपात डाउनलोड करा" 
+                : "Print QR code plates for village households and download as PDF"}
             </p>
           </div>
           {/* Removed A4 Layout Badge */}
@@ -319,7 +321,7 @@ export default function QrPrintAdmin() {
             {/* Search and select buttons */}
             <div className="flex flex-col gap-3">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
-                शोधा आणि फिल्टर करा
+                {lang === "mr" ? "शोधा आणि फिल्टर करा" : "Search & Filter"}
               </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
@@ -327,7 +329,7 @@ export default function QrPrintAdmin() {
                 </span>
                 <input
                   type="text"
-                  placeholder="नाव, कुटुंब ID किंवा घर क्रमांक प्रविष्ट करा..."
+                  placeholder={lang === "mr" ? "नाव, कुटुंब ID किंवा घर क्रमांक प्रविष्ट करा..." : "Search name, family ID or house number..."}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none text-sm font-semibold transition"
@@ -342,7 +344,7 @@ export default function QrPrintAdmin() {
                 className="flex-1 px-4 py-2.5 bg-green-50 border border-green-200 text-green-700 rounded-xl font-bold hover:bg-green-100 transition text-xs flex items-center justify-center gap-1.5"
               >
                 <Check className="w-4 h-4" />
-                सर्व निवडा
+                {lang === "mr" ? "सर्व निवडा" : "Select All"}
               </button>
               <button
                 type="button"
@@ -350,7 +352,7 @@ export default function QrPrintAdmin() {
                 className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-100 transition text-xs flex items-center justify-center gap-1.5"
               >
                 <X className="w-4 h-4" />
-                निवड रद्द करा
+                {lang === "mr" ? "निवड रद्द करा" : "Deselect All"}
               </button>
             </div>
             
@@ -363,7 +365,7 @@ export default function QrPrintAdmin() {
                 className="w-full px-5 py-3.5 bg-green-700 hover:bg-green-800 text-white rounded-xl font-extrabold transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-md hover:-translate-y-0.5 transform duration-150 text-xs"
               >
                 <Printer className="w-4.5 h-4.5" />
-                सर्व प्रिंट करा ({filteredFamilies.length})
+                {lang === "mr" ? `सर्व प्रिंट करा (${filteredFamilies.length})` : `Print All (${filteredFamilies.length})`}
               </button>
               <button
                 type="button"
@@ -372,7 +374,7 @@ export default function QrPrintAdmin() {
                 className="w-full px-5 py-3.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-extrabold transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-md hover:-translate-y-0.5 transform duration-150 text-xs"
               >
                 <Download className="w-4.5 h-4.5" />
-                निवडलेले प्रिंट करा ({selectedFamilies.length})
+                {lang === "mr" ? `निवडलेले प्रिंट करा (${selectedFamilies.length})` : `Print Selected (${selectedFamilies.length})`}
               </button>
             </div>
           </div>
@@ -381,11 +383,11 @@ export default function QrPrintAdmin() {
           <div className="bg-white rounded-3xl shadow-md border border-slate-100 overflow-hidden">
             <div className="px-6 py-4 bg-slate-55 border-b border-slate-100 flex justify-between items-center">
               <h3 className="font-black text-slate-800 text-sm">
-                कुटुंब सूची ({filteredFamilies.length})
+                {lang === "mr" ? `कुटुंब सूची (${filteredFamilies.length})` : `Family List (${filteredFamilies.length})`}
               </h3>
               {selectedFamilies.length > 0 && (
                 <span className="text-[10px] font-black bg-orange-105 text-orange-700 px-2 py-0.5 rounded-full border border-orange-200">
-                  {selectedFamilies.length} निवडले
+                  {lang === "mr" ? `${selectedFamilies.length} निवडले` : `${selectedFamilies.length} Selected`}
                 </span>
               )}
             </div>
@@ -393,7 +395,7 @@ export default function QrPrintAdmin() {
             <div className="divide-y divide-slate-100 max-h-[460px] overflow-y-auto custom-sass-scrollbar">
               {filteredFamilies.length === 0 ? (
                 <div className="p-10 text-center text-slate-400 text-sm font-semibold">
-                  कोणतेही कुटुंब सापडले नाही.
+                  {lang === "mr" ? "कोणतेही कुटुंब सापडले नाही." : "No families found."}
                 </div>
               ) : (
                 filteredFamilies.map((family) => (
@@ -421,7 +423,7 @@ export default function QrPrintAdmin() {
                         </span>
                       </div>
                       <div className="text-[11px] text-slate-400 font-semibold mt-1">
-                        घर क्रमांक: {family.houseNumber} | सदस्य: {(family.menCount || 0) + (family.womenCount || 0) + (family.seniorCount || 0) + (family.childrenCount || 0)}
+                        {lang === "mr" ? "घर क्रमांक:" : "House No:"} {family.houseNumber} | {lang === "mr" ? "सदस्य:" : "Members:"} {(family.menCount || 0) + (family.womenCount || 0) + (family.seniorCount || 0) + (family.childrenCount || 0)}
                       </div>
                     </div>
                     
@@ -435,7 +437,7 @@ export default function QrPrintAdmin() {
                         className="px-2.5 py-1.5 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition text-[11px] font-bold flex items-center gap-1"
                       >
                         <Eye className="w-3.5 h-3.5" />
-                        पहा
+                        {lang === "mr" ? "पहा" : "View"}
                       </button>
                       <button
                         type="button"
@@ -446,7 +448,7 @@ export default function QrPrintAdmin() {
                         className="px-2.5 py-1.5 bg-green-50 border border-green-200 text-green-700 rounded-lg hover:bg-green-100 transition text-[11px] font-bold flex items-center gap-1"
                       >
                         <Printer className="w-3.5 h-3.5" />
-                        प्रिंट
+                        {lang === "mr" ? "प्रिंट" : "Print"}
                       </button>
                     </div>
                   </div>
@@ -464,7 +466,7 @@ export default function QrPrintAdmin() {
                 <span className="text-orange-500">✨</span> {lang === "mr" ? "कुटुंब QR प्लेट प्रिव्ह्यू" : "Live Card Preview"}
               </h3>
               <p className="text-[11px] text-slate-400 mt-1 font-semibold">
-                प्रिटिंगसाठी कार्डचा लाईव्ह लेआउट असा दिसेल
+                {lang === "mr" ? "प्रिटिंगसाठी कार्डचा लाईव्ह लेआउट असा दिसेल" : "Live card printing layout will look like this"}
               </p>
             </div>
 
@@ -473,18 +475,22 @@ export default function QrPrintAdmin() {
                 {/* Inner Orange outline */}
                 <div className="absolute inset-1.5 border border-orange-500 rounded-2xl pointer-events-none" />
 
-                                {/* Card header (vertical stack) */}
+                {/* Card header (vertical stack) */}
                 <div className="relative bg-green-900 rounded-xl p-4 flex flex-col items-center text-center text-white space-y-2">
-                  <h4 className="font-black text-xs leading-none">महाराष्ट्र शासन</h4>
+                  <h4 className="font-black text-xs leading-none">
+                    {lang === "mr" ? "महाराष्ट्र शासन" : "Govt. of Maharashtra"}
+                  </h4>
                   {/* Satyamev Circle Logo */}
                   <div className="w-10 h-10 rounded-full border-2 border-yellow-400 bg-white flex items-center justify-center overflow-hidden shrink-0">
                     <img src="/images/satyamev.jpg" alt="Logo" className="w-full h-full object-cover" />
                   </div>
                   <h5 className="font-black text-[11px] text-white/95 leading-none">
-                    {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
+                    {lang === "mr" ? (config?.gpName || "ग्रामपंचायत गोमेवाडी") : "Gram Panchayat Gomevadi"}
                   </h5>
                   <p className="text-[9px] text-orange-200 font-bold leading-none">
-                    ता. {config?.taluka || "आटपाडी"}, जि. {config?.district || "सांगली"}
+                    {lang === "mr" 
+                      ? `ता. ${config?.taluka || "आटपाडी"}, जि. ${config?.district || "सांगली"}` 
+                      : "Tal. Atpadi, Dist. Sangli"}
                   </p>
                 </div>
 
@@ -500,35 +506,35 @@ export default function QrPrintAdmin() {
                       className="w-20 h-20 object-contain p-1 bg-white border border-slate-100 rounded-lg shadow-sm"
                     />
                     <span className="text-[7px] font-black text-green-700 mt-2 block text-center leading-none">
-                      लॉगिनसाठी स्कॅन करा
+                      {lang === "mr" ? "लॉगिनसाठी स्कॅन करा" : "Scan to Login"}
                     </span>
                   </div>
 
-                                    {/* Right Details badges */}
+                  {/* Right Details badges */}
                   <div className="col-span-7 space-y-2.5">
                     {/* Family ID badge */}
                     <div className="flex items-center bg-orange-50 border border-orange-200 px-3.5 py-2.5 rounded-2xl text-orange-700 font-black text-sm">
-                      <span>कुटुंब ID: &nbsp;</span>
+                      <span>{lang === "mr" ? "कुटुंब ID:" : "Family ID:"} &nbsp;</span>
                       <span className="ml-1">{previewFamily.familyId}</span>
                     </div>
 
                     {/* Main Member name */}
                     <div className="flex items-center bg-orange-50 border border-orange-200 px-3.5 py-2.5 rounded-2xl text-orange-700 font-black text-sm">
-                      <span>कुटुंब प्रमुख: &nbsp;</span>
+                      <span>{lang === "mr" ? "कुटुंब प्रमुख:" : "Family Head:"} &nbsp;</span>
                       <span className="ml-1 truncate max-w-[130px]">{previewFamily.mainMemberName || "—"}</span>
                     </div>
 
                     {/* Members Count */}
                     <div className="flex items-center bg-orange-50 border border-orange-200 px-3.5 py-2.5 rounded-2xl text-orange-700 font-black text-sm">
-                      <span>सदस्य संख्या: &nbsp;</span>
+                      <span>{lang === "mr" ? "सदस्य संख्या:" : "Total Members:"} &nbsp;</span>
                       <span className="ml-1">
-                        {(previewFamily.menCount || 0) + (previewFamily.womenCount || 0) + (previewFamily.seniorCount || 0) + (previewFamily.childrenCount || 0)} सदस्य
+                        {(previewFamily.menCount || 0) + (previewFamily.womenCount || 0) + (previewFamily.seniorCount || 0) + (previewFamily.childrenCount || 0)}{lang === "mr" ? " सदस्य" : " Members"}
                       </span>
                     </div>
 
                     {/* House Number */}
                     <div className="flex items-center bg-orange-50 border border-orange-200 px-3.5 py-2.5 rounded-2xl text-orange-700 font-black text-sm">
-                      <span>घर क्रमांक: &nbsp;</span>
+                      <span>{lang === "mr" ? "घर क्रमांक:" : "House No:"} &nbsp;</span>
                       <span className="ml-1 truncate max-w-[130px]">{previewFamily.houseNumber || "—"}</span>
                     </div>
                   </div>
@@ -536,7 +542,7 @@ export default function QrPrintAdmin() {
               </div>
             ) : (
               <div className="h-64 border border-dashed border-slate-200 rounded-3xl flex flex-col items-center justify-center text-slate-400 text-xs">
-                <span>प्रिव्ह्यू लोड होत आहे...</span>
+                <span>{lang === "mr" ? "प्रिव्ह्यू लोड होत आहे..." : "Loading preview..."}</span>
               </div>
             )}
           </div>
