@@ -1090,19 +1090,6 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                           )}
                         </td>
                         <td className="p-4 flex gap-2 justify-center">
-                          {!f.hasTaxAssigned && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                if (onRedirectToTax) {
-                                  onRedirectToTax(f);
-                                }
-                              }}
-                              className="bg-orange-500 hover:bg-orange-600 text-white font-extrabold px-3 py-1.5 rounded-xl text-xs shadow-sm transition-all duration-200 hover:-translate-y-0.5"
-                            >
-                              {lang === "mr" ? "कर आकारणी" : "Assign Tax"}
-                            </button>
-                          )}
                           <button
                             type="button"
                             onClick={() => {
