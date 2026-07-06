@@ -815,10 +815,10 @@ export default function UserDashboard() {
 
   const getPaymentBucketLabel = (year) => {
     const numericYear = Number(year);
-    if (!Number.isFinite(numericYear)) return "Not specified";
-    if (numericYear < currentFinancialYear) return "Thakbaki / Previous arrears";
-    if (numericYear === currentFinancialYear) return "This year's payment";
-    return "Future year payment";
+    if (!Number.isFinite(numericYear)) return language === "mr" ? "अनिर्दिष्ट" : "Not specified";
+    if (numericYear < currentFinancialYear) return language === "mr" ? "थकबाकी (मागील थकीत)" : "Thakbaki / Previous arrears";
+    if (numericYear === currentFinancialYear) return language === "mr" ? "चालू वर्षाचा कर" : "This year's payment";
+    return language === "mr" ? "भविष्यातील कर" : "Future year payment";
   };
 
   const getRemainingForPayment = (payment) => {
@@ -1486,7 +1486,7 @@ export default function UserDashboard() {
                       <span className="font-bold bg-white/10 px-2.5 py-1 rounded-lg">{family?.houseNumber}</span>
                     </div>
                     <div className="flex justify-between items-center text-xs">
-                      <span className="text-green-200">नोंदणीकृत ईमेल (Email):</span>
+                      <span className="text-green-200">{language === "mr" ? "नोंदणीकृत ईमेल (Email):" : "Registered Email:"}</span>
                       <span className="font-bold">{family?.email}</span>
                     </div>
                     <div className="flex justify-between items-center text-xs">
