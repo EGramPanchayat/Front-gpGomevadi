@@ -1511,11 +1511,19 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
           <div className="bg-white rounded-3xl p-6 shadow-xl border border-green-50 space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-4 gap-4">
               <div>
-                <h4 className="text-lg font-bold text-green-700">वार्षिक कर तपशील (Yearly Tax Details)</h4>
-                <p className="text-xs text-gray-400">आकारणी वर्ष निवडून थकीत, भरलेली रक्कम आणि दंड आकारणी व्यवस्थापित करा</p>
+                <h4 className="text-lg font-bold text-green-700">
+                  {lang === "mr" ? "वार्षिक कर तपशील" : "Yearly Tax Details"}
+                </h4>
+                <p className="text-xs text-gray-400">
+                  {lang === "mr" 
+                    ? "आकारणी वर्ष निवडून थकीत, भरलेली रक्कम आणि दंड आकारणी व्यवस्थापित करा" 
+                    : "Select assessment year to manage outstanding dues, payments, and penalties"}
+                </p>
               </div>
               <div className="w-full sm:w-60">
-                <label className="block text-xs font-bold text-gray-700 mb-1">आकारणी वर्ष निवडा (Select Financial Year):</label>
+                <label className="block text-xs font-bold text-gray-700 mb-1">
+                  {lang === "mr" ? "आकारणी वर्ष निवडा:" : "Select Financial Year:"}
+                </label>
                 <select
                   value={selectedLedgerYear}
                   onChange={(e) => setSelectedLedgerYear(Number(e.target.value))}
@@ -1562,11 +1570,11 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                           <table className="w-full text-left text-sm border-collapse">
                             <thead>
                               <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
-                                <th className="p-4 rounded-l-xl">कर प्रकार (Tax Type)</th>
-                                <th className="p-4">एकूण रक्कम (Total)</th>
-                                <th className="p-4">जमा रक्कम (Paid)</th>
-                                <th className="p-4">उर्वरित देय (Outstanding)</th>
-                                <th className="p-4 rounded-r-xl">स्थिती (Status)</th>
+                                <th className="p-4 rounded-l-xl">{lang === "mr" ? "कर प्रकार" : "Tax Type"}</th>
+                                <th className="p-4">{lang === "mr" ? "एकूण रक्कम" : "Total"}</th>
+                                <th className="p-4">{lang === "mr" ? "जमा रक्कम" : "Paid"}</th>
+                                <th className="p-4">{lang === "mr" ? "उर्वरित देय" : "Outstanding"}</th>
+                                <th className="p-4 rounded-r-xl">{lang === "mr" ? "स्थिती" : "Status"}</th>
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50">
@@ -1622,15 +1630,21 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                                 </div>
                                 <div className="grid grid-cols-3 gap-2 text-xs font-semibold pt-1">
                                   <div>
-                                    <span className="block text-[10px] text-gray-400 uppercase">एकूण (Total)</span>
+                                    <span className="block text-[10px] text-gray-400 uppercase">
+                                      {lang === "mr" ? "एकूण" : "Total"}
+                                    </span>
                                     <span className="text-gray-800">₹{b.amount}</span>
                                   </div>
                                   <div>
-                                    <span className="block text-[10px] text-gray-400 uppercase">जमा (Paid)</span>
+                                    <span className="block text-[10px] text-gray-400 uppercase">
+                                      {lang === "mr" ? "जमा" : "Paid"}
+                                    </span>
                                     <span className="text-green-600">₹{b.paidAmount}</span>
                                   </div>
                                   <div>
-                                    <span className="block text-[10px] text-gray-400 uppercase">देय (Due)</span>
+                                    <span className="block text-[10px] text-gray-400 uppercase">
+                                      {lang === "mr" ? "देय" : "Due"}
+                                    </span>
                                     <span className={`font-black ${isOverpaid ? "text-emerald-650" : "text-red-650"}`}>
                                       {isOverpaid ? `+₹${Math.abs(outstanding)}` : `₹${outstanding}`}
                                     </span>
@@ -1647,22 +1661,28 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                   {/* Inline assign fine section (1/3 width) */}
                   <div className="bg-slate-50/50 border border-slate-100 rounded-3xl p-5 flex flex-col justify-between">
                     <div>
-                      <h5 className="font-bold text-sm text-green-805 mb-2">वर्ष {selectedLedgerYear} साठी दंड आकारणी</h5>
+                      <h5 className="font-bold text-sm text-green-805 mb-2">
+                        {lang === "mr" ? `वर्ष ${selectedLedgerYear} साठी दंड आकारणी` : `Assign Fine for Year ${selectedLedgerYear}`}
+                      </h5>
                       <p className="text-[11px] text-gray-400 mb-4 font-semibold leading-relaxed">
-                        निवडलेल्या कुटुंबाला या आर्थिक वर्षासाठी विलंब शुल्क किंवा दंड (Late Fine) थेट लागू करा.
+                        {lang === "mr"
+                          ? "निवडलेल्या कुटुंबाला या आर्थिक वर्षासाठी विलंब शुल्क किंवा दंड थेट लागू करा."
+                          : "Apply late fees or fines directly to the selected family for this financial year."}
                       </p>
 
-                                            {/* Desktop direct form */}
+                      {/* Desktop direct form */}
                       <form
                         onSubmit={handleAssignFineSubmit}
                         className="hidden md:block space-y-4"
                       >
                         <div>
-                          <label className="block text-xs font-bold text-gray-550 mb-1">दंड रक्कम (Fine Amount) *</label>
+                          <label className="block text-xs font-bold text-gray-550 mb-1">
+                            {lang === "mr" ? "दंड रक्कम *" : "Fine Amount *"}
+                          </label>
                           <input
                             type="number"
                             required
-                            placeholder="उदा. ५०"
+                            placeholder={lang === "mr" ? "उदा. ५०" : "e.g. 50"}
                             value={inlineFineAmount}
                             onChange={(e) => setInlineFineAmount(e.target.value)}
                             className="border border-green-600 bg-white p-2 rounded-xl w-full text-xs font-semibold outline-none"
@@ -1670,10 +1690,12 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                         </div>
 
                         <div>
-                          <label className="block text-xs font-bold text-gray-550 mb-1">दंड आकारण्याचे कारण (Reason for Fine)</label>
+                          <label className="block text-xs font-bold text-gray-550 mb-1">
+                            {lang === "mr" ? "दंड आकारण्याचे कारण" : "Reason for Fine"}
+                          </label>
                           <textarea
                             rows={2}
-                            placeholder="उदा. विलंब शुल्क किंवा इतर कारण"
+                            placeholder={lang === "mr" ? "उदा. विलंब शुल्क किंवा इतर कारण" : "e.g. Late fee or other reason"}
                             value={inlineFineReason}
                             onChange={(e) => setInlineFineReason(e.target.value)}
                             className="border border-green-600 bg-white p-2 rounded-xl w-full text-xs font-semibold outline-none resize-none"
@@ -1685,7 +1707,9 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                           disabled={assigningInlineFine}
                           className="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-2.5 rounded-xl shadow text-xs transition duration-300"
                         >
-                          {assigningInlineFine ? "लागू होत आहे..." : "दंड लागू करा / Assign Fine"}
+                          {assigningInlineFine 
+                            ? (lang === "mr" ? "लागू होत आहे..." : "Applying...") 
+                            : (lang === "mr" ? "दंड लागू करा" : "Assign Fine")}
                         </button>
                       </form>
 
@@ -1695,26 +1719,26 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                         onClick={() => setShowAssignFineModal(true)}
                         className="block md:hidden w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3.5 rounded-xl shadow text-xs transition duration-300"
                       >
-                        ⚠️ {lang === "mr" ? "दंड आकारणी (Assign Fine)" : "Assign Fine"}
+                        ⚠️ {lang === "mr" ? "दंड आकारणी" : "Assign Fine"}
                       </button>
                     </div>
 
                     {/* Quick year balance summary */}
                     <div className="mt-6 pt-4 border-t border-slate-200/60 text-xs space-y-1.5 font-sans font-semibold text-gray-500">
                       <div className="flex justify-between">
-                        <span>एकूण कर (Total Tax):</span>
+                        <span>{lang === "mr" ? "एकूण कर:" : "Total Tax:"}</span>
                         <span className="text-gray-800 font-bold">
                           ₹{yearBills.reduce((sum, b) => sum + b.amount, 0)}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span>एकूण जमा (Total Paid):</span>
+                        <span>{lang === "mr" ? "एकूण जमा:" : "Total Paid:"}</span>
                         <span className="text-green-600 font-bold">
                           ₹{yearBills.reduce((sum, b) => sum + b.paidAmount, 0)}
                         </span>
                       </div>
                       <div className="flex justify-between border-t border-dashed pt-1.5 font-bold">
-                        <span>उर्वरित येणे (Outstanding):</span>
+                        <span>{lang === "mr" ? "उर्वरित येणे:" : "Outstanding:"}</span>
                         <span className="text-red-650 font-black">
                           ₹{yearBills.reduce((sum, b) => sum + (b.amount - b.paidAmount), 0)}
                         </span>
