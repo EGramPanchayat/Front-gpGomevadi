@@ -823,11 +823,13 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
       {activeTab === "add" && (
         <div className="bg-white rounded-3xl p-6 shadow-xl border border-green-50 animate-fadeIn max-w-none">
           <h3 className="text-lg font-black text-slate-800 mb-6 border-b pb-2 tracking-tight">
-            नवीन कुटुंब नोंदणी (Register Household)
+            {lang === "mr" ? "नवीन कुटुंब नोंदणी" : "Register Household"}
           </h3>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">कुटुंब आयडी (Unique Family ID)</label>
+              <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">
+                {lang === "mr" ? "कुटुंब आयडी" : "Family ID"}
+              </label>
               <input
                 type="text"
                 readOnly
@@ -838,11 +840,13 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">घर क्रमांक (House No.) *</label>
+              <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">
+                {lang === "mr" ? "घर क्रमांक" : "House Number"} *
+              </label>
               <input
                 type="text"
                 required
-                placeholder="उदा. H-102"
+                placeholder={lang === "mr" ? "उदा. H-102" : "e.g. H-102"}
                 value={houseNumber}
                 onChange={(e) => setHouseNumber(e.target.value)}
                 className="border border-slate-250 p-3 rounded-xl w-full text-sm outline-none font-semibold focus:border-green-600 focus:ring-4 focus:ring-green-50"
@@ -850,11 +854,13 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">मुख्य सदस्याचे नाव (Head Name) *</label>
+              <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">
+                {lang === "mr" ? "मुख्य सदस्याचे नाव" : "Head of Family Name"} *
+              </label>
               <input
                 type="text"
                 required
-                placeholder="उदा. सतीश मारुती शिंदे"
+                placeholder={lang === "mr" ? "उदा. सतीश मारुती शिंदे" : "e.g. Satish Maruti Shinde"}
                 value={mainMemberName}
                 onChange={(e) => setMainMemberName(e.target.value)}
                 className="border border-slate-250 p-3 rounded-xl w-full text-sm outline-none font-semibold focus:border-green-600 focus:ring-4 focus:ring-green-50"
@@ -862,7 +868,9 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">ईमेल पत्ता (OTP साठी) *</label>
+              <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">
+                {lang === "mr" ? "ईमेल पत्ता (OTP साठी)" : "Email Address (for OTP)"} *
+              </label>
               <input
                 type="email"
                 required
@@ -874,7 +882,9 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">व्हॉट्सॲप मोबाईल नंबर</label>
+              <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">
+                {lang === "mr" ? "व्हॉट्सॲप मोबाईल नंबर" : "WhatsApp Mobile Number"}
+              </label>
               <input
                 type="tel"
                 maxLength={10}
@@ -886,11 +896,13 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">पत्ता (Address) *</label>
+              <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">
+                {lang === "mr" ? "पत्ता" : "Address"} *
+              </label>
               <input
                 type="text"
                 required
-                placeholder="उदा. गोमेवाडी गल्ली क्र. ३"
+                placeholder={lang === "mr" ? "उदा. गोमेवाडी गल्ली क्र. ३" : "e.g. Gomevadi Lane No. 3"}
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 className="border border-slate-250 p-3 rounded-xl w-full text-sm outline-none font-semibold focus:border-green-600 focus:ring-4 focus:ring-green-50"
@@ -899,7 +911,9 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">पुरुष संख्या</label>
+                <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">
+                  {lang === "mr" ? "पुरुष संख्या" : "No. of Males"}
+                </label>
                 <input
                   type="number"
                   value={menCount}
@@ -908,7 +922,9 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">महिला संख्या</label>
+                <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">
+                  {lang === "mr" ? "महिला संख्या" : "No. of Females"}
+                </label>
                 <input
                   type="number"
                   value={womenCount}
@@ -920,7 +936,9 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">ज्येष्ठ नागरिक</label>
+                <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">
+                  {lang === "mr" ? "ज्येष्ठ नागरिक" : "Senior Citizens"}
+                </label>
                 <input
                   type="number"
                   value={seniorCount}
@@ -929,7 +947,9 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">बालके (0-18)</label>
+                <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">
+                  {lang === "mr" ? "बालके (0-18)" : "Children (0-18)"}
+                </label>
                 <input
                   type="number"
                   value={childrenCount}
