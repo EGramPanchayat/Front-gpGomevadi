@@ -6,7 +6,10 @@ import { useSiteConfig } from "../utils/SiteConfigContext";
 import jsPDF from "jspdf";
 import { Search, Printer, Download, Check, X, Eye } from "lucide-react";
 
+import { useLanguage } from "../utils/LanguageContext";
+
 export default function QrPrintAdmin() {
+  const { lang } = useLanguage();
   const { config } = useSiteConfig();
   const [families, setFamilies] = useState([]);
   const [filteredFamilies, setFilteredFamilies] = useState([]);
@@ -296,7 +299,7 @@ export default function QrPrintAdmin() {
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h2 className="text-2xl font-black tracking-tight flex items-center gap-2">
-              <span>🖨️</span> QR कोड प्रिंट केंद्र (QR Print Station)
+              <span>🖨️</span> {lang === "mr" ? "QR कोड प्रिंट केंद्र" : "QR Print Station"}
             </h2>
             <p className="text-green-200 mt-1 text-xs font-semibold">
               गावातील कुटुंबांचे QR कोड प्लेट्स प्रिंट करा आणि PDF स्वरूपात डाउनलोड करा
@@ -458,7 +461,7 @@ export default function QrPrintAdmin() {
           <div className="bg-white rounded-3xl shadow-xl border border-slate-150 p-6 space-y-6">
             <div className="border-b pb-3">
               <h3 className="font-black text-slate-800 text-sm tracking-tight flex items-center gap-2">
-                <span className="text-orange-500">✨</span> कुटुंब QR प्लेट प्रिव्ह्यू (Live Card Preview)
+                <span className="text-orange-500">✨</span> {lang === "mr" ? "कुटुंब QR प्लेट प्रिव्ह्यू" : "Live Card Preview"}
               </h3>
               <p className="text-[11px] text-slate-400 mt-1 font-semibold">
                 प्रिटिंगसाठी कार्डचा लाईव्ह लेआउट असा दिसेल

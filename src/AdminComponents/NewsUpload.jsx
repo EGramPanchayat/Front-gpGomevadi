@@ -3,8 +3,10 @@ import { toast } from "react-toastify";
 import axioesInstance from "../utils/axioesInstance";
 import { BiNews, BiBookmarkAlt, BiTrash, BiFileBlank, BiCloudUpload } from "react-icons/bi";
 import { FiFileText, FiPlus, FiTrash2 } from "react-icons/fi";
+import { useLanguage } from "../utils/LanguageContext";
 
 const NewsUpload = () => {
+  const { lang } = useLanguage();
   // States for News
   const [newsText, setNewsText] = useState("");
   const [newsLoading, setNewsLoading] = useState(false);
@@ -110,7 +112,9 @@ const NewsUpload = () => {
         <div className="absolute top-1/2 left-[60%] w-16 h-16 bg-yellow-400/30 rounded-full -translate-y-1/2 pointer-events-none z-0"></div>
 
         <div className="relative z-10">
-          <h2 className="text-2xl font-black text-white drop-shadow-md">बातम्या आणि सूचना व्यवस्थापन (News & Notices Hub)</h2>
+          <h2 className="text-2xl font-black text-white drop-shadow-md">
+            {lang === "mr" ? "बातम्या आणि सूचना व्यवस्थापन" : "News & Notices Hub"}
+          </h2>
           <p className="text-sm text-green-100 font-semibold mt-1">गावच्या ताज्या बातम्या, सूचना पत्रे आणि नागरिकांपर्यंत माहिती पोहोचवण्याचे व्यवस्थापन पॅनेल</p>
         </div>
 

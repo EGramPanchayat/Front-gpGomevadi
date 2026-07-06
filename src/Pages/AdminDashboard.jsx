@@ -421,7 +421,9 @@ export default function AdminDashboard() {
                   <div className="absolute top-1/2 left-[60%] w-16 h-16 bg-yellow-400/30 rounded-full -translate-y-1/2 pointer-events-none z-0"></div>
 
                   <div className="relative z-10">
-                    <h2 className="text-2xl font-black text-white drop-shadow-md">सदस्य, अधिकारी आणि गाव माहिती केंद्र (Village Administration Hub)</h2>
+                    <h2 className="text-2xl font-black text-white drop-shadow-md">
+                      {lang === "mr" ? "सदस्य, अधिकारी आणि गाव माहिती केंद्र" : "Village Administration Hub"}
+                    </h2>
                     <p className="text-sm text-green-100 font-semibold mt-1">ग्रामपंचायत कार्यकारिणी, अधिकारी, शासकीय अधिकारी आणि सामान्य माहिती व्यवस्थापन पॅनेल</p>
                   </div>
 

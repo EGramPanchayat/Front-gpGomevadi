@@ -339,7 +339,9 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
         <div className="absolute top-1/2 left-[60%] w-16 h-16 bg-yellow-400/30 rounded-full -translate-y-1/2 pointer-events-none z-0"></div>
 
         <div className="relative z-10">
-          <h2 className="text-2xl font-black text-white drop-shadow-md">कर भरणा आणि महसूल केंद्र (Village Tax Hub)</h2>
+          <h2 className="text-2xl font-black text-white drop-shadow-md">
+            {lang === "mr" ? "कर भरणा आणि महसूल केंद्र" : "Village Tax Hub"}
+          </h2>
           <p className="text-sm text-green-100 font-semibold mt-1">ग्रामपंचायत कर संकलन, थकबाकी अहवाल आणि वार्षिक कर आकारणी नियंत्रण पॅनेल</p>
         </div>
 
@@ -534,7 +536,9 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                     {/* Yearly breakdown table (2/3 width) */}
                     <div className="lg:col-span-2 bg-white rounded-3xl p-6 shadow-xl border border-green-50">
                       <div className="border-b pb-3 mb-4">
-                        <h3 className="text-lg font-bold text-green-800">वार्षिक थकबाकी अहवाल (Yearly Outstanding Report)</h3>
+                        <h3 className="text-lg font-bold text-green-800">
+                          {lang === "mr" ? "वार्षिक थकबाकी अहवाल" : "Yearly Outstanding Report"}
+                        </h3>
                         <p className="text-xs text-gray-400 font-semibold mt-1">मागील वर्षांचे एकूण प्रलंबित कर तपशील (गांव बेरीज / Whole Village Sum)</p>
                       </div>
 
@@ -545,11 +549,11 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                           <table className="w-full text-left text-sm border-collapse">
                             <thead>
                               <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
-                                <th className="p-4 rounded-l-xl">वर्ष (Year)</th>
+                                <th className="p-4 rounded-l-xl">{lang === "mr" ? "वर्ष" : "Year"}</th>
                                 <th className="p-4">१) पाणीपट्टी थकबाकी (सामान्य+विशेष)</th>
                                 <th className="p-4">२) घरपट्टी थकबाकी (घर+आरोग्य+वीज)</th>
-                                <th className="p-4">एकूण प्रलंबित (Total Due)</th>
-                                <th className="p-4 rounded-r-xl">क्रिया (Action)</th>
+                                <th className="p-4">{lang === "mr" ? "एकूण प्रलंबित" : "Total Due"}</th>
+                                <th className="p-4 rounded-r-xl">{lang === "mr" ? "क्रिया" : "Action"}</th>
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50">
@@ -688,12 +692,14 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
           {/* HOUSEHOLD SELECTION HEADER */}
           <div className="bg-white rounded-3xl p-6 shadow-xl border border-green-50 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h3 className="text-xl font-bold text-green-700">कुटुंबनिहाय खाते (Household Accounts)</h3>
+              <h3 className="text-xl font-bold text-green-700">{lang === "mr" ? "कुटुंबनिहाय खाते" : "Household Accounts"}</h3>
               <p className="text-sm text-gray-500">कुटुंब निवडून कर लागू करा किंवा पेमेंट नोंदवा</p>
             </div>
             {/* SEARCHABLE FAMILY DROPDOWN */}
             <div className="w-full md:w-96" ref={familyDropdownRef}>
-              <label className="block text-xs font-bold text-gray-700 mb-1">कुटुंब निवडा (Search by Name / Phone / ID):</label>
+              <label className="block text-xs font-bold text-gray-700 mb-1">
+                {lang === "mr" ? "कुटुंब निवडा (नाव/मोबाईल/आयडीनुसार शोधा):" : "Select Family (Search by Name / Phone / ID):"}
+              </label>
               <div className="relative">
                 <button
                   type="button"
@@ -773,26 +779,32 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* ASSIGN TAX FORM */}
             <div className="bg-white rounded-3xl p-6 shadow-xl border border-green-50">
-              <h4 className="text-lg font-bold text-green-700 mb-4 border-b pb-2">नवीन कर लागू करा (Assign Tax)</h4>
+              <h4 className="text-lg font-bold text-green-700 mb-4 border-b pb-2">
+                {lang === "mr" ? "नवीन कर लागू करा" : "Assign Tax"}
+              </h4>
               <form onSubmit={handleAssignTax} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">कर प्रकार (Tax Type)</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-1">
+                      {lang === "mr" ? "कर प्रकार" : "Tax Type"}
+                    </label>
                     <select
                       value={taxType}
                       onChange={(e) => setTaxType(e.target.value)}
                       className="border border-green-600 p-2 rounded-xl w-full text-sm outline-none font-semibold"
                     >
-                      <option value="samanya_water">सामान्य पाणीपट्टी (General Water Tax)</option>
-                      <option value="vishesh_water">विशेष पाणीपट्टी (Special Water Tax)</option>
-                      <option value="house">घरपट्टी (House Tax)</option>
-                      <option value="health">आरोग्य कर (Health Tax)</option>
-                      <option value="electricity">वीज कर (Electricity Tax)</option>
-                      <option value="fine">दंड (Fine / Penalty)</option>
+                      <option value="samanya_water">{lang === "mr" ? "सामान्य पाणीपट्टी" : "General Water Tax"}</option>
+                      <option value="vishesh_water">{lang === "mr" ? "विशेष पाणीपट्टी" : "Special Water Tax"}</option>
+                      <option value="house">{lang === "mr" ? "घरपट्टी" : "House Tax"}</option>
+                      <option value="health">{lang === "mr" ? "आरोग्य कर" : "Health Tax"}</option>
+                      <option value="electricity">{lang === "mr" ? "वीज कर" : "Electricity Tax"}</option>
+                      <option value="fine">{lang === "mr" ? "दंड" : "Fine / Penalty"}</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">आकारणी वर्ष (Financial Year)</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-1">
+                      {lang === "mr" ? "आकारणी वर्ष" : "Financial Year"}
+                    </label>
                     <select
                       required
                       value={year}
@@ -810,11 +822,13 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
 
                 <div className="grid grid-cols-1 gap-4 mb-4">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">कर रक्कम (Amount) *</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-1">
+                      {lang === "mr" ? "कर रक्कम *" : "Tax Amount *"}
+                    </label>
                     <input
                       type="number"
                       required
-                      placeholder="उदा. ५००"
+                      placeholder={lang === "mr" ? "उदा. ५००" : "e.g. 500"}
                       value={amount}
                       onChange={(e) => setAmount(e.target.value)}
                       className="border border-green-600 p-2.5 rounded-xl w-full text-sm outline-none font-semibold"
@@ -835,21 +849,23 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
             {/* OFFLINE PAYMENT CARD */}
             <div className="bg-orange-50 rounded-3xl p-6 shadow-xl border border-orange-100">
               <h4 className="text-lg font-bold text-orange-700 mb-4 border-b border-orange-200 pb-2">
-                ऑफलाइन पेमेंट नोंदवा <span className="font-semibold text-orange-500">(Record Offline Payment)</span>
+                {lang === "mr" ? "ऑफलाइन पेमेंट नोंदवा" : "Record Offline Payment"}
               </h4>
 
               <div className="space-y-4">
                 {/* Category Dropdown */}
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">पेमेंट गट (Payment Category)</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-1">
+                    {lang === "mr" ? "पेमेंट गट" : "Payment Category"}
+                  </label>
                   <select
                     value={offlineCategory}
                     onChange={(e) => setOfflineCategory(e.target.value)}
                     className="border border-orange-500 p-2 rounded-xl w-full text-sm outline-none font-semibold bg-white text-gray-800"
                   >
-                    <option value="water">💧 पाणीपट्टी — थकबाकी + चालू (सामान्य + विशेष)</option>
-                    <option value="house">🏠 घरपट्टी + वीजकर + आरोग्य कर — थकबाकी + चालू</option>
-                    <option value="fine">⚠️ दंड (Fines)</option>
+                    <option value="water">{lang === "mr" ? "💧 पाणीपट्टी — थकबाकी + चालू (सामान्य + विशेष)" : "💧 Water Tax — Arrears + Current"}</option>
+                    <option value="house">{lang === "mr" ? "🏠 घरपट्टी + वीजकर + आरोग्य कर — थकबाकी + चालू" : "🏠 House, Electricity & Health Tax — Arrears + Current"}</option>
+                    <option value="fine">{lang === "mr" ? "⚠️ दंड" : "⚠️ Fines"}</option>
                   </select>
                 </div>
 
@@ -865,11 +881,13 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                     .reduce((sum, b) => sum + (b.amount - (b.paidAmount || 0)), 0);
                   return (
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-1">एकूण थकबाकी (Total Outstanding)</label>
+                      <label className="block text-sm font-bold text-gray-700 mb-1">
+                        {lang === "mr" ? "एकूण थकबाकी" : "Total Outstanding"}
+                      </label>
                       <div className="border border-orange-500 p-2.5 rounded-xl w-full text-sm font-black bg-white flex items-center justify-between text-gray-800">
                         <span>₹{total.toLocaleString()}</span>
                         <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-orange-100 text-orange-700">
-                          {total > 0 ? "थकबाकी आहे" : "निरंक ✓"}
+                          {total > 0 ? (lang === "mr" ? "थकबाकी आहे" : "Due") : (lang === "mr" ? "निरंक ✓" : "Nil ✓")}
                         </span>
                       </div>
                     </div>
@@ -878,11 +896,13 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
 
                 {/* Amount Input */}
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">पेमेंट रक्कम (Payment Amount) *</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-1">
+                    {lang === "mr" ? "पेमेंट रक्कम *" : "Payment Amount *"}
+                  </label>
                   <input
                     type="number"
                     min="1"
-                    placeholder="उदा. ५००"
+                    placeholder={lang === "mr" ? "उदा. ५००" : "e.g. 500"}
                     value={offlineCatAmount}
                     onChange={(e) => setOfflineCatAmount(e.target.value)}
                     className="border border-orange-500 p-2.5 rounded-xl w-full text-sm outline-none font-semibold bg-white text-gray-800 placeholder-gray-400"
@@ -914,7 +934,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                   }}
                   className="w-full bg-orange-600 hover:bg-orange-700 disabled:opacity-50 text-white font-bold py-3 rounded-xl shadow transition"
                 >
-                  {recordingCat ? "Processing..." : "पेमेंट नोंदवा / Record Payment"}
+                  {recordingCat ? (lang === "mr" ? "प्रक्रिया होत आहे..." : "Processing...") : (lang === "mr" ? "पेमेंट नोंदवा" : "Record Payment")}
                 </button>
               </div>
             </div>
@@ -986,7 +1006,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                               const isOverpaid = outstanding < 0;
                               return (
                                 <tr key={b._id} className="hover:bg-gray-50/50 transition">
-                                  <td className="p-4 font-bold text-gray-700">{taxTypeLabels[b.taxType] || b.taxType}</td>
+                                  <td className="p-4 font-bold text-gray-700">{taxTypeLabel(b.taxType)}</td>
                                   <td className="p-4 text-gray-800 font-semibold">₹{b.amount}</td>
                                   <td className="p-4 text-green-600 font-bold">₹{b.paidAmount}</td>
                                   <td className={`p-4 font-black ${isOverpaid ? "text-emerald-600" : "text-red-650"}`}>
@@ -1143,7 +1163,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                     <tr key={p._id} className="hover:bg-gray-50/50 transition">
                       <td className="p-4 text-gray-600 font-medium">{new Date(p.paymentDate).toLocaleDateString()}</td>
                       <td className="p-4 font-mono font-bold text-green-700">{p.familyId}</td>
-                      <td className="p-4 font-bold text-gray-700">{taxTypeLabels[p.taxType] || p.taxType}</td>
+                      <td className="p-4 font-bold text-gray-700">{taxTypeLabel(p.taxType)}</td>
                       <td className="p-4 font-bold text-green-600">₹{p.amountPaid}</td>
                       <td className="p-4">
                         <span className="uppercase text-xs bg-gray-100 px-2 py-0.5 rounded text-gray-600 font-bold">

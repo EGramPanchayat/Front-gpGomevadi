@@ -3,8 +3,10 @@ import { toast } from "react-toastify";
 import axioesInstance from "../utils/axioesInstance";
 import { BiImageAdd, BiBuildingHouse } from "react-icons/bi";
 import { FiPlus, FiTrash2, FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { useLanguage } from "../utils/LanguageContext";
 
 const DevelopementWorkAdmin = () => {
+  const { lang } = useLanguage();
   const [savedWorks, setSavedWorks] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -73,7 +75,9 @@ const DevelopementWorkAdmin = () => {
         <div className="absolute top-1/2 left-[60%] w-16 h-16 bg-yellow-400/30 rounded-full -translate-y-1/2 pointer-events-none z-0"></div>
 
         <div className="relative z-10">
-          <h2 className="text-2xl font-black text-white drop-shadow-md">विकास कामे व्यवस्थापन (Development Works Hub)</h2>
+          <h2 className="text-2xl font-black text-white drop-shadow-md">
+            {lang === "mr" ? "विकास कामे व्यवस्थापन" : "Development Works Hub"}
+          </h2>
           <p className="text-sm text-green-100 font-semibold mt-1">ग्रामपंचायत विकास कामे, फोटो नोंदणी आणि नागरिकांसाठी प्रगती माहिती व्यवस्थापन पॅनेल</p>
         </div>
 

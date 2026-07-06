@@ -260,7 +260,9 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
         <div className="absolute top-1/2 left-[60%] w-16 h-16 bg-yellow-400/30 rounded-full -translate-y-1/2 pointer-events-none z-0"></div>
 
         <div className="relative z-10">
-          <h2 className="text-2xl font-black text-white drop-shadow-md">कुटुंब नोंदणी आणि व्यवस्थापन केंद्र (Village Household Hub)</h2>
+          <h2 className="text-2xl font-black text-white drop-shadow-md">
+            {lang === "mr" ? "कुटुंब नोंदणी आणि व्यवस्थापन केंद्र" : "Village Household Hub"}
+          </h2>
           <p className="text-sm text-green-100 font-semibold mt-1">ग्रामपंचायत कुटुंब नोंदणी, शोध आणि लोकसंख्या व्यवस्थापन नियंत्रण पॅनेल</p>
         </div>
 
@@ -710,7 +712,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                                   {familyTaxes.bills.map((bill) => (
                                     <tr key={bill._id} className="hover:bg-slate-50/40">
                                       <td className="p-3 font-bold text-slate-800 font-mono">{bill.year}</td>
-                                      <td className="p-3 font-extrabold text-slate-700">{taxTypeLabels[bill.taxType] || bill.taxType}</td>
+                                      <td className="p-3 font-extrabold text-slate-700">{taxTypeLabel(bill.taxType)}</td>
                                       <td className="p-3 text-slate-800 font-extrabold">₹{bill.amount}</td>
                                       <td className="p-3 text-green-700 font-extrabold">₹{bill.paidAmount}</td>
                                       <td className="p-3 text-slate-500 font-mono">{bill.dueDate ? new Date(bill.dueDate).toLocaleDateString("en-US") : "—"}</td>
@@ -755,7 +757,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                                   {familyTaxes.payments.map((p) => (
                                     <tr key={p._id} className="hover:bg-slate-50/40">
                                       <td className="p-3 text-slate-500 font-mono">{new Date(p.paymentDate || p.createdAt).toLocaleString("en-US", { hour12: true })}</td>
-                                      <td className="p-3 font-extrabold text-slate-700">{taxTypeLabels[p.taxType] || p.taxType}</td>
+                                      <td className="p-3 font-extrabold text-slate-700">{taxTypeLabel(p.taxType)}</td>
                                       <td className="p-3 text-green-700 font-extrabold">₹{p.amountPaid}</td>
                                       <td className="p-3 font-mono text-slate-400 text-[10px]">{p.transactionId}</td>
                                       <td className="p-3 capitalize">
