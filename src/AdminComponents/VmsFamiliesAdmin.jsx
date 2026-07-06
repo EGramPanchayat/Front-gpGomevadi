@@ -258,7 +258,11 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
           <h2 className="text-2xl font-black text-white drop-shadow-md">
             {lang === "mr" ? "कुटुंब नोंदणी आणि व्यवस्थापन केंद्र" : "Village Household Hub"}
           </h2>
-          <p className="text-sm text-green-100 font-semibold mt-1">ग्रामपंचायत कुटुंब नोंदणी, शोध आणि लोकसंख्या व्यवस्थापन नियंत्रण पॅनेल</p>
+          <p className="text-sm text-green-100 font-semibold mt-1">
+            {lang === "mr" 
+              ? "ग्रामपंचायत कुटुंब नोंदणी, शोध आणि लोकसंख्या व्यवस्थापन नियंत्रण पॅनेल" 
+              : "Gram Panchayat household registration, search, and demographics management panel"}
+          </p>
         </div>
 
         {/* TAB CONTROLS */}
@@ -275,7 +279,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
-            कुटुंब व्यवस्थापन
+            {lang === "mr" ? "कुटुंब व्यवस्थापन" : "Household Hub"}
           </button>
           <button
             type="button"
@@ -290,7 +294,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
-            सर्व कुटुंब यादी
+            {lang === "mr" ? "सर्व कुटुंब यादी" : "Family Directory"}
           </button>
           <button
             type="button"
@@ -304,7 +308,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
-            नवीन कुटुंब नोंदणी
+            {lang === "mr" ? "नवीन कुटुंब नोंदणी" : "Register Household"}
           </button>
         </div>
       </div>
@@ -320,7 +324,9 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
             
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-3">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">एकूण कुटुंबे</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                  {lang === "mr" ? "एकूण कुटुंबे" : "Total Families"}
+                </p>
                 <div className="p-1.5 rounded-lg bg-green-50 text-green-600 group-hover:bg-green-100 transition-colors">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -340,7 +346,9 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
 
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-3">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">एकूण लोकसंख्या</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                  {lang === "mr" ? "एकूण लोकसंख्या" : "Total Population"}
+                </p>
                 <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 group-hover:bg-blue-100 transition-colors">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -370,7 +378,9 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
 
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-3">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">एकूण पुरुष</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                  {lang === "mr" ? "एकूण पुरुष" : "Total Men"}
+                </p>
                 <div className="p-1.5 rounded-lg bg-teal-50 text-teal-600 group-hover:bg-teal-100 transition-colors">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -392,7 +402,9 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
 
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-3">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">एकूण महिला</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                  {lang === "mr" ? "एकूण महिला" : "Total Women"}
+                </p>
                 <div className="p-1.5 rounded-lg bg-rose-50 text-rose-600 group-hover:bg-rose-100 transition-colors">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -414,7 +426,9 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
 
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-3">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">ज्येष्ठ नागरिक</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                  {lang === "mr" ? "ज्येष्ठ नागरिक" : "Total Seniors"}
+                </p>
                 <div className="p-1.5 rounded-lg bg-amber-50 text-amber-600 group-hover:bg-amber-100 transition-colors">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -436,7 +450,9 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
 
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-3">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">बालके (0-18)</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                  {lang === "mr" ? "बालके (0-18)" : "Total Kids (0-18)"}
+                </p>
                 <div className="p-1.5 rounded-lg bg-purple-50 text-purple-600 group-hover:bg-purple-100 transition-colors">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
@@ -1017,9 +1033,13 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
           </div>
 
           {loading ? (
-            <div className="text-center py-10 text-sm text-slate-400">लोड होत आहे...</div>
+            <div className="text-center py-10 text-sm text-slate-400">
+              {lang === "mr" ? "लोड होत आहे..." : "Loading..."}
+            </div>
           ) : latestFamilies.length === 0 ? (
-            <p className="text-center text-slate-400 py-10 text-sm">कोणतेही नोंदणीकृत कुटुंब आढळले नाही.</p>
+            <p className="text-center text-slate-400 py-10 text-sm">
+              {lang === "mr" ? "कोणतेही नोंदणीकृत कुटुंब आढळले नाही." : "No registered families found."}
+            </p>
           ) : (
             <>
               {/* DESKTOP TABLE VIEW */}
@@ -1027,11 +1047,11 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                 <table className="w-full text-left text-sm border-collapse">
                   <thead>
                     <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100 text-xs">
-                      <th className="p-4 rounded-l-xl">कुटुंब ID</th>
-                      <th className="p-4">कुटुंब प्रमुख (Head Name)</th>
-                      <th className="p-4">ईमेल पत्ता</th>
+                      <th className="p-4 rounded-l-xl">{lang === "mr" ? "कुटुंब ID" : "Family ID"}</th>
+                      <th className="p-4">{lang === "mr" ? "कुटुंब प्रमुख (Head Name)" : "Head of Family Name"}</th>
+                      <th className="p-4">{lang === "mr" ? "ईमेल पत्ता" : "Email Address"}</th>
                       <th className="p-4 text-center">{lang === "mr" ? "कर आकारणी" : "Tax Assignment"}</th>
-                      <th className="p-4 rounded-r-xl text-center">क्रिया</th>
+                      <th className="p-4 rounded-r-xl text-center">{lang === "mr" ? "क्रिया" : "Actions"}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -1197,7 +1217,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                               }}
                               className="flex-1 border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white font-extrabold py-2 px-3 rounded-xl text-xs shadow-sm transition flex items-center justify-center gap-1"
                             >
-                              QR कोड
+                              {lang === "mr" ? "QR कोड" : "QR Code"}
                             </button>
                             <button
                               type="button"
@@ -1218,7 +1238,9 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
               {totalPages > 1 && (
                 <div className="flex justify-between items-center pt-4 border-t border-slate-100">
                   <p className="text-xs text-slate-500 font-bold">
-                    एकूण {filteredFamiliesAll.length} पैकी {indexOfFirstItem + 1} ते {Math.min(indexOfLastItem, latestFamilies.length)} कुटुंबे दर्शवत आहे
+                    {lang === "mr" 
+                      ? `एकूण ${filteredFamiliesAll.length} पैकी ${indexOfFirstItem + 1} ते ${Math.min(indexOfLastItem, latestFamilies.length)} कुटुंबे दर्शवत आहे` 
+                      : `Showing ${indexOfFirstItem + 1} to ${Math.min(indexOfLastItem, latestFamilies.length)} of ${filteredFamiliesAll.length} families`}
                   </p>
                   <div className="flex gap-2">
                     <button
@@ -1227,7 +1249,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                       onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                       className="px-3.5 py-2 rounded-xl text-xs font-extrabold border border-slate-200 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
                     >
-                      ← पूर्वी
+                      {lang === "mr" ? "← पूर्वी" : "← Prev"}
                     </button>
                     {Array.from({ length: totalPages }).map((_, index) => {
                       const pageNum = index + 1;
@@ -1258,7 +1280,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                       onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                       className="px-3.5 py-2 rounded-xl text-xs font-extrabold border border-slate-200 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
                     >
-                      पुढील →
+                      {lang === "mr" ? "पुढील →" : "Next →"}
                     </button>
                   </div>
                 </div>
