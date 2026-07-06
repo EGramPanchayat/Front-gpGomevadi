@@ -96,6 +96,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
   const [familySearch, setFamilySearch] = useState("");
   const [showFamilyDropdown, setShowFamilyDropdown] = useState(false);
   const familyDropdownRef = React.useRef(null);
+  const [expandedYear, setExpandedYear] = useState(null);
 
   // Close family dropdown on outside click
   React.useEffect(() => {
@@ -545,67 +546,170 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                       {stats?.yearlyBreakdown?.length === 0 ? (
                         <p className="text-center text-gray-500 py-12 font-bold">पद्धतीमध्ये कोणतेही प्रलंबित कर नाहीत.</p>
                       ) : (
-                        <div className="overflow-x-auto">
-                          <table className="w-full text-left text-sm border-collapse">
-                            <thead>
-                              <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
-                                <th className="p-4 rounded-l-xl">{lang === "mr" ? "वर्ष" : "Year"}</th>
-                                <th className="p-4">१) पाणीपट्टी थकबाकी (सामान्य+विशेष)</th>
-                                <th className="p-4">२) घरपट्टी थकबाकी (घर+आरोग्य+वीज)</th>
-                                <th className="p-4">{lang === "mr" ? "एकूण प्रलंबित" : "Total Due"}</th>
-                                <th className="p-4 rounded-r-xl">{lang === "mr" ? "क्रिया" : "Action"}</th>
-                              </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-50">
-                              {stats?.yearlyBreakdown?.map((yr) => {
-                                const waterPending = yr.waterAmount - yr.waterPaid;
-                                const housePending = yr.houseAmount - yr.housePaid;
-                                const totalPending = waterPending + housePending + (yr.fineAmount - yr.finePaid);
+                        <>
+                          {/* DESKTOP VIEW */}
+                          <div className="hidden md:block overflow-x-auto">
+                            <table className="w-full text-left text-sm border-collapse">
+                              <thead>
+                                <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
+                                  <th className="p-4 rounded-l-xl">{lang === "mr" ? "वर्ष" : "Year"}</th>
+                                  <th className="p-4">१) पाणीपट्टी थकबाकी (सामान्य+विशेष)</th>
+                                  <th className="p-4">२) घरपट्टी थकबाकी (घर+आरोग्य+वीज)</th>
+                                  <th className="p-4">{lang === "mr" ? "एकूण प्रलंबित" : "Total Due"}</th>
+                                  <th className="p-4 rounded-r-xl">{lang === "mr" ? "क्रिया" : "Action"}</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-gray-50">
+                                {stats?.yearlyBreakdown?.map((yr) => {
+                                  const waterPending = yr.waterAmount - yr.waterPaid;
+                                  const housePending = yr.houseAmount - yr.housePaid;
+                                  const totalPending = waterPending + housePending + (yr.fineAmount - yr.finePaid);
 
-                                return (
-                                  <tr key={yr.year} className="hover:bg-gray-50/50 transition">
-                                    <td className="p-4 font-black text-gray-800">{yr.year}</td>
-                                    <td className="p-4">
-                                      {waterPending <= 0 ? (
-                                        <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800">Nil (निरंक)</span>
-                                      ) : (
-                                        <div className="font-bold text-gray-700">
-                                          <span>₹{waterPending}</span>
-                                          <p className="text-[9px] text-gray-400 font-normal mt-0.5">एकूण: ₹{yr.waterAmount} | वसूल: ₹{yr.waterPaid}</p>
-                                        </div>
-                                      )}
-                                    </td>
-                                    <td className="p-4">
-                                      {housePending <= 0 ? (
-                                        <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800">Nil (निरंक)</span>
-                                      ) : (
-                                        <div className="font-bold text-gray-700">
-                                          <span>₹{housePending}</span>
-                                          <p className="text-[9px] text-gray-400 font-normal mt-0.5">एकूण: ₹{yr.houseAmount} | वसूल: ₹{yr.housePaid}</p>
-                                        </div>
-                                      )}
-                                    </td>
-                                    <td className="p-4">
+                                  return (
+                                    <tr key={yr.year} className="hover:bg-gray-50/50 transition">
+                                      <td className="p-4 font-black text-gray-800">{yr.year}</td>
+                                      <td className="p-4">
+                                        {waterPending <= 0 ? (
+                                          <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800">Nil (निरंक)</span>
+                                        ) : (
+                                          <div className="font-bold text-gray-700">
+                                            <span>₹{waterPending}</span>
+                                            <p className="text-[9px] text-gray-400 font-normal mt-0.5">एकूण: ₹{yr.waterAmount} | वसूल: ₹{yr.waterPaid}</p>
+                                          </div>
+                                        )}
+                                      </td>
+                                      <td className="p-4">
+                                        {housePending <= 0 ? (
+                                          <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800">Nil (निरंक)</span>
+                                        ) : (
+                                          <div className="font-bold text-gray-700">
+                                            <span>₹{housePending}</span>
+                                            <p className="text-[9px] text-gray-400 font-normal mt-0.5">एकूण: ₹{yr.houseAmount} | वसूल: ₹{yr.housePaid}</p>
+                                          </div>
+                                        )}
+                                      </td>
+                                      <td className="p-4">
+                                        {totalPending <= 0 ? (
+                                          <span className="inline-flex px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-200">सर्व निरंक (All Clear)</span>
+                                        ) : (
+                                          <span className="font-black text-red-650">₹{totalPending}</span>
+                                        )}
+                                      </td>
+                                      <td className="p-4">
+                                        <button
+                                          type="button"
+                                          onClick={() => fetchPendingFamilies(yr.year)}
+                                          className="text-xs bg-green-700 hover:bg-green-800 text-white font-bold px-3 py-1.5 rounded-lg shadow transition duration-300"
+                                        >
+                                          {lang === "mr" ? "यादी पहा" : "View List"}
+                                        </button>
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                              </tbody>
+                            </table>
+                          </div>
+
+                          {/* MOBILE VIEW CARD LIST */}
+                          <div className="block md:hidden space-y-4">
+                            {stats?.yearlyBreakdown?.map((yr) => {
+                              const waterPending = yr.waterAmount - yr.waterPaid;
+                              const housePending = yr.houseAmount - yr.housePaid;
+                              const totalPending = waterPending + housePending + (yr.fineAmount - yr.finePaid);
+                              const isExpanded = expandedYear === yr.year;
+
+                              return (
+                                <div
+                                  key={yr.year}
+                                  className="bg-white border border-green-700 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all"
+                                >
+                                  {/* Card Header */}
+                                  <div
+                                    onClick={() => setExpandedYear(isExpanded ? null : yr.year)}
+                                    className="flex justify-between items-center cursor-pointer"
+                                  >
+                                    <span className="font-black text-gray-800 text-sm">
+                                      {lang === "mr" ? `वर्ष: ${yr.year}` : `Year: ${yr.year}`}
+                                    </span>
+                                    <div className="flex items-center gap-3">
                                       {totalPending <= 0 ? (
-                                        <span className="inline-flex px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-200">सर्व निरंक (All Clear)</span>
+                                        <span className="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                          {lang === "mr" ? "सर्व निरंक" : "All Clear"}
+                                        </span>
                                       ) : (
-                                        <span className="font-black text-red-650">₹{totalPending}</span>
+                                        <span className="font-black text-red-650 text-xs">
+                                          ₹{totalPending}
+                                        </span>
                                       )}
-                                    </td>
-                                    <td className="p-4">
-                                      <button
-                                        onClick={() => fetchPendingFamilies(yr.year)}
-                                        className="text-xs bg-green-700 hover:bg-green-800 text-white font-bold px-3 py-1.5 rounded-lg shadow transition duration-300"
-                                      >
-                                        {lang === "mr" ? "यादी पहा" : "View List"}
-                                      </button>
-                                    </td>
-                                  </tr>
-                                );
-                              })}
-                            </tbody>
-                          </table>
-                        </div>
+                                      <span className="text-slate-400 text-xs transition-transform duration-200">
+                                        {isExpanded ? "▲" : "▼"}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  {/* Card Details */}
+                                  {isExpanded && (
+                                    <div className="mt-4 pt-4 border-t border-slate-100 space-y-3">
+                                      {/* Water Pending */}
+                                      <div className="flex flex-col gap-1.5 pb-2 border-b border-dashed border-slate-100">
+                                        <div className="flex justify-between text-xs">
+                                          <span className="text-slate-500 font-bold">१) पाणीपट्टी थकबाकी (सामान्य+विशेष):</span>
+                                          {waterPending <= 0 ? (
+                                            <span className="text-green-700 font-extrabold">{lang === "mr" ? "निरंक" : "Nil"}</span>
+                                          ) : (
+                                            <span className="text-slate-700 font-mono font-bold">₹{waterPending}</span>
+                                          )}
+                                        </div>
+                                        {waterPending > 0 && (
+                                          <p className="text-[9.5px] text-slate-400 font-semibold self-end">
+                                            एकूण: ₹{yr.waterAmount} | वसूल: ₹{yr.waterPaid}
+                                          </p>
+                                        )}
+                                      </div>
+
+                                      {/* House Pending */}
+                                      <div className="flex flex-col gap-1.5 pb-2 border-b border-dashed border-slate-100">
+                                        <div className="flex justify-between text-xs">
+                                          <span className="text-slate-500 font-bold">२) घरपट्टी थकबाकी (घर+आरोग्य+वीज):</span>
+                                          {housePending <= 0 ? (
+                                            <span className="text-green-700 font-extrabold">{lang === "mr" ? "निरंक" : "Nil"}</span>
+                                          ) : (
+                                            <span className="text-slate-700 font-mono font-bold">₹{housePending}</span>
+                                          )}
+                                        </div>
+                                        {housePending > 0 && (
+                                          <p className="text-[9.5px] text-slate-400 font-semibold self-end">
+                                            एकूण: ₹{yr.houseAmount} | वसूल: ₹{yr.housePaid}
+                                          </p>
+                                        )}
+                                      </div>
+
+                                      {/* Total Outstanding */}
+                                      <div className="flex justify-between text-xs font-bold pt-1">
+                                        <span className="text-slate-700">{lang === "mr" ? "एकूण प्रलंबित:" : "Total Due:"}</span>
+                                        <span className={totalPending > 0 ? "text-red-650 font-black text-sm" : "text-green-700 font-black text-sm"}>
+                                          ₹{totalPending}
+                                        </span>
+                                      </div>
+
+                                      {/* Action button */}
+                                      <div className="pt-2">
+                                        <button
+                                          type="button"
+                                          onClick={() => fetchPendingFamilies(yr.year)}
+                                          className="w-full bg-green-700 hover:bg-green-800 text-white font-extrabold py-2 px-3 rounded-xl text-xs shadow-sm transition"
+                                        >
+                                          {lang === "mr" ? "यादी पहा" : "View List"}
+                                        </button>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </>
                       )}
                     </div>
 
