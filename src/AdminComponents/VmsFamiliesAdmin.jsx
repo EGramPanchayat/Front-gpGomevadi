@@ -33,6 +33,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
   const [showQrModal, setShowQrModal] = useState(false);
   const [selectedFamilyForQr, setSelectedFamilyForQr] = useState(null);
   const [taxFilter, setTaxFilter] = useState("all"); // "all", "pending"
+  const [expandedFamilyId, setExpandedFamilyId] = useState(null);
 
   // Form states
   const [familyId, setFamilyId] = useState("");
@@ -1124,7 +1125,8 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
             <p className="text-center text-slate-400 py-10 text-sm">कोणतेही नोंदणीकृत कुटुंब आढळले नाही.</p>
           ) : (
             <>
-              <div className="overflow-x-auto border border-slate-100 rounded-2xl">
+              {/* DESKTOP TABLE VIEW */}
+              <div className="hidden md:block overflow-x-auto border border-slate-100 rounded-2xl">
                 <table className="w-full text-left text-sm border-collapse">
                   <thead>
                     <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100 text-xs">
@@ -1159,9 +1161,9 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                             <button
                               type="button"
                               onClick={() => {
-                                if (onRedirectToTax) {
-                                  onRedirectToTax(f);
-                                }
+                                  if (onRedirectToTax) {
+                                    onRedirectToTax(f);
+                                  }
                               }}
                               title={lang === "mr" ? "थेट कर आकारणी करा" : "Assign Tax Directly"}
                               className="inline-flex items-center justify-center gap-1 bg-red-50 text-red-655 border border-red-200 w-24 py-1.5 rounded-xl text-xs font-black hover:bg-orange-500 hover:text-white hover:border-orange-500 transition-all cursor-pointer shadow-sm active:scale-95 select-none animate-pulse"
@@ -1216,6 +1218,103 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                     ))}
                   </tbody>
                 </table>
+              </div>
+
+              {/* MOBILE CARD LIST VIEW */}
+              <div className="block md:hidden space-y-4">
+                {currentItems.map((f) => {
+                  const isExpanded = expandedFamilyId === f._id;
+                  return (
+                    <div
+                      key={f._id}
+                      className="bg-white border border-slate-150 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all"
+                    >
+                      {/* Card Header (Always Visible) */}
+                      <div
+                        onClick={() => setExpandedFamilyId(isExpanded ? null : f._id)}
+                        className="flex justify-between items-center cursor-pointer"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-green-50 text-green-700 font-black text-xs flex items-center justify-center border border-green-150/30 shadow-inner select-none">
+                            {f.mainMemberName ? f.mainMemberName.charAt(0) : "U"}
+                          </div>
+                          <div>
+                            <p className="text-slate-800 font-extrabold text-sm leading-snug">{f.mainMemberName}</p>
+                            <p className="text-[10px] font-mono font-black text-green-600 mt-0.5">{f.familyId}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {f.hasTaxAssigned ? (
+                            <span className="inline-flex items-center justify-center gap-1 bg-green-50 text-green-700 border border-green-200 px-2.5 py-1 rounded-xl text-[10px] font-black">
+                              ✓ {lang === "mr" ? "पूर्ण" : "Done"}
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center justify-center gap-1 bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded-xl text-[10px] font-black animate-pulse">
+                              ✗ {lang === "mr" ? "प्रलंबित" : "Pending"}
+                            </span>
+                          )}
+                          <span className="text-slate-400 text-xs transition-transform duration-200">
+                            {isExpanded ? "▲" : "▼"}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Card Details (Visible on click) */}
+                      {isExpanded && (
+                        <div className="mt-4 pt-4 border-t border-slate-100 space-y-3">
+                          <div className="flex justify-between text-xs">
+                            <span className="text-slate-500 font-bold">{lang === "mr" ? "मोबाईल:" : "Mobile:"}</span>
+                            <span className="font-mono text-slate-700 font-bold">{f.mobileNumber}</span>
+                          </div>
+
+                          {/* Action Buttons */}
+                          <div className="flex flex-wrap gap-2 pt-2">
+                            {!f.hasTaxAssigned && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (onRedirectToTax) {
+                                    onRedirectToTax(f);
+                                  }
+                                }}
+                                className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-extrabold py-2 px-3 rounded-xl text-xs shadow-sm transition"
+                              >
+                                {lang === "mr" ? "कर आकारणी" : "Assign Tax"}
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setActiveTab("search");
+                                handleSelectFamily(f);
+                              }}
+                              className="flex-1 border border-green-600 text-green-700 hover:bg-green-700 hover:text-white font-extrabold py-2 px-3 rounded-xl text-xs shadow-sm transition text-center"
+                            >
+                              पहा / Profile
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedFamilyForQr(f);
+                                setShowQrModal(true);
+                              }}
+                              className="flex-1 border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white font-extrabold py-2 px-3 rounded-xl text-xs shadow-sm transition flex items-center justify-center gap-1"
+                            >
+                              QR कोड
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(f._id)}
+                              className="border border-red-200 text-red-650 hover:bg-red-500 hover:text-white font-extrabold py-2 px-3 rounded-xl text-xs transition"
+                            >
+                              {lang === "mr" ? "हटवा" : "Delete"}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
 
               {/* PAGINATION CONTROLS */}
