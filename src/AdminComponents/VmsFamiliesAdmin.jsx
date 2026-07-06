@@ -958,10 +958,12 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-4">
             <div>
               <h3 className="text-lg font-black text-slate-800 tracking-tight">
-                सर्व नोंदणीकृत कुटुंबे (All Registered Households)
+                {lang === "mr" ? "सर्व नोंदणीकृत कुटुंबे" : "All Registered Households"}
               </h3>
               <p className="text-xs text-slate-400 mt-1">
-                ग्रामपंचायतीमध्ये नोंदणीकृत असलेली सर्व कुटुंबे आणि सदस्यांची यादी
+                {lang === "mr" 
+                  ? "ग्रामपंचायतीमध्ये नोंदणीकृत असलेली सर्व कुटुंबे आणि सदस्यांची यादी" 
+                  : "List of all families and members registered in the Gram Panchayat"}
               </p>
             </div>
             <button
