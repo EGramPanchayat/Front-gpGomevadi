@@ -16,6 +16,195 @@ const TAX_TYPE_LABELS = {
 export default function VmsFamiliesAdmin({ onRedirectToTax }) {
   const { lang } = useLanguage();
   const taxTypeLabel = (type) => TAX_TYPE_LABELS[type]?.[lang] || TAX_TYPE_LABELS[type]?.mr || type;
+
+  const getPaymentBucketLabel = (taxType) => {
+    if (taxType === "water" || taxType === "samanya_water" || taxType === "vishesh_water") {
+      return lang === "mr" ? "पाणीपट्टी (Water Tax)" : "Water Tax";
+    }
+    if (taxType === "house" || taxType === "health" || taxType === "electricity") {
+      return lang === "mr" ? "घरपट्टी व इतर कर (House & Other Taxes)" : "House & Other Taxes";
+    }
+    return lang === "mr" ? "दंड (Fines & Penalties)" : "Fines & Penalties";
+  };
+
+  const handleGenerateReceipt = (payment) => {
+    const receiptWindow = window.open("", "_blank", "width=920,height=900");
+    if (!receiptWindow) {
+      toast.error("Please allow pop-ups to generate the receipt.");
+      return;
+    }
+
+    const allocations = Array.isArray(payment.allocations) && payment.allocations.length > 0
+      ? payment.allocations
+      : [{
+        year: payment.year || "-",
+        taxType: payment.taxType,
+        amount: payment.amountPaid,
+      }];
+    const totalAllocated = allocations.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+
+    // Calculate remaining payable
+    let targetTypes = [payment.taxType];
+    if (payment.taxType === "water" || payment.taxType === "samanya_water" || payment.taxType === "vishesh_water") {
+      targetTypes = ["samanya_water", "vishesh_water"];
+    } else if (payment.taxType === "house" || payment.taxType === "health" || payment.taxType === "electricity") {
+      targetTypes = ["house", "health", "electricity"];
+    } else if (payment.taxType === "fine") {
+      targetTypes = ["fine"];
+    }
+    const remainingPayable = familyTaxes?.bills
+      ? familyTaxes.bills
+          .filter((b) => targetTypes.includes(b.taxType) && b.status !== "paid")
+          .reduce((sum, b) => sum + (b.amount - (b.paidAmount || 0)), 0)
+      : 0;
+
+    const receiptNo = payment.transactionId || payment._id || `receipt-${Date.now()}`;
+    const receiptFileName = `receipt-${String(receiptNo).replace(/[^a-z0-9_-]/gi, "-")}.html`;
+    const rows = allocations.map((item, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${item.year && item.year !== "-" ? `FY ${item.year}-${Number(item.year) + 1}` : "-"}</td>
+        <td>${getPaymentBucketLabel(payment.taxType)}</td>
+        <td>${taxTypeLabel(item.taxType)}</td>
+        <td class="amount">Rs. ${Number(item.amount || 0).toLocaleString("en-IN", { maximumFractionDigits: 2 })}</td>
+      </tr>
+    `).join("");
+
+    const receiptHtml = `
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Payment Receipt - ${receiptNo}</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f3f4f6; color: #111827; font-family: Arial, sans-serif; }
+    .toolbar { position: sticky; top: 0; display: flex; justify-content: flex-end; gap: 10px; padding: 14px 18px; background: #ffffff; border-bottom: 1px solid #e5e7eb; }
+    button { border: 0; border-radius: 8px; padding: 10px 14px; font-weight: 800; cursor: pointer; }
+    .print { background: #166534; color: white; }
+    .download { background: #f97316; color: white; }
+    .receipt { max-width: 820px; margin: 24px auto; background: white; border: 1px solid #d1d5db; padding: 34px; }
+    .header { display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 3px solid #166534; padding-bottom: 18px; }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .logo { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid #166534; }
+    h1 { margin: 0; font-size: 24px; color: #14532d; }
+    .subtitle { margin-top: 4px; color: #6b7280; font-weight: 700; font-size: 12px; }
+    .badge { border: 1px solid #bbf7d0; color: #166534; background: #f0fdf4; border-radius: 999px; padding: 8px 12px; font-size: 12px; font-weight: 900; white-space: nowrap; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 24px; margin: 24px 0; }
+    .field { border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; }
+    .label { color: #6b7280; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; }
+    .value { margin-top: 4px; font-size: 14px; font-weight: 800; }
+    table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+    th, td { border: 1px solid #e5e7eb; padding: 11px; text-align: left; font-size: 13px; }
+    th { background: #f0fdf4; color: #14532d; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+    .amount { text-align: right; font-weight: 900; }
+    .total { display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); justify-content: flex-end; gap: 14px; margin-top: 18px; }
+    .total-box { min-width: 260px; border: 2px solid #166534; border-radius: 8px; padding: 14px; }
+    .total-box .label { color: #14532d; }
+    .total-box .value { font-size: 24px; color: #166534; text-align: right; }
+    .remaining-box { border-color: #f97316; }
+    .remaining-box .label { color: #9a3412; }
+    .remaining-box .value { color: #c2410c; }
+    .footer { margin-top: 34px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; color: #6b7280; font-size: 12px; }
+    .sign { text-align: right; padding-top: 42px; border-top: 1px dashed #9ca3af; font-weight: 900; color: #374151; }
+    @media print {
+      body { background: white; }
+      .toolbar { display: none; }
+      .receipt { margin: 0; max-width: none; border: 0; padding: 18px; }
+    }
+    @media (max-width: 640px) {
+      .receipt { margin: 0; padding: 22px; }
+      .header, .grid, .footer { grid-template-columns: 1fr; display: grid; }
+      .toolbar { justify-content: stretch; }
+      button { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button class="print" onclick="window.print()">Print / Save PDF</button>
+    <button class="download" onclick="downloadReceipt()">Download HTML</button>
+  </div>
+  <main class="receipt">
+    <section class="header">
+      <div class="brand">
+        <img class="logo" src="/images/satyamev.jpg" alt="Logo" />
+        <div>
+          <h1>Gram Panchayat Gomevadi</h1>
+          <div class="subtitle">Official tax payment receipt</div>
+        </div>
+      </div>
+      <div class="badge">Receipt Generated</div>
+    </section>
+
+    <section class="grid">
+      <div class="field"><div class="label">Receipt No.</div><div class="value">${receiptNo}</div></div>
+      <div class="field"><div class="label">Payment Date</div><div class="value">${new Date(payment.paymentDate || payment.createdAt).toLocaleString("en-US", { hour12: true })}</div></div>
+      <div class="field"><div class="label">Family ID</div><div class="value">${selectedFamily?.familyId || "-"}</div></div>
+      <div class="field"><div class="label">House No.</div><div class="value">${selectedFamily?.houseNumber || "-"}</div></div>
+      <div class="field"><div class="label">Name</div><div class="value">${selectedFamily?.mainMemberName || "-"}</div></div>
+      <div class="field"><div class="label">Mobile</div><div class="value">${selectedFamily?.mobileNumber || selectedFamily?.whatsappNumber || "-"}</div></div>
+      <div class="field"><div class="label">Payment Mode</div><div class="value">${payment.paymentMethod || "-"}</div></div>
+      <div class="field"><div class="label">Payment Category</div><div class="value">${getPaymentBucketLabel(payment.taxType)}</div></div>
+    </section>
+
+    <h2 style="font-size:16px;color:#14532d;margin:12px 0 0;">Tax Details</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Financial Year</th>
+          <th>Payment Against</th>
+          <th>Tax Type</th>
+          <th style="text-align:right;">Paid Amount</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+
+    <section class="total">
+      <div class="total-box">
+        <div class="label">Total Paid</div>
+        <div class="value">Rs. ${Number(payment.amountPaid || totalAllocated || 0).toLocaleString("en-IN", { maximumFractionDigits: 2 })}</div>
+      </div>
+      <div class="total-box remaining-box">
+        <div class="label">Remaining Amount To Be Paid</div>
+        <div class="value">Rs. ${Number(remainingPayable || 0).toLocaleString("en-IN", { maximumFractionDigits: 2 })}</div>
+      </div>
+    </section>
+
+    <section class="footer">
+      <div>
+        <strong>Transaction ID:</strong> ${payment.transactionId || "-"}<br />
+        <strong>Status:</strong> ${payment.status || "success"}<br />
+        This is a computer-generated receipt.
+      </div>
+      <div class="sign">Authorized Signature / Seal</div>
+    </section>
+  </main>
+  <script>
+    function downloadReceipt() {
+      var html = "<!doctype html>\\n" + document.documentElement.outerHTML;
+      var blob = new Blob([html], { type: "text/html" });
+      var url = URL.createObjectURL(blob);
+      var link = document.createElement("a");
+      link.href = url;
+      link.download = ${JSON.stringify(receiptFileName)};
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>`;
+
+    receiptWindow.document.open();
+    receiptWindow.document.write(receiptHtml);
+    receiptWindow.document.close();
+  };
+
   const [families, setFamilies] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -751,6 +940,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                                     <th className="p-3">भरलेली रक्कम</th>
                                     <th className="p-3">ट्रान्झॅक्शन ID</th>
                                     <th className="p-3">पद्धत</th>
+                                    <th className="p-3 text-center">पावती</th>
                                   </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100">
@@ -766,6 +956,15 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                                         }`}>
                                           {p.paymentMethod}
                                         </span>
+                                      </td>
+                                      <td className="p-3 text-center">
+                                        <button
+                                          type="button"
+                                          onClick={() => handleGenerateReceipt(p)}
+                                          className="text-[10px] font-black text-green-700 hover:text-green-800 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg px-2.5 py-1 transition flex items-center gap-1 mx-auto font-sans"
+                                        >
+                                          <span>📥</span> {lang === "mr" ? "पावती" : "Receipt"}
+                                        </button>
                                       </td>
                                     </tr>
                                   ))}
