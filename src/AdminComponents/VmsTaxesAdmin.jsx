@@ -1753,7 +1753,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
       {activeTab === "logs" && (
         <div className="bg-white rounded-3xl p-6 shadow-xl border border-green-50">
           <h4 className="text-lg font-bold text-green-700 mb-4 border-b pb-2">
-            {lang === "mr" ? "पेमेंट जमा इतिहास (Payment Transaction Log)" : "Payment Transaction Logs"}
+            {lang === "mr" ? "पेमेंट जमा इतिहास" : "Payment Transaction Logs"}
           </h4>
           {loading ? (
             <div className="text-center py-6 text-gray-500 font-bold">
@@ -1869,11 +1869,11 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
           <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-4 mb-6 gap-4">
             <div>
               <h4 className="text-lg font-bold text-green-700">
-                {lang === "mr" ? "सूचना केंद्र (Notification Center)" : "Notification Center"}
+                {lang === "mr" ? "सूचना केंद्र" : "Notification Center"}
               </h4>
               <p className="text-xs text-gray-400 font-semibold mt-1">
                 {lang === "mr" 
-                  ? "सर्व कर आकारणी, भरणा, दंड आणि बदलांच्या सूचना (All tax, payment & change notifications)" 
+                  ? "सर्व कर आकारणी, भरणा, दंड आणि बदलांच्या सूचना" 
                   : "All tax, payment, penalty, and adjustment notifications"}
               </p>
             </div>
