@@ -845,15 +845,25 @@ export default function UserDashboard() {
     const remainingPayable = getRemainingForPayment(payment);
     const receiptNo = payment.transactionId || payment._id || `receipt-${Date.now()}`;
     const receiptFileName = `receipt-${String(receiptNo).replace(/[^a-z0-9_-]/gi, "-")}.html`;
-    const rows = allocations.map((item, index) => `
-      <tr>
-        <td>${index + 1}</td>
-        <td>${escapeReceiptHtml(item.year && item.year !== "-" ? `FY ${item.year}-${Number(item.year) + 1}` : "-")}</td>
-        <td>${escapeReceiptHtml(getPaymentBucketLabel(item.year))}</td>
-        <td>${escapeReceiptHtml(getTaxLabel(item.taxType))}</td>
-        <td class="amount">Rs. ${Number(item.amount || 0).toLocaleString("en-IN", { maximumFractionDigits: 2 })}</td>
-      </tr>
-    `).join("");
+    const rows = allocations.map((item, index) => {
+      const matchingBill = bills
+        ? bills.find((b) => b.year === Number(item.year) && b.taxType === item.taxType)
+        : null;
+      const rawRemaining = matchingBill ? matchingBill.amount - (matchingBill.paidAmount || 0) : 0;
+      const displayRemaining = rawRemaining < 0
+        ? `Rs. -${Math.abs(rawRemaining)} (Repay / Credit)`
+        : `Rs. ${rawRemaining.toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
+      return `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${escapeReceiptHtml(item.year && item.year !== "-" ? `FY ${item.year}-${Number(item.year) + 1}` : "-")}</td>
+          <td>${escapeReceiptHtml(getPaymentBucketLabel(item.year))}</td>
+          <td>${escapeReceiptHtml(getTaxLabel(item.taxType))}</td>
+          <td class="amount">Rs. ${Number(item.amount || 0).toLocaleString("en-IN", { maximumFractionDigits: 2 })}</td>
+          <td class="amount">${escapeReceiptHtml(displayRemaining)}</td>
+        </tr>
+      `;
+    }).join("");
 
     const receiptHtml = `
 <!doctype html>
@@ -943,6 +953,7 @@ export default function UserDashboard() {
           <th>Payment Against</th>
           <th>Tax Type</th>
           <th style="text-align:right;">Paid Amount</th>
+          <th style="text-align:right;">Remaining Amount</th>
         </tr>
       </thead>
       <tbody>${rows}</tbody>
