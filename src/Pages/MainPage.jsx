@@ -18,6 +18,7 @@ import SloganTicker from "../Components/SloganTicker";
 import AamchyaSeva from "../Components/ourServices";
 import EmergencyContact from "../Components/EmergencyContact";
 import { useSiteConfig } from "../utils/SiteConfigContext";
+import { useLanguage } from "../utils/LanguageContext";
 
 
 const sectionIds = [
@@ -40,12 +41,22 @@ const MainPage = () => {
 
 
   const { config, loading } = useSiteConfig();
+  const { lang } = useLanguage();
 
   const stats = config?.stats || [];
-  const heroTitle = config?.heroTitle || "";
-  const heroSubtitle = config?.heroSubtitle || "";
+  const heroTitle = config?.heroTitle 
+    ? (lang === "mr" ? config.heroTitle : (config.heroTitleEn || "Digital Gram Panchayat Gomevadi"))
+    : (lang === "mr" ? "डिजिटल ग्रामपंचायत गोमेवाडी" : "Digital Gram Panchayat Gomevadi");
+
+  const heroSubtitle = config?.heroSubtitle 
+    ? (lang === "mr" ? config.heroSubtitle : (config.heroSubtitleEn || "Welcome to Digital Grampanchayat Portal"))
+    : (lang === "mr" ? "आपले डिजिटल ग्रामपंचायत पोर्टल" : "Welcome to Digital Grampanchayat Portal");
+
   const heroImage = config?.heroImage || "/images/village.png";
-  const aboutTitle = config?.aboutTitle || "गावाची माहिती";
+  const aboutTitle = config?.aboutTitle 
+    ? (lang === "mr" ? config.aboutTitle : (config.aboutTitleEn || "Village Profile"))
+    : (lang === "mr" ? "गावाची माहिती" : "Village Profile");
+
   const aboutParagraphs = config?.aboutParagraphs || [];
 
 
@@ -110,7 +121,14 @@ const MainPage = () => {
             <div>
                <div className="text-4xl mb-2 flex justify-center ">{stat.icon}</div>
               <div className="text-2xl font-bold text-green-700 mb-1 flex justify-center">{stat.number}</div>
-              <div className="text-gray-600 text-base flex justify-center">{stat.label}</div>
+              <div className="text-gray-600 text-base flex justify-center">
+                {lang === "mr" ? stat.label : (
+                  stat.label === "हेक्टर क्षेत्रफळ" ? "Area in Hectares" :
+                  stat.label === "वार्ड संख्या" ? "Total Wards" :
+                  stat.label === "एकूण लोकसंख्या" ? "Total Population" :
+                  stat.label === "कुटुंब संख्या" ? "Number of Households" : stat.label
+                )}
+              </div>
             </div>
           </div>
         ))}
@@ -145,7 +163,8 @@ const MainPage = () => {
 
     <section id="development" className="pt-0 md:py-10 w-full flex flex-col items-center bg-gray-50 ">
   <div className="max-w-6xl w-full mx-auto px-2 sm:px-0">
-        <h2 className="text-3xl md:text-[2.5rem] font-bold text-green-700 text-center my-15 relative">विकास कामे
+        <h2 className="text-3xl md:text-[2.5rem] font-bold text-green-700 text-center my-15 relative">
+          {lang === "mr" ? "विकास कामे" : "Development Works"}
           <span className="block w-24 h-1 bg-orange-400 rounded absolute left-1/2 -translate-x-1/2 -bottom-3"></span>
         </h2>
         <DevelopmentSlideshow />
