@@ -183,7 +183,8 @@ export default function VmsApplicationsAdmin() {
 
               return (
                 <>
-                  <div className="overflow-x-auto">
+                  {/* DESKTOP VIEW */}
+                  <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left text-sm border-collapse">
                       <thead>
                         <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
@@ -241,6 +242,61 @@ export default function VmsApplicationsAdmin() {
                         ))}
                       </tbody>
                     </table>
+                  </div>
+
+                  {/* MOBILE VIEW CARD LIST */}
+                  <div className="block md:hidden space-y-4">
+                    {paginatedApps.map((app) => (
+                      <div
+                        key={app._id}
+                        className={`bg-white border rounded-2xl p-4 shadow-sm hover:shadow-md transition-all space-y-3 ${
+                          selectedApp?._id === app._id ? "border-green-700 ring-1 ring-green-700" : "border-slate-100"
+                        }`}
+                      >
+                        {/* Header: Type and Status */}
+                        <div className="flex justify-between items-center">
+                          <span className="capitalize font-bold text-gray-700 text-xs">
+                            {getCertificateTypeName(app.type, lang)}
+                          </span>
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                            app.status === "completed" 
+                              ? "bg-green-100 text-green-700" 
+                              : app.status === "need_documents" 
+                              ? "bg-red-100 text-red-650" 
+                              : "bg-orange-100 text-orange-650"
+                          }`}>
+                            {app.status}
+                          </span>
+                        </div>
+
+                        {/* Applicant details */}
+                        <div className="flex justify-between items-start gap-2">
+                          <div>
+                            <p className="font-bold text-slate-800 text-sm">{app.applicantName}</p>
+                            <span className="text-[10px] text-gray-400 font-mono">ID: {app.familyId}</span>
+                          </div>
+                          <span className="text-[10px] text-slate-400 font-semibold mt-1">
+                            {new Date(app.createdAt).toLocaleDateString(lang === "mr" ? "mr-IN" : "en-IN")}
+                          </span>
+                        </div>
+
+                        {/* Action row */}
+                        <div className="flex justify-between items-center pt-2 border-t border-slate-100">
+                          {activeSubTab === "completed" && (
+                            <span className="text-[10px] text-gray-400">
+                              {lang === "mr" ? "पूर्ण वेळ:" : "Completed:"} {new Date(app.completedAt || app.updatedAt).toLocaleDateString(lang === "mr" ? "mr-IN" : "en-IN")}
+                            </span>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => handleOpenDetails(app)}
+                            className="bg-green-700 hover:bg-green-800 text-white font-bold px-3 py-1.5 rounded-xl text-xs shadow flex items-center gap-1.5 ml-auto"
+                          >
+                            🔍 {lang === "mr" ? "पुनरावलोकन" : "Review"}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
 
                   {/* PAGINATION CONTROLS */}
