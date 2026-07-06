@@ -822,7 +822,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
       {/* 4. ADD FAMILY TAB */}
       {activeTab === "add" && (
         <div className="bg-white rounded-3xl p-6 shadow-xl border border-green-50 animate-fadeIn max-w-none">
-          <h3 className="text-lg font-black text-slate-800 mb-6 border-b pb-2 tracking-tight">
+          <h3 className="text-lg font-black text-green-700 mb-6 border-b pb-2 tracking-tight">
             {lang === "mr" ? "नवीन कुटुंब नोंदणी" : "Register Household"}
           </h3>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -977,7 +977,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
         <div className="bg-white rounded-3xl p-6 shadow-xl border border-green-50 animate-fadeIn space-y-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-4">
             <div>
-              <h3 className="text-lg font-black text-slate-800 tracking-tight">
+              <h3 className="text-lg font-black text-green-700 tracking-tight">
                 {lang === "mr" ? "सर्व नोंदणीकृत कुटुंबे" : "All Registered Households"}
               </h3>
               <p className="text-xs text-slate-400 mt-1">
