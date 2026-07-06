@@ -1227,7 +1227,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                   return (
                     <div
                       key={f._id}
-                      className="bg-white border border-slate-150 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all"
+                      className="bg-white border border-green-700 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all"
                     >
                       {/* Card Header (Always Visible) */}
                       <div
