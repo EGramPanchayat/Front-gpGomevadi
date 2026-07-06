@@ -37,7 +37,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
   const [familyId, setFamilyId] = useState("");
   const [houseNumber, setHouseNumber] = useState("");
   const [mainMemberName, setMainMemberName] = useState("");
-  const [mobileNumber, setMobileNumber] = useState("");
+  const [email, setEmail] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [address, setAddress] = useState("");
   const [menCount, setMenCount] = useState(0);
@@ -104,7 +104,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
     setFamilyId(selectedFamily.familyId);
     setHouseNumber(selectedFamily.houseNumber || "");
     setMainMemberName(selectedFamily.mainMemberName || "");
-    setMobileNumber(selectedFamily.mobileNumber || "");
+    setEmail(selectedFamily.email || "");
     setWhatsappNumber(selectedFamily.whatsappNumber || "");
     setAddress(selectedFamily.address || "");
     setMenCount(selectedFamily.menCount || 0);
@@ -116,7 +116,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
 
   const handleUpdateFamily = async (e) => {
     e.preventDefault();
-    if (!houseNumber || !mainMemberName || !mobileNumber || !address) {
+    if (!houseNumber || !mainMemberName || !email || !address) {
       return toast.error("Please fill all required fields");
     }
 
@@ -125,7 +125,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
       const res = await axioesInstance.put(`/admin/families/${selectedFamily._id}`, {
         houseNumber,
         mainMemberName,
-        mobileNumber,
+        email,
         whatsappNumber,
         address,
         menCount: Number(menCount),
@@ -146,7 +146,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!familyId || !houseNumber || !mainMemberName || !mobileNumber || !address) {
+    if (!familyId || !houseNumber || !mainMemberName || !email || !address) {
       return toast.error("Please fill all required fields");
     }
 
@@ -156,7 +156,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
         familyId,
         houseNumber,
         mainMemberName,
-        mobileNumber,
+        email,
         whatsappNumber,
         address,
         menCount,
@@ -169,7 +169,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
       setFamilyId("");
       setHouseNumber("");
       setMainMemberName("");
-      setMobileNumber("");
+      setEmail("");
       setWhatsappNumber("");
       setAddress("");
       setMenCount(0);
@@ -209,7 +209,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
     const q = searchQuery.toLowerCase().trim();
     const matchesSearch = q === "" || (
       f.mainMemberName?.toLowerCase().includes(q) ||
-      f.mobileNumber?.includes(q) ||
+      f.email?.toLowerCase().includes(q) ||
       f.familyId?.toLowerCase().includes(q)
     );
     const matchesTax = taxFilter === "all" || !f.hasTaxAssigned;
@@ -506,14 +506,13 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                         />
                       </div>
                       <div>
-                        <label className="block text-slate-500 font-bold mb-1">मोबाईल क्रमांक *</label>
+                        <label className="block text-slate-500 font-bold mb-1">ईमेल पत्ता *</label>
                         <input
-                          type="tel"
+                          type="email"
                           required
-                          maxLength={10}
-                          value={mobileNumber}
-                          onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, ""))}
-                          className="border border-slate-200 p-2.5 rounded-xl w-full font-semibold outline-none focus:border-green-600 focus:ring-4 focus:ring-green-50 font-mono"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="border border-slate-200 p-2.5 rounded-xl w-full font-semibold outline-none focus:border-green-600 focus:ring-4 focus:ring-green-50"
                         />
                       </div>
                       <div>
@@ -613,8 +612,8 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                           <span className="font-extrabold text-slate-800">{selectedFamily.mainMemberName}</span>
                         </p>
                         <p className="flex justify-between border-b border-slate-100 pb-2">
-                          <span className="text-slate-400 font-bold">मोबाईल (Mobile):</span>{" "}
-                          <span className="font-mono text-slate-800 font-medium">{selectedFamily.mobileNumber}</span>
+                          <span className="text-slate-400 font-bold">ईमेल (Email):</span>{" "}
+                          <span className="font-medium text-slate-800">{selectedFamily.email}</span>
                         </p>
                         <p className="flex justify-between border-b border-slate-100 pb-2">
                           <span className="text-slate-400 font-bold">व्हॉट्सॲप (WhatsApp):</span>{" "}
@@ -846,14 +845,13 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">मोबाईल नंबर (OTP साठी) *</label>
+              <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">ईमेल पत्ता (OTP साठी) *</label>
               <input
-                type="tel"
+                type="email"
                 required
-                maxLength={10}
-                placeholder="98XXXXXXXX"
-                value={mobileNumber}
-                onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, ""))}
+                placeholder="example@domain.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="border border-slate-250 p-3 rounded-xl w-full text-sm outline-none font-semibold focus:border-green-600 focus:ring-4 focus:ring-green-50"
               />
             </div>
@@ -1006,7 +1004,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
               </span>
               <input
                 type="text"
-                placeholder={lang === "mr" ? "शोधण्यासाठी नाव / मोबाईल / कुटुंब ID प्रविष्ट करा..." : "Search name, mobile or family ID..."}
+                placeholder={lang === "mr" ? "शोधण्यासाठी नाव / ईमेल / कुटुंब ID प्रविष्ट करा..." : "Search name, email or family ID..."}
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -1030,7 +1028,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                     <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100 text-xs">
                       <th className="p-4 rounded-l-xl">कुटुंब ID</th>
                       <th className="p-4">कुटुंब प्रमुख (Head Name)</th>
-                      <th className="p-4">मोबाईल</th>
+                      <th className="p-4">ईमेल पत्ता</th>
                       <th className="p-4 text-center">{lang === "mr" ? "कर आकारणी" : "Tax Assignment"}</th>
                       <th className="p-4 rounded-r-xl text-center">क्रिया</th>
                     </tr>
@@ -1049,7 +1047,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                             </div>
                           </div>
                         </td>
-                        <td className="p-4 font-mono text-slate-500 text-xs">{f.mobileNumber}</td>
+                        <td className="p-4 text-slate-500 text-xs">{f.email}</td>
                         <td className="p-4 text-center">
                           {f.hasTaxAssigned ? (
                             <span className="inline-flex items-center justify-center gap-1 bg-green-50 text-green-700 border border-green-200 w-24 py-1.5 rounded-xl text-xs font-black select-none">
@@ -1161,8 +1159,8 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                       {isExpanded && (
                         <div className="mt-4 pt-4 border-t border-slate-100 space-y-3">
                           <div className="flex justify-between text-xs">
-                            <span className="text-slate-500 font-bold">{lang === "mr" ? "मोबाईल:" : "Mobile:"}</span>
-                            <span className="font-mono text-slate-700 font-bold">{f.mobileNumber}</span>
+                            <span className="text-slate-500 font-bold">{lang === "mr" ? "ईमेल पत्ता:" : "Email:"}</span>
+                            <span className="text-slate-700 font-bold">{f.email}</span>
                           </div>
 
                           {/* Action Buttons */}

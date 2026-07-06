@@ -172,7 +172,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
       <div class="field"><div class="label">Family ID</div><div class="value">${selectedFamily?.familyId || "-"}</div></div>
       <div class="field"><div class="label">House No.</div><div class="value">${selectedFamily?.houseNumber || "-"}</div></div>
       <div class="field"><div class="label">Name</div><div class="value">${selectedFamily?.mainMemberName || "-"}</div></div>
-      <div class="field"><div class="label">Mobile</div><div class="value">${selectedFamily?.mobileNumber || selectedFamily?.whatsappNumber || "-"}</div></div>
+      <div class="field"><div class="label">Email / WA</div><div class="value">${selectedFamily?.email || selectedFamily?.whatsappNumber || "-"}</div></div>
       <div class="field"><div class="label">Payment Mode</div><div class="value">${payment.paymentMethod || "-"}</div></div>
       <div class="field"><div class="label">Payment Category</div><div class="value">${getPaymentBucketLabel(payment.taxType)}</div></div>
     </section>
@@ -715,7 +715,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                           <td className="p-4 font-bold text-gray-800">{fam.headName}</td>
                           <td className="p-4 text-xs font-semibold text-gray-550">
                             घर क्र: {fam.houseNumber}
-                            <p className="mt-0.5 font-sans font-semibold text-gray-400">{fam.mobileNumber}</p>
+                            <p className="mt-0.5 font-sans font-semibold text-gray-400">{fam.email}</p>
                           </td>
                           <td className="p-4 font-bold text-gray-700">₹{fam.waterPending}</td>
                           <td className="p-4 font-bold text-gray-700">₹{fam.housePending}</td>
@@ -1074,7 +1074,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                           return (
                             !q ||
                             f.mainMemberName?.toLowerCase().includes(q) ||
-                            f.mobileNumber?.includes(q) ||
+                            f.email?.toLowerCase().includes(q) ||
                             f.familyId?.toLowerCase().includes(q) ||
                             f.houseNumber?.toLowerCase().includes(q)
                           );
@@ -1093,7 +1093,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                             }`}
                           >
                             <span className="font-black text-green-700">{f.familyId}</span> — {f.mainMemberName}
-                            <span className="block text-[10px] text-gray-400">{f.houseNumber} | {f.mobileNumber}</span>
+                            <span className="block text-[10px] text-gray-400">{f.houseNumber} | {f.email}</span>
                           </button>
                         ))}
                     </div>

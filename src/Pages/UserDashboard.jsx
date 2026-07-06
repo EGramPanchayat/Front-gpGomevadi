@@ -928,7 +928,7 @@ export default function UserDashboard() {
       <div class="field"><div class="label">Family ID</div><div class="value">${escapeReceiptHtml(family?.familyId)}</div></div>
       <div class="field"><div class="label">House No.</div><div class="value">${escapeReceiptHtml(family?.houseNumber || "-")}</div></div>
       <div class="field"><div class="label">Name</div><div class="value">${escapeReceiptHtml(family?.mainMemberName || "-")}</div></div>
-      <div class="field"><div class="label">Mobile</div><div class="value">${escapeReceiptHtml(family?.mobileNumber || family?.whatsappNumber || "-")}</div></div>
+      <div class="field"><div class="label">Email / WA</div><div class="value">${escapeReceiptHtml(family?.email || family?.whatsappNumber || "-")}</div></div>
       <div class="field"><div class="label">Payment Mode</div><div class="value">${escapeReceiptHtml(payment.paymentMethod || "-")}</div></div>
       <div class="field"><div class="label">Payment Category</div><div class="value">${escapeReceiptHtml(getTaxLabel(payment.taxType))}</div></div>
     </section>
@@ -1472,8 +1472,8 @@ export default function UserDashboard() {
                       <span className="font-bold bg-white/10 px-2.5 py-1 rounded-lg">{family?.houseNumber}</span>
                     </div>
                     <div className="flex justify-between items-center text-xs">
-                      <span className="text-green-200">{t.registeredPhone}:</span>
-                      <span className="font-bold">{family?.mobileNumber}</span>
+                      <span className="text-green-200">नोंदणीकृत ईमेल (Email):</span>
+                      <span className="font-bold">{family?.email}</span>
                     </div>
                     <div className="flex justify-between items-center text-xs">
                       <span className="text-green-200">{t.whatsappContact}:</span>

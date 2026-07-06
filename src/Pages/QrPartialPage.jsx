@@ -63,8 +63,8 @@ export default function QrPartialPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [requestingOtp, setRequestingOtp] = useState(false);
   const [verifyingOtp, setVerifyingOtp] = useState(false);
-  const [mobileNumber, setMobileNumber] = useState("");
-  const [maskedMobile, setMaskedMobile] = useState("");
+  const [email, setEmail] = useState("");
+  const [maskedEmail, setMaskedEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [otpValues, setOtpValues] = useState(Array(6).fill(""));
   const [countdown, setCountdown] = useState(0);
@@ -125,11 +125,11 @@ export default function QrPartialPage() {
         token
       });
       if (data.success) {
-        setMobileNumber(data.mobileNumber);
-        setMaskedMobile(data.maskedMobile);
+        setEmail(data.email);
+        setMaskedEmail(data.maskedEmail);
         setOtpSent(true);
         startCountdown();
-        toast.success("OTP sent to registered mobile number!");
+        toast.success("OTP sent to registered email address!");
         if (data.otp) {
           console.log(`[TESTING OTP]: ${data.otp}`);
           toast.info(`Sandbox Mode: Your OTP is ${data.otp}`, { autoClose: 10000 });
@@ -151,7 +151,7 @@ export default function QrPartialPage() {
     setVerifyingOtp(true);
     try {
       const { data } = await axioesInstance.post("/auth/otp/verify", {
-        mobileNumber,
+        email,
         code: otp,
       });
       if (data.token) {
@@ -304,7 +304,8 @@ export default function QrPartialPage() {
         },
         prefill: {
           name: family?.mainMemberName,
-          contact: family?.mobileNumber,
+          email: family?.email,
+          contact: family?.whatsappNumber,
         },
         theme: {
           color: "#15803d",
@@ -490,11 +491,11 @@ export default function QrPartialPage() {
                     <Lock className="w-6 h-6" />
                   </div>
                   <h3 className="font-bold text-slate-800 text-base">
-                    {language === "mr" ? "मोबाईल पडताळणी" : "OTP Verification"}
+                    {language === "mr" ? "ईमेल पडताळणी" : "OTP Verification"}
                   </h3>
                   <p className="text-xs text-slate-500 leading-normal">
-                    {language === "mr" ? "नोंदणीकृत मोबाईल नंबर" : "OTP sent to registered mobile"}{" "}
-                    <span className="font-bold text-slate-800">{maskedMobile}</span>
+                    {language === "mr" ? "नोंदणीकृत ईमेल पत्ता" : "OTP sent to registered email"}{" "}
+                    <span className="font-bold text-slate-800">{maskedEmail}</span>
                   </p>
                 </div>
 

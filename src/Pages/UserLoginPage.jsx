@@ -6,7 +6,7 @@ import { useLanguage } from "../utils/LanguageContext";
 
 export default function UserLoginPage() {
   const { lang, t } = useLanguage();
-  const [mobileNumber, setMobileNumber] = useState("");
+  const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -30,13 +30,13 @@ export default function UserLoginPage() {
 
   const handleRequestOtp = async (e) => {
     if (e) e.preventDefault();
-    if (!/^\d{10}$/.test(mobileNumber)) {
-      return toast.error("Please enter a valid 10-digit mobile number");
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      return toast.error("Please enter a valid email address");
     }
 
     setLoading(true);
     try {
-      const { data } = await axioesInstance.post("/auth/otp/request", { mobileNumber });
+      const { data } = await axioesInstance.post("/auth/otp/request", { email });
       setOtpSent(true);
       startCountdown();
       toast.success("OTP sent successfully!");
@@ -60,7 +60,7 @@ export default function UserLoginPage() {
     setLoading(true);
     try {
       const { data } = await axioesInstance.post("/auth/otp/verify", {
-        mobileNumber,
+        email,
         code: otp,
       });
       if (data.token) {
@@ -132,23 +132,21 @@ export default function UserLoginPage() {
             {!otpSent ? (
               <form onSubmit={handleRequestOtp} className="w-full">
                 <p className="text-gray-500 mb-5 text-base">
-                  {lang === "mr" ? "लॉगिन करण्यासाठी आपला मोबाईल नंबर प्रविष्ट करा" : "Enter your registered mobile number to login"}
+                  {lang === "mr" ? "लॉगिन करण्यासाठी आपला नोंदणीकृत ईमेल पत्ता प्रविष्ट करा" : "Enter your registered email address to login"}
                 </p>
                 
                 <div className="mb-4 mt-10">
-                  <label className="block text-sm text-gray-700 mb-1">{t("mobile_number")}</label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold select-none text-base">+91</span>
-                    <input
-                      type="tel"
-                      maxLength={10}
-                      required
-                      placeholder="9876543210"
-                      value={mobileNumber}
-                      onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, ""))}
-                      className="w-full px-4 py-2 pl-12 border rounded-lg focus:ring focus:ring-green-300 focus:outline-none text-base font-medium"
-                    />
-                  </div>
+                  <label className="block text-sm text-gray-700 mb-1">
+                    {lang === "mr" ? "नोंदणीकृत ईमेल पत्ता" : "Registered Email Address"}
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="example@domain.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-green-300 focus:outline-none text-base font-medium"
+                  />
                 </div>
 
                 <button
@@ -169,7 +167,7 @@ export default function UserLoginPage() {
                   {/* Styled Mobile Number Banner */}
                   <div className="flex justify-between items-center bg-green-50 border border-green-100 rounded-xl px-3 py-2.5 mb-5 text-sm transition">
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-green-800">+91 {mobileNumber}</span>
+                      <span className="font-semibold text-green-800">{email}</span>
                     </div>
                     <button
                       type="button"
