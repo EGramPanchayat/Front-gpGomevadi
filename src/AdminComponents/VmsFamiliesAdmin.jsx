@@ -1098,7 +1098,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                             }}
                             className="border border-green-600 text-green-700 hover:bg-green-700 hover:text-white font-extrabold px-3 py-1.5 rounded-xl text-xs shadow-sm transition-all duration-200 hover:-translate-y-0.5"
                           >
-                            पहा / Profile
+                            {lang === "mr" ? "पहा" : "Profile"}
                           </button>
                           <button
                             type="button"
@@ -1194,7 +1194,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                               }}
                               className="flex-1 border border-green-600 text-green-700 hover:bg-green-700 hover:text-white font-extrabold py-2 px-3 rounded-xl text-xs shadow-sm transition text-center"
                             >
-                              पहा / Profile
+                              {lang === "mr" ? "पहा" : "Profile"}
                             </button>
                             <button
                               type="button"
