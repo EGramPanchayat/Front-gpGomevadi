@@ -271,6 +271,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
   const [inlineFineAmount, setInlineFineAmount] = useState("");
   const [inlineFineReason, setInlineFineReason] = useState("");
   const [showFineReasonModal, setShowFineReasonModal] = useState(false);
+  const [showReceiptsModal, setShowReceiptsModal] = useState(false);
   const [assigningInlineFine, setAssigningInlineFine] = useState(false);
 
   // Record payment states
@@ -1432,54 +1433,16 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                 {/* Divider */}
                 {familyPayments.length > 0 && <div className="border-t border-slate-100 pt-4" />}
 
-                {/* Payments Sub-table (Receipt History) */}
+                {/* View Receipts Button */}
                 {familyPayments.length > 0 && (
-                  <div className="space-y-4">
-                    <p className="text-[10px] font-black text-slate-400 mb-2.5 uppercase tracking-wider">
-                      {lang === "mr" ? "भरणा इतिहास (Receipt History)" : "Receipt History"}
-                    </p>
-                    <div className="overflow-x-auto border border-slate-150 rounded-2xl max-h-[280px] overflow-y-auto pr-1 custom-sass-scrollbar">
-                      <table className="w-full text-left text-xs border-collapse">
-                        <thead>
-                          <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-150">
-                            <th className="p-3">तारीख/वेळ</th>
-                            <th className="p-3">कर प्रकार</th>
-                            <th className="p-3">भरलेली रक्कम</th>
-                            <th className="p-3">ट्रान्झॅक्शन ID</th>
-                            <th className="p-3">पद्धत</th>
-                            <th className="p-3 text-center">पावती</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100">
-                          {familyPayments.map((p) => (
-                            <tr key={p._id} className="hover:bg-slate-50/40">
-                              <td className="p-3 text-slate-500 font-mono">
-                                {new Date(p.paymentDate || p.createdAt).toLocaleString("en-US", { hour12: true })}
-                              </td>
-                              <td className="p-3 font-extrabold text-slate-700">{taxTypeLabel(p.taxType)}</td>
-                              <td className="p-3 text-green-700 font-extrabold">₹{p.amountPaid}</td>
-                              <td className="p-3 font-mono text-slate-400 text-[10px]">{p.transactionId}</td>
-                              <td className="p-3 capitalize">
-                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                                  p.paymentMethod === "offline" ? "bg-slate-100 text-slate-600" : "bg-blue-50 text-blue-600"
-                                }`}>
-                                  {p.paymentMethod}
-                                </span>
-                              </td>
-                              <td className="p-3 text-center">
-                                <button
-                                  type="button"
-                                  onClick={() => handleGenerateReceipt(p)}
-                                  className="text-[10px] font-black text-green-700 hover:text-green-800 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg px-2.5 py-1 transition flex items-center gap-1 mx-auto font-sans"
-                                >
-                                  <span>📥</span> {lang === "mr" ? "पावती" : "Receipt"}
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowReceiptsModal(true)}
+                      className="w-full flex items-center justify-center gap-2 bg-green-700 hover:bg-green-800 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-md transition duration-300 text-sm hover:-translate-y-0.5"
+                    >
+                      🧾 {lang === "mr" ? "भरणा पावत्या पहा आणि डाउनलोड करा" : "View & Download Payment Receipts"}
+                    </button>
                   </div>
                 )}
               </div>
@@ -1733,6 +1696,79 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                 type="button"
                 onClick={() => setShowFineReasonModal(false)}
                 className="bg-green-700 hover:bg-green-800 text-white font-bold px-5 py-2 rounded-xl text-xs transition"
+              >
+                बंद करा (Close)
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showReceiptsModal && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-2xl w-full shadow-2xl border border-green-150 animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[85vh]">
+            <div className="flex items-center justify-between border-b pb-4 mb-4">
+              <div>
+                <h4 className="text-lg font-black flex items-center gap-2" style={{ color: "#14532d" }}>
+                  <span>🧾 भरणा पावती इतिहास (Payment Receipts History)</span>
+                </h4>
+                <p className="text-xs text-gray-400 font-bold mt-1">
+                  {lang === "mr" ? "कुटुंबाचे सर्व कर भरणा रेकॉर्ड्स आणि पावत्या डाउनलोड करा" : "All tax payment records and invoice receipts of the family"}
+                </p>
+              </div>
+              <button
+                onClick={() => setShowReceiptsModal(false)}
+                className="text-gray-400 hover:text-gray-600 font-bold text-lg p-1.5 hover:bg-slate-100 rounded-full transition"
+                aria-label="Close modal"
+              >
+                ✖
+              </button>
+            </div>
+
+            {/* Receipts List */}
+            <div className="flex-1 overflow-y-auto space-y-4 pr-1 custom-sass-scrollbar">
+              {familyPayments.length === 0 ? (
+                <p className="text-gray-505 text-center py-8 font-bold">कोणतीही पावती उपलब्ध नाही.</p>
+              ) : (
+                <div className="space-y-3">
+                  {familyPayments.map((p) => (
+                    <div key={p._id} className="bg-slate-50/70 hover:bg-slate-50 p-4 rounded-2xl border border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-black text-slate-800">{taxTypeLabel(p.taxType)}</span>
+                          <span className={`px-2 py-0.5 rounded text-[9px] font-black ${
+                            p.paymentMethod === "offline" ? "bg-slate-200/80 text-slate-700 bg-slate-200" : "bg-blue-50 text-blue-650"
+                          }`}>
+                            {p.paymentMethod === "offline" ? (lang === "mr" ? "ऑफलाईन" : "Offline") : (lang === "mr" ? "ऑनलाईन" : "Online")}
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-gray-450 font-mono">
+                          <strong>तारीख/वेळ:</strong> {new Date(p.paymentDate || p.createdAt).toLocaleString("en-US", { hour12: true })}
+                        </p>
+                        <p className="text-[10px] text-gray-450 font-mono">
+                          <strong>ट्रान्झॅक्शन ID:</strong> {p.transactionId || "—"}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-2 sm:pt-0">
+                        <span className="text-green-700 font-extrabold text-sm">₹{p.amountPaid}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleGenerateReceipt(p)}
+                          className="text-[11px] font-black text-green-700 hover:text-green-800 bg-green-50 hover:bg-green-100 border border-green-200 rounded-xl px-3.5 py-2 transition flex items-center gap-1.5 font-sans shrink-0 shadow-sm"
+                        >
+                          <span>📥</span> {lang === "mr" ? "पावती डाउनलोड" : "Receipt"}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="mt-6 flex justify-end border-t pt-4">
+              <button
+                type="button"
+                onClick={() => setShowReceiptsModal(false)}
+                className="bg-green-700 hover:bg-green-800 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition shadow-sm"
               >
                 बंद करा (Close)
               </button>
