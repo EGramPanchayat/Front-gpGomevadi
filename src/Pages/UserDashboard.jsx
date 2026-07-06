@@ -1416,10 +1416,12 @@ export default function UserDashboard() {
               <div className="space-y-2 relative z-10 pr-28 md:pr-36">
                 <h1 className={`text-xl md:text-2xl font-black tracking-tight transition-colors duration-300 ${isDarkMode ? "text-green-400" : "text-green-700"
                   }`}>
-                  नमस्कार, {family?.mainMemberName || "नागरिक"}! <span className="inline-block hover:animate-bounce cursor-default select-none">👋</span>
+                  {language === "en" ? `Hello, ${family?.mainMemberName || "Citizen"}!` : `नमस्कार, ${family?.mainMemberName || "नागरिक"}!`} <span className="inline-block hover:animate-bounce cursor-default select-none">👋</span>
                 </h1>
                 <p className={`text-sm leading-relaxed font-semibold transition-colors duration-300 ${isDarkMode ? "text-slate-400" : "text-gray-500"}`}>
-                  आपल्या डिजिटल ग्रामपंचायत पोर्टलवर आपले सहर्ष स्वागत आहे. येथून आपण विविध दाखल्यांचे अर्ज करू शकता, घरपट्टी, पाणीपट्टी आणि इतर कर भरून शासकीय पावत्या प्राप्त करू शकता.
+                  {language === "en" 
+                    ? "Welcome to your digital Grampanchayat portal. Here you can apply for various certificates, pay house tax, water tax, and other taxes to obtain official receipts." 
+                    : "आपल्या डिजिटल ग्रामपंचायत पोर्टलवर आपले सहर्ष स्वागत आहे. येथून आपण विविध दाखल्यांचे अर्ज करू शकता, घरपट्टी, पाणीपट्टी आणि इतर कर भरून शासकीय पावत्या प्राप्त करू शकता."}
                 </p>
 
               </div>
