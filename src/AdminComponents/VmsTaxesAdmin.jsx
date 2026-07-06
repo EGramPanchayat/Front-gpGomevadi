@@ -964,7 +964,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                                       <td className="p-4">
                                         {waterPending <= 0 ? (
                                           <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800">
-                                            {lang === "mr" ? "Nil (निरंक)" : "Nil"}
+                                            NIL
                                           </span>
                                         ) : (
                                           <div className="font-bold text-gray-700">
@@ -980,7 +980,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                                       <td className="p-4">
                                         {housePending <= 0 ? (
                                           <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800">
-                                            {lang === "mr" ? "Nil (निरंक)" : "Nil"}
+                                            NIL
                                           </span>
                                         ) : (
                                           <div className="font-bold text-gray-700">
@@ -996,7 +996,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                                       <td className="p-4">
                                         {totalPending <= 0 ? (
                                           <span className="inline-flex px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
-                                            {lang === "mr" ? "सर्व निरंक (All Clear)" : "All Clear"}
+                                            NIL
                                           </span>
                                         ) : (
                                           <span className="font-black text-red-650">₹{totalPending}</span>
@@ -1042,7 +1042,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                                     <div className="flex items-center gap-3">
                                       {totalPending <= 0 ? (
                                         <span className="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
-                                          {lang === "mr" ? "सर्व निरंक" : "All Clear"}
+                                           NIL
                                         </span>
                                       ) : (
                                         <span className="font-black text-red-650 text-xs">
@@ -1065,7 +1065,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                                             {lang === "mr" ? "१) पाणीपट्टी थकबाकी (सामान्य+विशेष):" : "1) Water Tax Arrears (Gen+Spec):"}
                                           </span>
                                           {waterPending <= 0 ? (
-                                            <span className="text-green-700 font-extrabold">{lang === "mr" ? "निरंक" : "Nil"}</span>
+                                            <span className="text-green-700 font-extrabold">NIL</span>
                                           ) : (
                                             <span className="text-slate-700 font-mono font-bold">₹{waterPending}</span>
                                           )}
@@ -1086,7 +1086,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                                             {lang === "mr" ? "२) घरपट्टी थकबाकी (घर+आरोग्य+वीज):" : "2) House Tax Arrears (House+Health+Elec):"}
                                           </span>
                                           {housePending <= 0 ? (
-                                            <span className="text-green-700 font-extrabold">{lang === "mr" ? "निरंक" : "Nil"}</span>
+                                            <span className="text-green-700 font-extrabold">NIL</span>
                                           ) : (
                                             <span className="text-slate-700 font-mono font-bold">₹{housePending}</span>
                                           )}
@@ -1133,7 +1133,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                       <div>
                         <div className="border-b pb-3 mb-4">
                           <h3 className="text-lg font-bold text-green-800">
-                            {lang === "mr" ? "स्वयंचलित कर वेळापत्रक (Auto-Release Schedule)" : "Auto-Release Schedule"}
+                            {lang === "mr" ? "स्वयंचलित कर वेळापत्रक" : "Auto-Release Schedule"}
                           </h3>
                           <p className="text-xs text-gray-400 font-semibold mt-1">
                             {lang === "mr" 
@@ -1454,7 +1454,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                       <div className="border border-orange-500 p-2.5 rounded-xl w-full text-sm font-black bg-white flex items-center justify-between text-gray-800">
                         <span>₹{total.toLocaleString()}</span>
                         <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-orange-100 text-orange-700">
-                          {total > 0 ? (lang === "mr" ? "थकबाकी आहे" : "Due") : (lang === "mr" ? "निरंक ✓" : "Nil ✓")}
+                          {total > 0 ? (lang === "mr" ? "थकबाकी आहे" : "Due") : "NIL"}
                         </span>
                       </div>
                     </div>
