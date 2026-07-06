@@ -1906,10 +1906,10 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                   <thead>
                     <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
                       <th className="p-4 rounded-l-xl">{lang === "mr" ? "तारीख व वेळ" : "Date & Time"}</th>
-                      <th className="p-4">{lang === "mr" ? "प्रकार (Type)" : "Type"}</th>
+                      <th className="p-4">{lang === "mr" ? "प्रकार" : "Type"}</th>
                       <th className="p-4">{lang === "mr" ? "कुटुंब आयडी" : "Family ID"}</th>
-                      <th className="p-4">{lang === "mr" ? "शीर्षक (Title)" : "Title"}</th>
-                      <th className="p-4 rounded-r-xl">{lang === "mr" ? "तपशील (Details)" : "Details"}</th>
+                      <th className="p-4">{lang === "mr" ? "शीर्षक" : "Title"}</th>
+                      <th className="p-4 rounded-r-xl">{lang === "mr" ? "तपशील" : "Details"}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
