@@ -193,7 +193,7 @@ const DevelopementWorkAdmin = () => {
                           
                           <button
                             onClick={() => handleDelete(work._id)}
-                            className="absolute top-3 right-3 w-8 h-8 rounded-full bg-red-500/90 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-red-600 transition-all scale-95 hover:scale-105 shadow-md backdrop-blur-sm"
+                            className="absolute top-3 right-3 w-8 h-8 rounded-full bg-red-500/90 text-white flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:bg-red-600 transition-all scale-95 hover:scale-105 shadow-md backdrop-blur-sm"
                             title="Delete"
                           >
                             <FiTrash2 className="text-sm" />

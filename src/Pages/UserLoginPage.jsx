@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axioesInstance from "../utils/axioesInstance";
@@ -237,6 +237,12 @@ export default function UserLoginPage() {
                 </div>
               </form>
             )}
+
+            <p className="text-xs text-gray-400 mt-6 text-center font-medium leading-relaxed">
+              {lang === "mr" 
+                ? "नोंदणी झाली नसल्यास, कृपया ग्रामपंचायत कार्यालयातून तुमच्या कुटुंबाची नोंदणी करा." 
+                : "If your family is not registered, please register from the Grampanchayat Office."}
+            </p>
           </div>
 
         </div>

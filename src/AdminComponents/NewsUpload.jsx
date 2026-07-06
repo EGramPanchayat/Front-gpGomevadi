@@ -183,7 +183,7 @@ const NewsUpload = () => {
                       </div>
                       <button
                         onClick={() => handleNewsDelete(news._id)}
-                        className="absolute right-4 top-4 w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-red-100 hover:text-red-600 transition-all scale-95 hover:scale-105"
+                        className="absolute right-4 top-4 w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:bg-red-100 hover:text-red-600 transition-all scale-95 hover:scale-105"
                         title="Delete"
                       >
                         <FiTrash2 />
@@ -289,7 +289,7 @@ const NewsUpload = () => {
 
                       <button
                         onClick={() => handleNoticeDelete(item._id)}
-                        className="absolute right-4 top-4 w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-red-100 hover:text-red-600 transition-all scale-95 hover:scale-105"
+                        className="absolute right-4 top-4 w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:bg-red-100 hover:text-red-600 transition-all scale-95 hover:scale-105"
                         title="Delete"
                       >
                         <FiTrash2 />
