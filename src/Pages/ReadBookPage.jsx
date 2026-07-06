@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Document, Page, pdfjs } from "react-pdf";
-import { ArrowLeft, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Loader2, Library } from "lucide-react";
-import Navbar from "../Components/Navbar";
-import FooterSection from "../Components/FooterSection";
+import { ArrowLeft, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Loader2 } from "lucide-react";
 import axioesInstance from "../utils/axioesInstance";
 import { useLanguage } from "../utils/LanguageContext";
 import { toast } from "react-hot-toast";
@@ -62,9 +60,6 @@ export default function ReadBookPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Site Navbar */}
-      <Navbar activeSection="" mobileNavOpen={false} setMobileNavOpen={() => {}} />
-
       {/* Main Reader Wrapper */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8 flex flex-col">
         {/* Header toolbar styled in green and orange */}
@@ -173,9 +168,6 @@ export default function ReadBookPage() {
           )}
         </div>
       </main>
-
-      {/* Footer */}
-      <FooterSection />
     </div>
   );
 }

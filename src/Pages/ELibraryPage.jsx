@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../Components/Navbar";
-import FooterSection from "../Components/FooterSection";
 import axioesInstance from "../utils/axioesInstance";
 import { useLanguage } from "../utils/LanguageContext";
 import { useSiteConfig } from "../utils/SiteConfigContext";
 import { toast } from "react-hot-toast";
-import { BookOpen, Search, Download, Calendar, Filter, Library } from "lucide-react";
+import { BookOpen, Search, Download, Calendar, Filter, Library, ArrowLeft } from "lucide-react";
 
 export default function ELibraryPage() {
   const { lang } = useLanguage();
@@ -90,15 +88,12 @@ export default function ELibraryPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Site Navbar */}
-      <Navbar activeSection="" mobileNavOpen={false} setMobileNavOpen={() => {}} />
-
       {/* Main content wrapper */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8 md:py-12">
         {/* Page Identity Header */}
         <div className="bg-gradient-to-r from-green-800 to-green-700 rounded-3xl p-6 md:p-8 text-white shadow-lg relative overflow-hidden mb-8">
           <div className="absolute right-0 bottom-0 translate-x-12 translate-y-12 w-64 h-64 rounded-full bg-white/5 blur-2xl pointer-events-none" />
-          <div className="relative z-10 space-y-3 max-w-2xl">
+          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="p-3 bg-white/10 rounded-2xl">
                 <Library className="w-8 h-8 text-orange-400" />
@@ -114,6 +109,15 @@ export default function ELibraryPage() {
                 </p>
               </div>
             </div>
+
+            {/* Back to Website Button */}
+            <button
+              onClick={() => navigate("/")}
+              className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-extrabold px-5 py-2.5 rounded-2xl shadow-lg border border-orange-400/20 text-xs transition cursor-pointer shrink-0"
+            >
+              <ArrowLeft className="w-4.5 h-4.5" />
+              <span>{lang === "mr" ? "मुख्यपृष्ठावर जा" : "Back to Home"}</span>
+            </button>
           </div>
         </div>
 
@@ -274,9 +278,6 @@ export default function ELibraryPage() {
           </div>
         )}
       </main>
-
-      {/* Site Footer */}
-      <FooterSection />
     </div>
   );
 }
