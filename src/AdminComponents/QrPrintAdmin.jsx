@@ -18,6 +18,7 @@ export default function QrPrintAdmin() {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [previewFamily, setPreviewFamily] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchFamilies();
@@ -35,6 +36,10 @@ export default function QrPrintAdmin() {
     } else {
       setFilteredFamilies(families);
     }
+  }, [searchTerm, families]);
+
+  useEffect(() => {
+    setCurrentPage(1);
   }, [searchTerm, families]);
 
   // Set default preview family once list loads
@@ -392,69 +397,109 @@ export default function QrPrintAdmin() {
               )}
             </div>
             
-            <div className="divide-y divide-slate-100 max-h-[460px] overflow-y-auto custom-sass-scrollbar">
-              {filteredFamilies.length === 0 ? (
-                <div className="p-10 text-center text-slate-400 text-sm font-semibold">
-                  {lang === "mr" ? "कोणतेही कुटुंब सापडले नाही." : "No families found."}
-                </div>
-              ) : (
-                filteredFamilies.map((family) => (
-                  <div
-                    key={family._id}
-                    className={`p-4 transition flex items-center gap-4 cursor-pointer select-none ${
-                      previewFamily?._id === family._id ? "bg-green-50/50" : "hover:bg-slate-50/50"
-                    }`}
-                    onClick={() => setPreviewFamily(family)}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedFamilies.includes(family._id)}
-                      onChange={(e) => {
-                        e.stopPropagation();
-                        toggleFamilySelection(family._id);
-                      }}
-                      className="w-5 h-5 rounded border-slate-350 text-green-600 focus:ring-green-500 cursor-pointer"
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-extrabold text-slate-800 text-sm">{family.mainMemberName}</span>
-                        <span className="text-[10px] font-black bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md border border-slate-200">
-                          {family.familyId}
-                        </span>
+            {(() => {
+              const itemsPerPage = 10;
+              const totalPages = Math.ceil(filteredFamilies.length / itemsPerPage);
+              const startIndex = (currentPage - 1) * itemsPerPage;
+              const paginatedFamilies = filteredFamilies.slice(startIndex, startIndex + itemsPerPage);
+
+              return (
+                <>
+                  <div className="divide-y divide-slate-100 max-h-[460px] overflow-y-auto custom-sass-scrollbar">
+                    {paginatedFamilies.length === 0 ? (
+                      <div className="p-10 text-center text-slate-400 text-sm font-semibold">
+                        {lang === "mr" ? "कोणतेही कुटुंब सापडले नाही." : "No families found."}
                       </div>
-                      <div className="text-[11px] text-slate-400 font-semibold mt-1">
-                        {lang === "mr" ? "घर क्रमांक:" : "House No:"} {family.houseNumber} | {lang === "mr" ? "सदस्य:" : "Members:"} {(family.menCount || 0) + (family.womenCount || 0) + (family.seniorCount || 0) + (family.childrenCount || 0)}
-                      </div>
-                    </div>
-                    
-                    <div className="flex gap-2 items-center">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setPreviewFamily(family);
-                        }}
-                        className="px-2.5 py-1.5 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition text-[11px] font-bold flex items-center gap-1"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                        {lang === "mr" ? "पहा" : "View"}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          generatePDF([family]);
-                        }}
-                        className="px-2.5 py-1.5 bg-green-50 border border-green-200 text-green-700 rounded-lg hover:bg-green-100 transition text-[11px] font-bold flex items-center gap-1"
-                      >
-                        <Printer className="w-3.5 h-3.5" />
-                        {lang === "mr" ? "प्रिंट" : "Print"}
-                      </button>
-                    </div>
+                    ) : (
+                      paginatedFamilies.map((family) => (
+                        <div
+                          key={family._id}
+                          className={`p-4 transition flex items-center gap-4 cursor-pointer select-none ${
+                            previewFamily?._id === family._id ? "bg-green-50/50" : "hover:bg-slate-50/50"
+                          }`}
+                          onClick={() => setPreviewFamily(family)}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selectedFamilies.includes(family._id)}
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              toggleFamilySelection(family._id);
+                            }}
+                            className="w-5 h-5 rounded border-slate-350 text-green-600 focus:ring-green-500 cursor-pointer"
+                          />
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className="font-extrabold text-slate-800 text-sm">{family.mainMemberName}</span>
+                              <span className="text-[10px] font-black bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md border border-slate-200">
+                                {family.familyId}
+                              </span>
+                            </div>
+                            <div className="text-[11px] text-slate-400 font-semibold mt-1">
+                              {lang === "mr" ? "घर क्रमांक:" : "House No:"} {family.houseNumber} | {lang === "mr" ? "सदस्य:" : "Members:"} {(family.menCount || 0) + (family.womenCount || 0) + (family.seniorCount || 0) + (family.childrenCount || 0)}
+                            </div>
+                          </div>
+                          
+                          <div className="flex gap-2 items-center">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPreviewFamily(family);
+                              }}
+                              className="px-2.5 py-1.5 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition text-[11px] font-bold flex items-center gap-1"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                              {lang === "mr" ? "पहा" : "View"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                generatePDF([family]);
+                              }}
+                              className="px-2.5 py-1.5 bg-green-50 border border-green-200 text-green-700 rounded-lg hover:bg-green-100 transition text-[11px] font-bold flex items-center gap-1"
+                            >
+                              <Printer className="w-3.5 h-3.5" />
+                              {lang === "mr" ? "प्रिंट" : "Print"}
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
-                ))
-              )}
-            </div>
+
+                  {/* PAGINATION CONTROLS */}
+                  {totalPages > 1 && (
+                    <div className="flex justify-between items-center p-4 border-t border-slate-100 bg-slate-50/50">
+                      <p className="text-[11px] text-slate-500 font-bold">
+                        {lang === "mr"
+                          ? `एकूण ${filteredFamilies.length} पैकी ${startIndex + 1} ते ${Math.min(startIndex + itemsPerPage, filteredFamilies.length)} कुटुंबे`
+                          : `Showing ${startIndex + 1}-${Math.min(startIndex + itemsPerPage, filteredFamilies.length)} of ${filteredFamilies.length}`}
+                      </p>
+                      <div className="flex gap-1.5">
+                        <button
+                          type="button"
+                          disabled={currentPage === 1}
+                          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                          className="px-2.5 py-1.5 rounded-lg text-[10px] font-black border border-slate-200 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition bg-white"
+                        >
+                          {lang === "mr" ? "← पूर्वी" : "← Prev"}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={currentPage === totalPages}
+                          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                          className="px-2.5 py-1.5 rounded-lg text-[10px] font-black border border-slate-200 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition bg-white"
+                        >
+                          {lang === "mr" ? "पुढील →" : "Next →"}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
           </div>
         </div>
 
