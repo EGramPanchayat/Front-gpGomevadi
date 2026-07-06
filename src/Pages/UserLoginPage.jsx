@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axioesInstance from "../utils/axioesInstance";
@@ -12,8 +12,29 @@ export default function UserLoginPage() {
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [otpValues, setOtpValues] = useState(Array(6).fill(""));
+  const [checkingSession, setCheckingSession] = useState(true);
   
   const inputRefs = useRef([]);
+
+  useEffect(() => {
+    const checkActiveSession = async () => {
+      try {
+        const { data } = await axioesInstance.post("/auth/otp/refresh");
+        if (data.token) {
+          localStorage.setItem("userToken", data.token);
+          toast.success("सत्र सक्रिय आहे, थेट डॅशबोर्डवर नेले जात आहे... / Session active, redirecting...");
+          setTimeout(() => {
+            window.location.href = "/user/dashboard";
+          }, 800);
+        } else {
+          setCheckingSession(false);
+        }
+      } catch {
+        setCheckingSession(false);
+      }
+    };
+    checkActiveSession();
+  }, []);
 
   const startCountdown = () => {
     setCountdown(60);
@@ -105,6 +126,20 @@ export default function UserLoginPage() {
     setOtp(data);
     inputRefs.current[5].focus();
   };
+
+  if (checkingSession) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+        <div className="bg-white p-8 rounded-2xl shadow-xl flex flex-col items-center max-w-sm w-full text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-700 mb-4 animate-duration-1000"></div>
+          <p className="text-gray-700 font-bold">
+            {lang === "mr" ? "सत्र सक्रियता तपासत आहे..." : "Checking active session..."}
+          </p>
+        </div>
+        <ToastContainer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">

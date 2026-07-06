@@ -93,8 +93,33 @@ export default function QrPartialPage() {
         if (res.data.success) {
           setGpDetails(res.data.gpDetails);
           setFamily(res.data.family);
+          setEmail(res.data.family?.email || "");
+
+          // Silent session check: try to refresh citizen token
+          try {
+            const refreshRes = await axioesInstance.post("/auth/otp/refresh");
+            if (refreshRes.data.token) {
+              localStorage.setItem("userToken", refreshRes.data.token);
+              // Fetch secure bills now that user is authorized
+              const billsRes = await axioesInstance.get(`/taxes/${familyId}`);
+              const loadedBills = billsRes.data.bills || [];
+              setBills(loadedBills);
+              
+              const initialCategoryAmounts = {};
+              TAX_CATEGORIES.forEach((category) => {
+                initialCategoryAmounts[category.id] = billTotals(
+                  loadedBills.filter((bill) => category.types.includes(bill.taxType)),
+                ).remaining;
+              });
+              setPayAmounts(initialCategoryAmounts);
+              setOtpVerified(true);
+              toast.success("सत्र सक्रिय आहे, थेट देयके तपासा / Active session detected, view bills directly.");
+            }
+          } catch {
+            // Silence session check failures
+          }
         }
-      } catch (err) {
+      } catch {
         toast.error("Failed to load family data.");
       } finally {
         setLoading(false);
