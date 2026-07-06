@@ -1153,8 +1153,8 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                                 }`} />
                               <p className="text-xs font-black uppercase tracking-wider">
                                 {schedule?.isPaused 
-                                  ? (lang === "mr" ? "तात्पुरता थांबवला (PAUSED)" : "PAUSED") 
-                                  : (lang === "mr" ? "सक्रिय आणि नियोजित (ACTIVE)" : "ACTIVE")}
+                                  ? (lang === "mr" ? "तात्पुरता थांबवला" : "PAUSED") 
+                                  : (lang === "mr" ? "सक्रिय आणि नियोजित" : "ACTIVE")}
                               </p>
                             </div>
                             <p className="text-lg font-black font-sans mt-2">
@@ -1175,7 +1175,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                           {/* Earlier release history */}
                           <div className="pt-2">
                             <p className="text-xs font-extrabold text-gray-550 mb-2">
-                              {lang === "mr" ? "मागील वर्षांचे प्रकाशन (Release History):" : "Release History:"}
+                              {lang === "mr" ? "मागील वर्षांचे प्रकाशन:" : "Release History:"}
                             </p>
                             {(!schedule?.history || schedule.history.length === 0) ? (
                               <p className="text-[11px] text-gray-450 italic">
