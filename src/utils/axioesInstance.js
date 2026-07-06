@@ -12,9 +12,17 @@ const axiosInstance = axios.create({
 // Request interceptor to attach userToken as Bearer Auth header
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("userToken");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    // Only attach userToken to citizen-related requests
+    const isCitizenRequest = config.url && (
+      config.url.includes("/user/") || 
+      config.url.includes("/auth/otp/") || 
+      config.url.includes("/taxes/")
+    );
+    if (isCitizenRequest) {
+      const token = localStorage.getItem("userToken");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },
@@ -44,6 +52,9 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    if (!originalRequest || !originalRequest.url) {
+      return Promise.reject(error);
+    }
 
     const isCitizenRequest = originalRequest.url.includes("/user/") || 
                              originalRequest.url.includes("/auth/otp/") || 
