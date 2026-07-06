@@ -78,12 +78,16 @@ const DevelopementWorkAdmin = () => {
           <h2 className="text-2xl font-black text-white drop-shadow-md">
             {lang === "mr" ? "विकास कामे व्यवस्थापन" : "Development Works Hub"}
           </h2>
-          <p className="text-sm text-green-100 font-semibold mt-1">ग्रामपंचायत विकास कामे, फोटो नोंदणी आणि नागरिकांसाठी प्रगती माहिती व्यवस्थापन पॅनेल</p>
+          <p className="text-sm text-green-100 font-semibold mt-1">
+            {lang === "mr" 
+              ? "ग्रामपंचायत विकास कामे, फोटो नोंदणी आणि नागरिकांसाठी प्रगती माहिती व्यवस्थापन पॅनेल" 
+              : "Gram Panchayat development works, photo logs, and progress dashboard management panel"}
+          </p>
         </div>
 
         <div className="relative z-10 bg-slate-100 p-1.5 rounded-2xl shrink-0">
           <div className="bg-green-700 text-white shadow-md px-4 py-2.5 rounded-xl font-bold text-xs">
-            {savedWorks.length} विकास कामे
+            {savedWorks.length} {lang === "mr" ? "विकास कामे" : "Works"}
           </div>
         </div>
       </div>
@@ -94,36 +98,44 @@ const DevelopementWorkAdmin = () => {
         <div className="w-full space-y-6">
           <div className="bg-white rounded-3xl shadow-xl shadow-green-900/5 border border-green-100 overflow-hidden">
             <div className="bg-gradient-to-r from-green-50 to-emerald-50/30 p-6 border-b border-green-100 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-green-800">नवीन काम जोडा</h2>
+              <h2 className="text-xl font-bold text-green-800">
+                {lang === "mr" ? "नवीन काम जोडा" : "Add New Development Work"}
+              </h2>
             </div>
             <div className="p-6">
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">कार्याचे शीर्षक</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                    {lang === "mr" ? "कार्याचे शीर्षक" : "Work Title"}
+                  </label>
                   <input
                     className="w-full border border-gray-200 rounded-xl p-3.5 bg-gray-50 focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/20 transition-all outline-none"
-                    placeholder="उदा. नवीन रस्ता बांधकाम"
+                    placeholder={lang === "mr" ? "उदा. नवीन रस्ता बांधकाम" : "e.g. New Road Construction"}
                     value={title}
                     onChange={e => setTitle(e.target.value)}
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">कार्याचे वर्णन</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                    {lang === "mr" ? "कार्याचे वर्णन" : "Work Description"}
+                  </label>
                   <textarea
                     className="w-full border border-gray-200 rounded-xl p-3.5 bg-gray-50 focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/20 transition-all outline-none min-h-[120px] resize-none"
-                    placeholder="कामाविषयी सविस्तर माहिती लिहा..."
+                    placeholder={lang === "mr" ? "कामाविषयी सविस्तर माहिती लिहा..." : "Enter details about the work..."}
                     value={description}
                     onChange={e => setDescription(e.target.value)}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">कामाचा फोटो</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                    {lang === "mr" ? "कामाचा फोटो" : "Work Photo"}
+                  </label>
                   <label className={`flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl p-6 cursor-pointer transition-all ${image ? 'border-green-500 bg-green-50 text-green-700' : 'border-gray-300 hover:border-green-400 bg-gray-50 text-gray-500 hover:bg-green-50/50'}`}>
                     <BiImageAdd className="text-3xl" />
                     <span className="text-sm font-semibold text-center truncate w-full px-2">
-                      {image ? image.name : "फोटो निवडण्यासाठी क्लिक करा"}
+                      {image ? image.name : (lang === "mr" ? "फोटो निवडण्यासाठी क्लिक करा" : "Click to select a photo")}
                     </span>
                     <input
                       type="file"
@@ -142,7 +154,7 @@ const DevelopementWorkAdmin = () => {
                   {loading ? (
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                   ) : (
-                    <><FiPlus className="text-lg" /> काम प्रकाशित करा</>
+                    <><FiPlus className="text-lg" /> {lang === "mr" ? "काम प्रकाशित करा" : "Publish Work"}</>
                   )}
                 </button>
               </form>
@@ -159,8 +171,12 @@ const DevelopementWorkAdmin = () => {
               className="w-full bg-gradient-to-r from-green-50 to-emerald-50/30 p-6 border-b border-green-100 flex items-center justify-between hover:bg-green-50/50 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <h2 className="text-xl font-bold text-green-800">जतन केलेली कामे</h2>
-                <span className="bg-green-100 text-green-700 py-1 px-3 rounded-full text-xs font-bold">{savedWorks.length} कामे</span>
+                <h2 className="text-xl font-bold text-green-800">
+                  {lang === "mr" ? "जतन केलेली कामे" : "Saved Works"}
+                </h2>
+                <span className="bg-green-100 text-green-700 py-1 px-3 rounded-full text-xs font-bold">
+                  {savedWorks.length} {lang === "mr" ? "कामे" : "Works"}
+                </span>
               </div>
               <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm text-green-600">
                 {openSavedWorks ? <FiChevronUp /> : <FiChevronDown />}
@@ -172,8 +188,12 @@ const DevelopementWorkAdmin = () => {
                 {savedWorks.length === 0 ? (
                   <div className="text-center py-16 flex flex-col items-center justify-center text-gray-400 h-full">
                     <BiBuildingHouse className="text-6xl mb-4 opacity-20" />
-                    <p className="font-semibold text-lg">कोणतीही विकास कामे उपलब्ध नाहीत</p>
-                    <p className="text-sm mt-2">डावीकडील फॉर्म वापरून नवीन काम जोडा</p>
+                    <p className="font-semibold text-lg">
+                      {lang === "mr" ? "कोणतीही विकास कामे उपलब्ध नाहीत" : "No development works available"}
+                    </p>
+                    <p className="text-sm mt-2">
+                      {lang === "mr" ? "डावीकडील फॉर्म वापरून नवीन काम जोडा" : "Use the form on the left to add a new work"}
+                    </p>
                   </div>
                 ) : (
                   <div className="flex flex-col">
@@ -215,13 +235,13 @@ const DevelopementWorkAdmin = () => {
                       </div>
                     ))}
                   </div>
-                  {!showAll && savedWorks.length > 4 && (
+                   {!showAll && savedWorks.length > 4 && (
                     <div className="flex justify-center mt-8">
                       <button
                         onClick={() => setShowAll(true)}
                         className="bg-green-50 text-green-700 hover:bg-green-100 font-bold py-2.5 px-6 rounded-full transition-colors flex items-center gap-2"
                       >
-                        अधिक कामे पहा <FiChevronDown />
+                        {lang === "mr" ? "अधिक कामे पहा" : "See More Works"} <FiChevronDown />
                       </button>
                     </div>
                   )}
@@ -231,7 +251,7 @@ const DevelopementWorkAdmin = () => {
                         onClick={() => setShowAll(false)}
                         className="bg-green-50 text-green-700 hover:bg-green-100 font-bold py-2.5 px-6 rounded-full transition-colors flex items-center gap-2"
                       >
-                        कमी कामे पहा <FiChevronUp />
+                        {lang === "mr" ? "कमी कामे पहा" : "See Less Works"} <FiChevronUp />
                       </button>
                     </div>
                   )}

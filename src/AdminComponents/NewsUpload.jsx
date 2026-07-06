@@ -115,15 +115,19 @@ const NewsUpload = () => {
           <h2 className="text-2xl font-black text-white drop-shadow-md">
             {lang === "mr" ? "बातम्या आणि सूचना व्यवस्थापन" : "News & Notices Hub"}
           </h2>
-          <p className="text-sm text-green-100 font-semibold mt-1">गावच्या ताज्या बातम्या, सूचना पत्रे आणि नागरिकांपर्यंत माहिती पोहोचवण्याचे व्यवस्थापन पॅनेल</p>
+          <p className="text-sm text-green-100 font-semibold mt-1">
+            {lang === "mr" 
+              ? "गावच्या ताज्या बातम्या, सूचना पत्रे आणि नागरिकांपर्यंत माहिती पोहोचवण्याचे व्यवस्थापन पॅनेल" 
+              : "Management panel for village news, notices and public announcements"}
+          </p>
         </div>
 
         <div className="relative z-10 flex bg-slate-100 p-1.5 rounded-2xl gap-1 shrink-0 w-full md:w-auto">
           <div className="flex-1 md:flex-none bg-green-700 text-white shadow-md px-4 py-2.5 rounded-xl font-bold text-xs text-center">
-            {newsList.length} बातम्या
+            {newsList.length} {lang === "mr" ? "बातम्या" : "News"}
           </div>
           <div className="flex-1 md:flex-none bg-green-700 text-white shadow-md px-4 py-2.5 rounded-xl font-bold text-xs text-center">
-            {noticeList.length} सूचना
+            {noticeList.length} {lang === "mr" ? "सूचना" : "Notices"}
           </div>
         </div>
       </div>
@@ -139,19 +143,25 @@ const NewsUpload = () => {
                 <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
                   <BiNews className="text-xl" />
                 </div>
-                <h2 className="text-xl font-bold text-green-800">बातम्या (News)</h2>
+                <h2 className="text-xl font-bold text-green-800">
+                  {lang === "mr" ? "बातम्या (News)" : "News & Announcements"}
+                </h2>
               </div>
-              <span className="bg-green-100 text-green-700 py-1 px-3 rounded-full text-xs font-bold">{newsList.length} बातम्या</span>
+              <span className="bg-green-100 text-green-700 py-1 px-3 rounded-full text-xs font-bold">
+                {newsList.length} {lang === "mr" ? "बातम्या" : "News"}
+              </span>
             </div>
 
             {/* Upload Form */}
             <div className="p-6 border-b border-gray-100 bg-white">
               <form onSubmit={handleNewsSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">नवीन बातमी जोडा</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    {lang === "mr" ? "नवीन बातमी जोडा" : "Add News Item"}
+                  </label>
                   <textarea
                     className="w-full border border-gray-200 rounded-xl p-4 bg-gray-50 focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/20 transition-all outline-none resize-none min-h-[100px]"
-                    placeholder="येथे बातमीचा मजकूर लिहा..."
+                    placeholder={lang === "mr" ? "येथे बातमीचा मजकूर लिहा..." : "Type the news text here..."}
                     value={newsText}
                     onChange={e => setNewsText(e.target.value)}
                   />
@@ -164,7 +174,7 @@ const NewsUpload = () => {
                   {newsLoading ? (
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                   ) : (
-                    <><FiPlus className="text-lg" /> बातमी प्रकाशित करा</>
+                    <><FiPlus className="text-lg" /> {lang === "mr" ? "बातमी प्रकाशित करा" : "Publish News"}</>
                   )}
                 </button>
               </form>
@@ -176,7 +186,7 @@ const NewsUpload = () => {
                 {newsList.length === 0 ? (
                   <div className="text-center py-10 flex flex-col items-center justify-center text-gray-400">
                     <BiNews className="text-5xl mb-3 opacity-20" />
-                    <p>कोणतीही बातमी उपलब्ध नाही</p>
+                    <p>{lang === "mr" ? "कोणतीही बातमी उपलब्ध नाही" : "No news items available"}</p>
                   </div>
                 ) : (
                   newsList.map(news => (
@@ -209,20 +219,26 @@ const NewsUpload = () => {
                 <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
                   <BiBookmarkAlt className="text-xl" />
                 </div>
-                <h2 className="text-xl font-bold text-orange-800">सूचना पत्र (Notices)</h2>
+                <h2 className="text-xl font-bold text-orange-800">
+                  {lang === "mr" ? "सूचना पत्र (Notices)" : "Circulars & Notices"}
+                </h2>
               </div>
-              <span className="bg-orange-100 text-orange-700 py-1 px-3 rounded-full text-xs font-bold">{noticeList.length} सूचना</span>
+              <span className="bg-orange-100 text-orange-700 py-1 px-3 rounded-full text-xs font-bold">
+                {noticeList.length} {lang === "mr" ? "सूचना" : "Notices"}
+              </span>
             </div>
 
             {/* Upload Form */}
             <div className="p-6 border-b border-gray-100 bg-white">
               <form onSubmit={handleNoticeSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">नवीन सूचना जोडा</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    {lang === "mr" ? "नवीन सूचना जोडा" : "Add Circular / Notice"}
+                  </label>
                   <textarea
                     value={noticeDesc}
                     onChange={(e) => setNoticeDesc(e.target.value)}
-                    placeholder="येथे सूचनेचा मजकूर लिहा..."
+                    placeholder={lang === "mr" ? "येथे सूचनेचा मजकूर लिहा..." : "Type notice details here..."}
                     className="w-full border border-gray-200 rounded-xl p-4 bg-gray-50 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all outline-none resize-none min-h-[100px]"
                   />
                 </div>
@@ -231,7 +247,7 @@ const NewsUpload = () => {
                   <label className={`flex-1 flex items-center justify-center gap-2 border-2 border-dashed rounded-xl p-3 cursor-pointer transition-all ${noticePdf ? 'border-orange-500 bg-orange-50 text-orange-700' : 'border-gray-300 hover:border-orange-400 bg-gray-50 text-gray-500 hover:bg-orange-50/50'}`}>
                     <BiCloudUpload className="text-xl" />
                     <span className="text-sm font-semibold truncate">
-                      {noticePdf ? noticePdf.name : "PDF जोडा (पर्यायी)"}
+                      {noticePdf ? noticePdf.name : (lang === "mr" ? "PDF जोडा (पर्यायी)" : "Attach PDF (Optional)")}
                     </span>
                     <input
                       type="file"
@@ -249,7 +265,7 @@ const NewsUpload = () => {
                     {noticeLoading ? (
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                     ) : (
-                      <><FiPlus className="text-lg" /> प्रकाशित करा</>
+                      <><FiPlus className="text-lg" /> {lang === "mr" ? "प्रकाशित करा" : "Publish notice"}</>
                     )}
                   </button>
                 </div>
@@ -262,7 +278,7 @@ const NewsUpload = () => {
                 {noticeList.length === 0 ? (
                   <div className="text-center py-10 flex flex-col items-center justify-center text-gray-400">
                     <BiBookmarkAlt className="text-5xl mb-3 opacity-20" />
-                    <p>कोणतीही सूचना उपलब्ध नाही</p>
+                    <p>{lang === "mr" ? "कोणतीही सूचना उपलब्ध नाही" : "No notices available"}</p>
                   </div>
                 ) : (
                   noticeList.map((item) => (
@@ -281,10 +297,10 @@ const NewsUpload = () => {
                                 rel="noreferrer"
                                 className="inline-flex items-center gap-1.5 text-xs font-bold text-orange-600 bg-orange-50 hover:bg-orange-100 px-3 py-1.5 rounded-full transition-colors"
                               >
-                                <BiFileBlank className="text-sm" /> PDF पहा
+                                <BiFileBlank className="text-sm" /> {lang === "mr" ? "PDF पहा" : "View PDF"}
                               </a>
                             ) : (
-                              <span className="text-xs text-gray-400">PDF नाही</span>
+                              <span className="text-xs text-gray-400">{lang === "mr" ? "PDF नाही" : "No PDF"}</span>
                             )}
                             <span className="text-xs text-gray-400 font-medium">{new Date(item.createdAt || Date.now()).toLocaleString()}</span>
                           </div>

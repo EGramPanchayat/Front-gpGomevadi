@@ -20,7 +20,7 @@ const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => {
   const { lang } = useLanguage();
 
   const gpName = config?.gpName || "ग्रामपंचायत";
-  const subtitle = config ? `ता. ${config.taluka}, जि. ${config.district}` : "";
+  const subtitle = config ? (lang === "mr" ? `ता. ${config.taluka}, जि. ${config.district}` : `Tal. ${config.taluka}, Dist. ${config.district}`) : "";
   const citizenLogin = lang === "mr" ? "नागरिक लॉगिन" : "Citizen Login";
 
   const linkLabel = (link) => (lang === "mr" ? link.mr : link.en);

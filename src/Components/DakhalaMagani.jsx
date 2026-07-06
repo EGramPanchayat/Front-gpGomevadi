@@ -30,8 +30,11 @@ const customTheme = createTheme({
   },
 });
 
+import { useLanguage } from '../utils/LanguageContext';
+
 export default function DakhalaMagani() {
   const navigate = useNavigate();
+  const { lang } = useLanguage();
 
   return (
     <ThemeProvider theme={customTheme}>
@@ -82,8 +85,17 @@ export default function DakhalaMagani() {
             }}
           >
             <Typography variant="h4" component="h2" sx={{ fontWeight: 700, lineHeight: 1.4, mb: { xs: 2, md: 3 }, fontSize: { xs: '1.5rem', md: '2.125rem' } }}>
-              विविध दाखले मिळविण्यासाठी
-              <br /> ऑनलाईन अर्ज
+              {lang === "mr" ? (
+                <>
+                  विविध दाखले मिळविण्यासाठी
+                  <br /> ऑनलाईन अर्ज
+                </>
+              ) : (
+                <>
+                  Online Application for
+                  <br /> Various Certificates
+                </>
+              )}
             </Typography>
             <Divider sx={{ bgcolor: 'white', height: '2px', width: '20%', mb: 0 }} />
           </Box>
@@ -107,11 +119,11 @@ export default function DakhalaMagani() {
                 mb: 4,
               }}
             >
-              महाराष्ट्र लोकसेवा हक्क अध्यादेश- 2015 नुसार ऑनलाईन पद्धतीने जन्म
-              नोंद/ मृत्यू नोंद/ विवाह नोंदणी दाखला/ दारिद्र्य रेषेखाली असल्याचा
-              दाखला/ ग्रामपंचायत येणे बाकी दाखला/ ८ अ उतारा/ निराधार असल्याचा दाखला
-              तुम्ही घरबसल्या मागणी करू शकता.
-
+              {lang === "mr" ? (
+                "महाराष्ट्र लोकसेवा हक्क अध्यादेश- 2015 नुसार ऑनलाईन पद्धतीने जन्म नोंद/ मृत्यू नोंद/ विवाह नोंदणी दाखला/ दारिद्र्य रेषेखाली असल्याचा दाखला/ ग्रामपंचायत येणे बाकी दाखला/ ८ अ उतारा/ निराधार असल्याचा दाखला तुम्ही घरबसल्या मागणी करू शकता."
+              ) : (
+                "Under the Maharashtra Right to Public Services Act 2015, you can apply online from the comfort of your home for Birth Registration, Death Registration, Marriage Certificate, BPL Certificate, No Dues Certificate, 8A Transcript, or Destitute Certificate."
+              )}
             </Typography>
 
             <Button
@@ -127,7 +139,7 @@ export default function DakhalaMagani() {
                 '&:hover': { bgcolor: '#004D40' },
               }}
             >
-              अर्ज मागणी करा
+              {lang === "mr" ? "अर्ज मागणी करा" : "Apply / Request Online"}
             </Button>
           </Box>
         </Paper>

@@ -1,8 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../utils/LanguageContext";
 
 const TaxSection = () => {
   const navigate = useNavigate();
+  const { lang } = useLanguage();
 
   const handlePay = () => {
     navigate("/user-login");
@@ -20,7 +22,7 @@ const TaxSection = () => {
         {/* Left Section: Title (30%) */}
         <div className="w-full md:w-[30%] flex items-center justify-center md:justify-start">
           <h2 className="text-2xl md:text-3xl font-semibold text-green-700 relative text-center w-full after:content-[''] after:block after:w-16 after:h-1 after:bg-orange-500 after:mx-auto after:mt-2 rounded-full">
-            कर भरणा
+            {lang === "mr" ? "कर भरणा" : "Pay Taxes"}
           </h2>
         </div>
 
@@ -34,21 +36,23 @@ const TaxSection = () => {
           >
             <img
               src="/images/water-supply.png"
-              alt="पाणीपट्टी"
+              alt={lang === "mr" ? "पाणीपट्टी" : "Water Tax"}
               className="w-full h-40 sm:h-44 object-cover rounded mb-2"
             />
             <h5 className="text-lg sm:text-xl font-semibold mt-2 mb-2">
-              पाणीपट्टी
+              {lang === "mr" ? "पाणीपट्टी" : "Water Tax"}
             </h5>
             <p className="mb-3 text-sm text-center text-gray-700">
-              घरगुती व शेती पाणीपट्टी ऑनलाइन भरा.
+              {lang === "mr" 
+                ? "घरगुती व शेती पाणीपट्टी ऑनलाइन भरा." 
+                : "Pay domestic and agricultural water tax online."}
             </p>
             <button
               className="bg-green-600 text-white px-6 py-2 rounded-lg w-full mt-auto 
                          hover:bg-green-700 transition text-base font-medium"
               onClick={handlePay}
             >
-              भरा
+              {lang === "mr" ? "भरा" : "Pay Now"}
             </button>
           </div>
 
@@ -60,21 +64,23 @@ const TaxSection = () => {
           >
             <img
               src="/images/home.jpeg"
-              alt="मालमत्ता कर"
+              alt={lang === "mr" ? "मालमत्ता कर" : "Property / House Tax"}
               className="w-full h-40 sm:h-44 object-cover rounded mb-2"
             />
             <h5 className="text-lg sm:text-xl font-semibold mt-2 mb-2">
-              मालमत्ता कर
+              {lang === "mr" ? "मालमत्ता कर" : "Property / House Tax"}
             </h5>
             <p className="mb-3 text-sm text-center text-gray-700">
-              घर व शेतजमिनीसाठी मालमत्ता कर भरा.
+              {lang === "mr" 
+                ? "घर व शेतजमिनीसाठी मालमत्ता कर भरा." 
+                : "Pay house and property taxes online."}
             </p>
             <button
               className="bg-green-600 text-white px-6 py-2 rounded-lg w-full mt-auto 
                          hover:bg-green-700 transition text-base font-medium"
               onClick={handlePay}
             >
-              भरा
+              {lang === "mr" ? "भरा" : "Pay Now"}
             </button>
           </div>
         </div>

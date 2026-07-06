@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import axioesInstance from "../utils/axioesInstance";
 import { toast } from "react-toastify";
 
+import { useLanguage } from "../utils/LanguageContext";
+
 export default function SiteSettingsAdmin() {
+  const { lang } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -84,7 +87,7 @@ export default function SiteSettingsAdmin() {
 
     try {
       await axioesInstance.post("/admin/site-config", payload);
-      toast.success("Settings saved successfully!");
+      toast.success(lang === "mr" ? "सेटिंग्ज यशस्वीरीत्या जतन केल्या!" : "Settings saved successfully!");
       setTimeout(() => {
         window.location.reload();
       }, 1500);
@@ -114,15 +117,19 @@ export default function SiteSettingsAdmin() {
   return (
     <form onSubmit={handleSubmit} className="bg-gray-50 p-6 sm:p-10 rounded-2xl shadow-2xl space-y-8 border border-green-200">
       <h2 className="text-2xl font-bold text-green-700 mb-4 border-b sm:pb-2 md:pb-4 text-center">
-        गावाची सामान्य माहिती व्यवस्थापन
+        {lang === "mr" ? "गावाची सामान्य माहिती व्यवस्थापन" : "Village Configuration & Identity"}
       </h2>
 
       {/* Grid 1: Basic Identity */}
       <div className="bg-white p-6 rounded-xl shadow space-y-4">
-        <h3 className="font-bold text-lg text-green-700 border-b pb-2">१. गाव व ग्रामपंचायत नाव</h3>
+        <h3 className="font-bold text-lg text-green-700 border-b pb-2">
+          {lang === "mr" ? "१. गाव व ग्रामपंचायत नाव" : "1. Village & Gram Panchayat Name"}
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">गावचे नाव</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              {lang === "mr" ? "गावचे नाव" : "Village Name"}
+            </label>
             <input
               type="text"
               readOnly
@@ -131,7 +138,9 @@ export default function SiteSettingsAdmin() {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">ग्रामपंचायत नाव</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              {lang === "mr" ? "ग्रामपंचायत नाव" : "Gram Panchayat Name"}
+            </label>
             <input
               type="text"
               readOnly
@@ -140,7 +149,9 @@ export default function SiteSettingsAdmin() {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">तालुका</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              {lang === "mr" ? "तालुका" : "Taluka"}
+            </label>
             <input
               type="text"
               readOnly
@@ -149,7 +160,9 @@ export default function SiteSettingsAdmin() {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">जिल्हा</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              {lang === "mr" ? "जिल्हा" : "District"}
+            </label>
             <input
               type="text"
               readOnly
@@ -158,7 +171,9 @@ export default function SiteSettingsAdmin() {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">पिनकोड</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              {lang === "mr" ? "पिनकोड" : "Pincode"}
+            </label>
             <input
               type="text"
               readOnly
@@ -171,10 +186,14 @@ export default function SiteSettingsAdmin() {
 
       {/* Grid 2: Stats */}
       <div className="bg-white p-6 rounded-xl shadow space-y-4">
-        <h3 className="font-bold text-lg text-green-700 border-b pb-2">२. सांख्यिकी माहिती (Stats)</h3>
+        <h3 className="font-bold text-lg text-green-700 border-b pb-2">
+          {lang === "mr" ? "२. सांख्यिकी माहिती (Stats)" : "2. Village Statistics (Stats)"}
+        </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">🌾 हेक्टर क्षेत्रफळ</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              {lang === "mr" ? "🌾 हेक्टर क्षेत्रफळ" : "🌾 Area in Hectares"}
+            </label>
             <input
               type="text"
               value={area}
@@ -183,7 +202,9 @@ export default function SiteSettingsAdmin() {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">🏘 वार्ड संख्या</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              {lang === "mr" ? "🏘 वार्ड संख्या" : "🏘 Total Wards"}
+            </label>
             <input
               type="text"
               value={wards}
@@ -192,7 +213,9 @@ export default function SiteSettingsAdmin() {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">👥 एकूण लोकसंख्या</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              {lang === "mr" ? "👥 एकूण लोकसंख्या" : "👥 Total Population"}
+            </label>
             <input
               type="text"
               value={population}
@@ -201,7 +224,9 @@ export default function SiteSettingsAdmin() {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">🏠 कुटुंब संख्या</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              {lang === "mr" ? "🏠 कुटुंब संख्या" : "🏠 Total Households"}
+            </label>
             <input
               type="text"
               value={families}
@@ -214,10 +239,14 @@ export default function SiteSettingsAdmin() {
 
       {/* Grid 3: Contact */}
       <div className="bg-white p-6 rounded-xl shadow space-y-4">
-        <h3 className="font-bold text-lg text-green-700 border-b pb-2">३. संपर्क माहिती (Contact)</h3>
+        <h3 className="font-bold text-lg text-green-700 border-b pb-2">
+          {lang === "mr" ? "३. संपर्क माहिती (Contact)" : "3. Contact & Office Details"}
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
-            <label className="block text-sm font-semibold text-gray-700 mb-1">पत्ता (Address)</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              {lang === "mr" ? "पत्ता (Address)" : "Office Address"}
+            </label>
             <textarea
               rows={3}
               value={address}
@@ -226,7 +255,9 @@ export default function SiteSettingsAdmin() {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">ईमेल आयडी</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              {lang === "mr" ? "ईमेल आयडी" : "Email ID"}
+            </label>
             <input
               type="email"
               value={email}
@@ -235,7 +266,9 @@ export default function SiteSettingsAdmin() {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">मोबाईल / संपर्क क्रमांक</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              {lang === "mr" ? "मोबाईल / संपर्क क्रमांक" : "Office phone / Mobile"}
+            </label>
             <input
               type="text"
               value={phone}
@@ -244,7 +277,9 @@ export default function SiteSettingsAdmin() {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">कार्यालयीन वेळ</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              {lang === "mr" ? "कार्यालयीन वेळ" : "Office Timings"}
+            </label>
             <input
               type="text"
               value={officeHours}
@@ -263,7 +298,9 @@ export default function SiteSettingsAdmin() {
             saving ? "opacity-60 cursor-not-allowed" : ""
           }`}
         >
-          {saving ? "Saving..." : "Save Settings"}
+          {saving 
+            ? (lang === "mr" ? "जतन होत आहे..." : "Saving Settings...") 
+            : (lang === "mr" ? "माहिती जतन करा" : "Save Settings")}
         </button>
       </div>
     </form>

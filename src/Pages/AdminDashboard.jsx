@@ -235,8 +235,12 @@ export default function AdminDashboard() {
                         {config?.taluka && `ता. ${config.taluka}`}{config?.district && ` | जि. ${config.district}`}{config?.state && ` | ${config.state}`}{config?.pincode && ` — ${config.pincode}`}
                       </p>
                       <div className="flex flex-wrap gap-2 mt-3">
-                        <span className="bg-orange-500/30 border border-orange-400/40 text-orange-200 text-xs font-bold px-3 py-1 rounded-full">ODF+ गाव</span>
-                        <span className="bg-white/10 border border-white/20 text-white/80 text-xs font-bold px-3 py-1 rounded-full">डिजिटल ग्रामपंचायत</span>
+                        <span className="bg-orange-500/30 border border-orange-400/40 text-orange-200 text-xs font-bold px-3 py-1 rounded-full">
+                          {lang === "mr" ? "ODF+ गाव" : "ODF+ Village"}
+                        </span>
+                        <span className="bg-white/10 border border-white/20 text-white/80 text-xs font-bold px-3 py-1 rounded-full">
+                          {lang === "mr" ? "डिजिटल ग्रामपंचायत" : "Digital Grampanchayat"}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -245,14 +249,14 @@ export default function AdminDashboard() {
                 {/* STATS CARDS */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {(config?.stats || [
-                    { number: "2200", label: "हेक्टर क्षेत्रफळ" },
-                    { number: "4", label: "वार्ड संख्या" },
-                    { number: "3,711", label: "एकूण लोकसंख्या" },
-                    { number: "758", label: "कुटुंब संख्या" },
+                    { number: "2200", label: lang === "mr" ? "हेक्टर क्षेत्रफळ" : "Area in Hectares" },
+                    { number: "4", label: lang === "mr" ? "वार्ड संख्या" : "Total Wards" },
+                    { number: "3,711", label: lang === "mr" ? "एकूण लोकसंख्या" : "Total Population" },
+                    { number: "758", label: lang === "mr" ? "कुटुंब संख्या" : "Total Households" },
                   ]).map((stat, i) => (
                     <div key={i} className="bg-white rounded-2xl border border-green-100 shadow-md p-5 flex flex-col items-center text-center hover:shadow-lg hover:-translate-y-0.5 transition">
                       <p className="text-3xl font-black text-green-700">{stat.number}</p>
-                      <p className="text-xs text-gray-500 font-semibold mt-1">{stat.label}</p>
+                      <p className="text-xs text-gray-550 font-semibold mt-1">{stat.label}</p>
                     </div>
                   ))}
                 </div>
@@ -262,7 +266,9 @@ export default function AdminDashboard() {
 
                   {/* About */}
                   <div className="bg-white rounded-2xl border border-green-100 shadow-md p-6">
-                    <h3 className="text-base font-black text-green-800 mb-3 pb-2 border-b border-green-100">{config?.aboutTitle || "गावाची माहिती"}</h3>
+                    <h3 className="text-base font-black text-green-800 mb-3 pb-2 border-b border-green-100">
+                      {config?.aboutTitle || (lang === "mr" ? "गावाची माहिती" : "Village Information")}
+                    </h3>
                     <div className="space-y-3">
                       {(config?.aboutParagraphs || []).map((para, i) => (
                         <p key={i} className="text-sm text-gray-600 leading-relaxed" dangerouslySetInnerHTML={{ __html: para }} />
@@ -272,29 +278,31 @@ export default function AdminDashboard() {
 
                   {/* Contact */}
                   <div className="bg-white rounded-2xl border border-green-100 shadow-md p-6">
-                    <h3 className="text-base font-black text-green-800 mb-3 pb-2 border-b border-green-100">संपर्क माहिती</h3>
+                    <h3 className="text-base font-black text-green-800 mb-3 pb-2 border-b border-green-100">
+                      {lang === "mr" ? "संपर्क माहिती" : "Contact Information"}
+                    </h3>
                     <div className="space-y-3 text-sm">
                       {config?.contact?.address && (
                         <div className="flex gap-3">
-                          <span className="text-green-700 font-bold min-w-[70px]">पत्ता</span>
+                          <span className="text-green-700 font-bold min-w-[70px]">{lang === "mr" ? "पत्ता" : "Address"}</span>
                           <span className="text-gray-600 whitespace-pre-line">{config.contact.address}</span>
                         </div>
                       )}
                       {config?.contact?.email && (
                         <div className="flex gap-3">
-                          <span className="text-green-700 font-bold min-w-[70px]">ईमेल</span>
+                          <span className="text-green-700 font-bold min-w-[70px]">{lang === "mr" ? "ईमेल" : "Email"}</span>
                           <a href={`mailto:${config.contact.email}`} className="text-green-600 hover:underline break-all">{config.contact.email}</a>
                         </div>
                       )}
                       {config?.contact?.phone && (
                         <div className="flex gap-3">
-                          <span className="text-green-700 font-bold min-w-[70px]">फोन</span>
+                          <span className="text-green-700 font-bold min-w-[70px]">{lang === "mr" ? "फोन" : "Phone"}</span>
                           <span className="text-gray-600">{config.contact.phone}</span>
                         </div>
                       )}
                       {config?.contact?.officeHours && (
                         <div className="flex gap-3">
-                          <span className="text-green-700 font-bold min-w-[70px]">वेळ</span>
+                          <span className="text-green-700 font-bold min-w-[70px]">{lang === "mr" ? "वेळ" : "Hours"}</span>
                           <span className="text-gray-600">{config.contact.officeHours}</span>
                         </div>
                       )}

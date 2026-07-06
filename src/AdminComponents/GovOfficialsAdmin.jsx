@@ -11,7 +11,7 @@ const newOfficial = (data = {}) => ({
   imageUrl: data.image || "",
 });
 
-function OfficialCard({ data, onChange, onMoveUp, onMoveDown, isFirst, isLast }) {
+function OfficialCard({ data, onChange, onMoveUp, onMoveDown, isFirst, isLast, lang }) {
   return (
     <div className="flex flex-col items-center bg-white p-4 sm:p-6 rounded-2xl shadow w-full max-w-xs sm:w-64 text-center mx-auto">
       <div className="relative mb-3">
@@ -19,24 +19,24 @@ function OfficialCard({ data, onChange, onMoveUp, onMoveDown, isFirst, isLast })
           {data.imageUrl ? (
             <img src={data.imageUrl} alt={data.role} className="h-full w-full object-cover" />
           ) : (
-            <span className="text-gray-400">No Image</span>
+            <span className="text-gray-400">{lang === "mr" ? "चित्र नाही" : "No Image"}</span>
           )}
         </div>
       </div>
       <input
-        placeholder="पद (उदा. माननीय मुख्यमंत्री)"
+        placeholder={lang === "mr" ? "पद (उदा. माननीय मुख्यमंत्री)" : "Role (e.g. Sarpanch)"}
         value={data.role}
         onChange={e => onChange("role", e.target.value)}
         className="border border-green-600 p-2 rounded w-full mb-2 text-left"
       />
       <input
-        placeholder="नाव"
+        placeholder={lang === "mr" ? "नाव" : "Name"}
         value={data.name}
         onChange={e => onChange("name", e.target.value)}
         className="border border-green-600 p-2 rounded w-full mb-2 text-left"
       />
       <label className="cursor-pointer bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow font-semibold mb-2">
-        Image
+        {lang === "mr" ? "फोटो" : "Image"}
         <input
           type="file"
           accept="image/*"
@@ -59,7 +59,7 @@ function OfficialCard({ data, onChange, onMoveUp, onMoveDown, isFirst, isLast })
             onClick={onMoveUp}
             className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded shadow text-sm"
           >
-            ↑ वर
+            {lang === "mr" ? "↑ वर" : "↑ Up"}
           </button>
         )}
         {!isLast && (
@@ -68,7 +68,7 @@ function OfficialCard({ data, onChange, onMoveUp, onMoveDown, isFirst, isLast })
             onClick={onMoveDown}
             className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded shadow text-sm"
           >
-            ↓ खाली
+            {lang === "mr" ? "↓ खाली" : "↓ Down"}
           </button>
         )}
       </div>
@@ -76,7 +76,10 @@ function OfficialCard({ data, onChange, onMoveUp, onMoveDown, isFirst, isLast })
   );
 }
 
+import { useLanguage } from "../utils/LanguageContext";
+
 export default function GovOfficialsAdmin() {
+  const { lang } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [officials, setOfficials] = useState([]);
@@ -122,8 +125,16 @@ export default function GovOfficialsAdmin() {
 
   const validate = () => {
     for (let i = 0; i < officials.length; i++) {
-      if (!officials[i].role.trim()) return `अधिकारी ${i + 1} चे पद आवश्यक आहे`;
-      if (!officials[i].name.trim()) return `अधिकारी ${i + 1} चे नाव आवश्यक आहे`;
+      if (!officials[i].role.trim()) {
+        return lang === "mr" 
+          ? `अधिकारी ${i + 1} चे पद आवश्यक आहे` 
+          : `Role of official ${i + 1} is required`;
+      }
+      if (!officials[i].name.trim()) {
+        return lang === "mr" 
+          ? `अधिकारी ${i + 1} चे नाव आवश्यक आहे` 
+          : `Name of official ${i + 1} is required`;
+      }
     }
     return null;
   };
@@ -148,7 +159,7 @@ export default function GovOfficialsAdmin() {
       await axioesInstance.post("/admin/gov-officials", fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      toast.success("Government officials saved successfully!");
+      toast.success(lang === "mr" ? "शासकीय अधिकारी यशस्वीरीत्या जतन केले!" : "Government officials saved successfully!");
     } catch (err) {
       toast.error(`Server error: ${err.message}`);
     } finally {
@@ -175,10 +186,12 @@ export default function GovOfficialsAdmin() {
   return (
     <form onSubmit={handleSubmit} className="bg-gray-50 p-10 rounded-2xl shadow-2xl space-y-12 border border-green-200">
       <h2 className="text-2xl font-bold text-green-700 mb-4 border-b sm:pb-2 md:pb-4 text-center">
-        शासकीय अधिकारी व्यवस्थापन
+        {lang === "mr" ? "शासकीय अधिकारी व्यवस्थापन" : "Government Officials Management"}
       </h2>
       <p className="text-center text-gray-600 text-sm">
-        ग्राम विकास व पंचायतराज विभागातील शासकीय अधिकाऱ्यांची माहिती व्यवस्थापित करा.
+        {lang === "mr" 
+          ? "ग्राम विकास व पंचायतराज विभागातील शासकीय अधिकाऱ्यांची माहिती व्यवस्थापित करा." 
+          : "Manage the information of government officials in the village development and panchayat raj departments."}
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -191,6 +204,7 @@ export default function GovOfficialsAdmin() {
             onMoveDown={() => moveDown(idx)}
             isFirst={idx === 0}
             isLast={idx === officials.length - 1}
+            lang={lang}
           />
         ))}
       </div>
@@ -201,7 +215,7 @@ export default function GovOfficialsAdmin() {
           onClick={addOfficial}
           className="bg-green-700 text-white px-4 py-2 rounded shadow"
         >
-          नवीन अधिकारी जोडा
+          {lang === "mr" ? "नवीन अधिकारी जोडा" : "Add New Official"}
         </button>
       </div>
 
@@ -213,7 +227,9 @@ export default function GovOfficialsAdmin() {
           onClick={handleSubmit}
           disabled={saving}
         >
-          {saving ? "Saving..." : "Save"}
+          {saving 
+            ? (lang === "mr" ? "जतन होत आहे..." : "Saving...") 
+            : (lang === "mr" ? "जतन करा" : "Save")}
         </button>
       </div>
     </form>
