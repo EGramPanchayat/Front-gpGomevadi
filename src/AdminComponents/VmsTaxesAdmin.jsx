@@ -925,7 +925,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                         </h3>
                         <p className="text-xs text-gray-400 font-semibold mt-1">
                           {lang === "mr" 
-                            ? "मागील वर्षांचे एकूण प्रलंबित कर तपशील (गांव बेरीज / Whole Village Sum)" 
+                            ? "मागील वर्षांचे एकूण प्रलंबित कर तपशील (पूर्ण गावाची बेरीज)" 
                             : "Outstanding tax breakdown of previous years (Whole Village Sum)"}
                         </p>
                       </div>
