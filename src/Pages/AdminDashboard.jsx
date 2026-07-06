@@ -18,6 +18,7 @@ import VmsFamiliesAdmin from "../AdminComponents/VmsFamiliesAdmin";
 import VmsTaxesAdmin from "../AdminComponents/VmsTaxesAdmin";
 import VmsApplicationsAdmin from "../AdminComponents/VmsApplicationsAdmin";
 import QrPrintAdmin from "../AdminComponents/QrPrintAdmin";
+import VmsELibraryAdmin from "../AdminComponents/VmsELibraryAdmin";
 
 export default function AdminDashboard() {
   const { config } = useSiteConfig();
@@ -57,6 +58,7 @@ export default function AdminDashboard() {
     { key: "taxes", mr: "कर विवरण", en: "Tax Management" },
     { key: "vms-apps", mr: "दाखले मागणी अर्ज", en: "Certificate Requests" },
     { key: "print-qr", mr: "QR प्रिंट", en: "Print QR Cards" },
+    { key: "elibrary", mr: "ई-वाचनालय व्यवस्थापन", en: "eLibrary Management" },
   ];
 
   const memberItems = [
@@ -72,6 +74,7 @@ export default function AdminDashboard() {
     taxes: { mr: "कर आकारणी आणि वसुली व्यवस्थापन", en: "Tax Assessment & Collection" },
     "vms-apps": { mr: "दाखले मागणी अर्ज मंजुरी केंद्र", en: "Certificate Approval Center" },
     "print-qr": { mr: "QR कोड प्रिंट", en: "QR Code Print" },
+    elibrary: { mr: "ई-वाचनालय व्यवस्थापन केंद्र", en: "eLibrary Management Hub" },
     members: { mr: "अधिकारी, कार्यकारिणी आणि गाव माहिती", en: "Officials, Board & Village Info" },
   };
 
@@ -420,6 +423,8 @@ export default function AdminDashboard() {
             {activeTab === "vms-apps" && <VmsApplicationsAdmin />}
 
             {activeTab === "print-qr" && <QrPrintAdmin />}
+
+            {activeTab === "elibrary" && <VmsELibraryAdmin />}
 
             {activeTab === "members" && (
               <div className="space-y-4 max-w-7xl mx-auto">

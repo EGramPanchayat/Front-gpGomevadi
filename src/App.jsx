@@ -15,13 +15,8 @@ import UserDashboard from './Pages/UserDashboard.jsx';
 import QrPartialPage from './Pages/QrPartialPage.jsx';
 
 // eLibrary pages
-import ELibraryLayout from './eLibrary/ELibraryLayout.jsx';
-import ELibDashboard from './eLibrary/pages/Dashboard.jsx';
-import ELibBooks from './eLibrary/pages/Books.jsx';
-import ELibUpload from './eLibrary/pages/UploadBook.jsx';
-import ELibDownloads from './eLibrary/pages/Downloads.jsx';
-import ELibSettings from './eLibrary/pages/Settings.jsx';
-import ELibRead from './eLibrary/pages/ReadBook.jsx';
+import ELibraryPage from './Pages/ELibraryPage.jsx';
+import ReadBookPage from './Pages/ReadBookPage.jsx';
 
 function App() {
   return (
@@ -44,15 +39,9 @@ function App() {
             <Route path="/user/dashboard" element={<UserDashboard />} />
             <Route path="/qr-partial" element={<QrPartialPage />} />
 
-            {/* eLibrary portal nested routes */}
-            <Route path="/elibrary" element={<ELibraryLayout />}>
-              <Route index element={<ELibDashboard />} />
-              <Route path="books" element={<ELibBooks />} />
-              <Route path="upload" element={<ELibUpload />} />
-              <Route path="downloads" element={<ELibDownloads />} />
-              <Route path="settings" element={<ELibSettings />} />
-              <Route path="read/:id" element={<ELibRead />} />
-            </Route>
+            {/* Standalone eLibrary pages */}
+            <Route path="/elibrary" element={<ELibraryPage />} />
+            <Route path="/elibrary/read/:id" element={<ReadBookPage />} />
           </Routes>
         </Router>
       </SiteConfigProvider>

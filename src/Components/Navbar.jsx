@@ -25,6 +25,13 @@ const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => {
 
   const linkLabel = (link) => (lang === "mr" ? link.mr : link.en);
 
+  const getHref = (href) => {
+    if (window.location.pathname !== "/") {
+      return "/" + href;
+    }
+    return href;
+  };
+
   return (
     <nav className="sticky top-0 bg-green-700 shadow text-white z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-4">
@@ -52,11 +59,11 @@ const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => {
         )}
 
         {/* Desktop nav */}
-        <ul className="hidden md:flex gap-4 text-base font-medium">
+        <ul className="hidden md:flex gap-4 text-base font-medium flex-wrap items-center">
           {NAV_LINKS.map((link) => (
             <li key={link.key}>
               <a
-                href={link.href}
+                href={getHref(link.href)}
                 className={activeSection === link.section ? "text-orange-500 font-bold underline" : "hover:text-orange-400"}
               >
                 {linkLabel(link)}
@@ -64,7 +71,7 @@ const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => {
             </li>
           ))}
           <li>
-            <a href="/elibrary" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3.5 py-1.5 rounded-xl ml-2 shadow transition text-sm">
+            <a href="/elibrary" className="bg-orange-550 hover:bg-orange-600 text-white font-bold px-3.5 py-1.5 rounded-xl ml-2 shadow transition text-sm">
               {lang === "mr" ? "ई-वाचनालय" : "eLibrary"}
             </a>
           </li>
@@ -93,7 +100,7 @@ const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => {
             {NAV_LINKS.map((link) => (
               <a
                 key={link.key}
-                href={link.href}
+                href={getHref(link.href)}
                 className={activeSection === link.section ? "text-orange-500 font-bold underline text-lg" : "hover:text-orange-400 text-lg"}
                 onClick={() => setMobileNavOpen(false)}
               >
@@ -102,7 +109,7 @@ const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => {
             ))}
             <a
               href="/elibrary"
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-center py-2.5 rounded-xl text-lg mt-2 shadow transition"
+              className="bg-orange-550 hover:bg-orange-600 text-white font-bold text-center py-2.5 rounded-xl text-lg mt-2 shadow transition"
               onClick={() => setMobileNavOpen(false)}
             >
               {lang === "mr" ? "ई-वाचनालय" : "eLibrary"}
