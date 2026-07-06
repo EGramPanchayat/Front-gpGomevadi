@@ -633,7 +633,11 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
           <h2 className="text-2xl font-black text-white drop-shadow-md">
             {lang === "mr" ? "कर भरणा आणि महसूल केंद्र" : "Village Tax Hub"}
           </h2>
-          <p className="text-sm text-green-100 font-semibold mt-1">ग्रामपंचायत कर संकलन, थकबाकी अहवाल आणि वार्षिक कर आकारणी नियंत्रण पॅनेल</p>
+          <p className="text-sm text-green-100 font-semibold mt-1">
+            {lang === "mr" 
+              ? "ग्रामपंचायत कर संकलन, थकबाकी अहवाल आणि वार्षिक कर आकारणी नियंत्रण पॅनेल" 
+              : "Grampanchayat tax collection, outstanding reports, and yearly tax release panel"}
+          </p>
         </div>
 
         {/* TAB CONTROLS */}
@@ -648,7 +652,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                 : "text-slate-600 hover:text-slate-900"
               }`}
           >
-            आकडेवारी आणि नवीन कर
+            {lang === "mr" ? "आकडेवारी आणि नवीन कर" : "Statistics & New Tax"}
           </button>
           <button
             onClick={() => {
@@ -660,7 +664,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                 : "text-slate-600 hover:text-slate-900"
               }`}
           >
-            कुटुंबनिहाय खाते
+            {lang === "mr" ? "कुटुंबनिहाय खाते" : "Household Ledger"}
           </button>
           <button
             onClick={() => {
@@ -672,7 +676,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                 : "text-slate-600 hover:text-slate-900"
               }`}
           >
-            व्यवहार लॉग
+            {lang === "mr" ? "व्यवहार लॉग" : "Transaction Logs"}
           </button>
           <button
             onClick={() => {
@@ -684,7 +688,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                 : "text-slate-600 hover:text-slate-900"
               }`}
           >
-            सूचना
+            {lang === "mr" ? "सूचना" : "Notifications"}
           </button>
         </div>
       </div>
@@ -707,7 +711,9 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                 {/* Total */}
                 <div className="relative overflow-hidden bg-gradient-to-br from-green-700 to-emerald-800 p-5 rounded-3xl text-white shadow-xl hover:scale-[1.02] transition">
                   <div className="absolute -right-4 -bottom-4 w-16 h-16 bg-white/10 rounded-full pointer-events-none z-0"></div>
-                  <p className="text-[10px] font-black uppercase tracking-wider text-green-100 relative z-10">एकूण वसुली</p>
+                  <p className="text-[10px] font-black uppercase tracking-wider text-green-100 relative z-10">
+                    {lang === "mr" ? "एकूण वसुली" : "Total Collection"}
+                  </p>
                   <p className="text-2xl font-black mt-1 relative z-10">₹{totalVasuli.toLocaleString()}</p>
                   <p className="text-[9px] text-green-200 mt-1 font-bold relative z-10">Total Collected ({selectedYearPending}–{Number(selectedYearPending)+1})</p>
                 </div>
@@ -715,7 +721,9 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                 {/* Water */}
                 <div className="relative overflow-hidden bg-white p-5 rounded-3xl border border-blue-100 shadow-xl hover:scale-[1.02] transition">
                   <div className="absolute -right-4 -bottom-4 w-16 h-16 bg-blue-500/10 rounded-full pointer-events-none z-0"></div>
-                  <p className="text-[10px] font-black uppercase tracking-wider text-blue-400 relative z-10">पाणीपट्टी वसुली</p>
+                  <p className="text-[10px] font-black uppercase tracking-wider text-blue-400 relative z-10">
+                    {lang === "mr" ? "पाणीपट्टी वसुली" : "Water Collection"}
+                  </p>
                   <p className="text-2xl font-black mt-1 text-slate-800 relative z-10">₹{waterVasuli.toLocaleString()}</p>
                   <p className="text-[9px] text-slate-400 mt-1 font-bold relative z-10">Water Tax (सामान्य + विशेष)</p>
                 </div>
@@ -723,7 +731,9 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                 {/* House */}
                 <div className="relative overflow-hidden bg-white p-5 rounded-3xl border border-teal-100 shadow-xl hover:scale-[1.02] transition">
                   <div className="absolute -right-4 -bottom-4 w-16 h-16 bg-teal-500/10 rounded-full pointer-events-none z-0"></div>
-                  <p className="text-[10px] font-black uppercase tracking-wider text-teal-500 relative z-10">घरपट्टी + इतर वसुली</p>
+                  <p className="text-[10px] font-black uppercase tracking-wider text-teal-500 relative z-10">
+                    {lang === "mr" ? "घरपट्टी + इतर वसुली" : "House & Other Collection"}
+                  </p>
                   <p className="text-2xl font-black mt-1 text-slate-800 relative z-10">₹{houseVasuli.toLocaleString()}</p>
                   <p className="text-[9px] text-slate-400 mt-1 font-bold relative z-10">House + Health + Electricity</p>
                 </div>
@@ -731,7 +741,9 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                 {/* Fine */}
                 <div className="relative overflow-hidden bg-white p-5 rounded-3xl border border-amber-100 shadow-xl hover:scale-[1.02] transition">
                   <div className="absolute -right-4 -bottom-4 w-16 h-16 bg-amber-500/10 rounded-full pointer-events-none z-0"></div>
-                  <p className="text-[10px] font-black uppercase tracking-wider text-amber-500 relative z-10">दंड वसुली</p>
+                  <p className="text-[10px] font-black uppercase tracking-wider text-amber-500 relative z-10">
+                    {lang === "mr" ? "दंड वसुली" : "Fine Collection"}
+                  </p>
                   <p className="text-2xl font-black mt-1 text-slate-800 relative z-10">₹{fineVasuli.toLocaleString()}</p>
                   <p className="text-[9px] text-slate-400 mt-1 font-bold relative z-10">Late Penalty Fines</p>
                 </div>
@@ -742,10 +754,14 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                 <div className="flex justify-between items-center border-b pb-4 mb-6">
                   <div>
                     <h3 className="text-xl font-bold text-green-800">
-                      थकीत कुटुंबे यादी - वर्ष {selectedYearPending} - {Number(selectedYearPending) + 1}
+                      {lang === "mr" 
+                        ? `थकीत कुटुंबे यादी - वर्ष ${selectedYearPending} - ${Number(selectedYearPending) + 1}` 
+                        : `Pending Families List - Year ${selectedYearPending} - ${Number(selectedYearPending) + 1}`}
                     </h3>
                     <p className="text-xs text-gray-400 font-semibold mt-1">
-                      या वर्षातील प्रलंबित घरपट्टी, पाणीपट्टी आणि दंड असलेले कुटुंब
+                      {lang === "mr" 
+                        ? "या वर्षातील प्रलंबित घरपट्टी, पाणीपट्टी आणि दंड असलेले कुटुंब" 
+                        : "Families with outstanding house tax, water tax, or fines for this assessment year"}
                     </p>
                   </div>
                   <button
@@ -757,22 +773,26 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                 </div>
 
               {loadingPendingFamilies ? (
-                <p className="text-center text-gray-500 py-12 font-bold font-sans">थकीत कुटुंबे यादी लोड होत आहे...</p>
+                <p className="text-center text-gray-500 py-12 font-bold font-sans">
+                  {lang === "mr" ? "थकीत कुटुंबे यादी लोड होत आहे..." : "Loading pending families list..."}
+                </p>
               ) : pendingFamilies.length === 0 ? (
-                <p className="text-center text-gray-550 py-12 font-bold font-sans">या वर्षासाठी थकबाकी असलेले कोणतेही कुटुंब आढळले नाही.</p>
+                <p className="text-center text-gray-555 py-12 font-bold font-sans">
+                  {lang === "mr" ? "या वर्षासाठी थकबाकी असलेले कोणतेही कुटुंब आढळले नाही." : "No outstanding families found for this year."}
+                </p>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm border-collapse">
                     <thead>
                       <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
-                        <th className="p-4 rounded-l-xl">कुटुंब ID</th>
-                        <th className="p-4">कुटुंब प्रमुख (Head Name)</th>
-                        <th className="p-4">घर क्र. व मोबाईल</th>
-                        <th className="p-4">पाणीपट्टी थकबाकी</th>
-                        <th className="p-4">घरपट्टी थकबाकी</th>
-                        <th className="p-4">दंड (Fine)</th>
-                        <th className="p-4">एकूण थकबाकी</th>
-                        <th className="p-4 rounded-r-xl">क्रिया (Action)</th>
+                        <th className="p-4 rounded-l-xl">{lang === "mr" ? "कुटुंब ID" : "Family ID"}</th>
+                        <th className="p-4">{lang === "mr" ? "कुटुंब प्रमुख (Head Name)" : "Family Head Name"}</th>
+                        <th className="p-4">{lang === "mr" ? "घर क्र. व मोबाईल" : "House No. / Email"}</th>
+                        <th className="p-4">{lang === "mr" ? "पाणीपट्टी थकबाकी" : "Water Arrears"}</th>
+                        <th className="p-4">{lang === "mr" ? "घरपट्टी थकबाकी" : "House Arrears"}</th>
+                        <th className="p-4">{lang === "mr" ? "दंड (Fine)" : "Fines"}</th>
+                        <th className="p-4">{lang === "mr" ? "एकूण थकबाकी" : "Total Due"}</th>
+                        <th className="p-4 rounded-r-xl">{lang === "mr" ? "क्रिया (Action)" : "Action"}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
@@ -781,7 +801,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                           <td className="p-4 font-mono font-bold text-green-700">{fam.familyId}</td>
                           <td className="p-4 font-bold text-gray-800">{fam.headName}</td>
                           <td className="p-4 text-xs font-semibold text-gray-550">
-                            घर क्र: {fam.houseNumber}
+                            {lang === "mr" ? "घर क्र:" : "House No:"} {fam.houseNumber}
                             <p className="mt-0.5 font-sans font-semibold text-gray-400">{fam.email}</p>
                           </td>
                           <td className="p-4 font-bold text-gray-700">₹{fam.waterPending}</td>
@@ -830,11 +850,17 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                         <h3 className="text-lg font-bold text-green-800">
                           {lang === "mr" ? "वार्षिक थकबाकी अहवाल" : "Yearly Outstanding Report"}
                         </h3>
-                        <p className="text-xs text-gray-400 font-semibold mt-1">मागील वर्षांचे एकूण प्रलंबित कर तपशील (गांव बेरीज / Whole Village Sum)</p>
+                        <p className="text-xs text-gray-400 font-semibold mt-1">
+                          {lang === "mr" 
+                            ? "मागील वर्षांचे एकूण प्रलंबित कर तपशील (गांव बेरीज / Whole Village Sum)" 
+                            : "Outstanding tax breakdown of previous years (Whole Village Sum)"}
+                        </p>
                       </div>
 
                       {stats?.yearlyBreakdown?.length === 0 ? (
-                        <p className="text-center text-gray-500 py-12 font-bold">पद्धतीमध्ये कोणतेही प्रलंबित कर नाहीत.</p>
+                        <p className="text-center text-gray-500 py-12 font-bold">
+                          {lang === "mr" ? "पद्धतीमध्ये कोणतेही प्रलंबित कर नाहीत." : "No outstanding taxes found in the system."}
+                        </p>
                       ) : (
                         <>
                           {/* DESKTOP VIEW */}
@@ -843,8 +869,12 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                               <thead>
                                 <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
                                   <th className="p-4 rounded-l-xl">{lang === "mr" ? "वर्ष" : "Year"}</th>
-                                  <th className="p-4">१) पाणीपट्टी थकबाकी (सामान्य+विशेष)</th>
-                                  <th className="p-4">२) घरपट्टी थकबाकी (घर+आरोग्य+वीज)</th>
+                                  <th className="p-4">
+                                    {lang === "mr" ? "१) पाणीपट्टी थकबाकी (सामान्य+विशेष)" : "1) Water Tax Arrears (Gen+Spec)"}
+                                  </th>
+                                  <th className="p-4">
+                                    {lang === "mr" ? "२) घरपट्टी थकबाकी (घर+आरोग्य+वीज)" : "2) House Tax Arrears (House+Health+Elec)"}
+                                  </th>
                                   <th className="p-4">{lang === "mr" ? "एकूण प्रलंबित" : "Total Due"}</th>
                                   <th className="p-4 rounded-r-xl">{lang === "mr" ? "क्रिया" : "Action"}</th>
                                 </tr>
@@ -860,27 +890,41 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                                       <td className="p-4 font-black text-gray-800">{yr.year}</td>
                                       <td className="p-4">
                                         {waterPending <= 0 ? (
-                                          <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800">Nil (निरंक)</span>
+                                          <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800">
+                                            {lang === "mr" ? "Nil (निरंक)" : "Nil"}
+                                          </span>
                                         ) : (
                                           <div className="font-bold text-gray-700">
                                             <span>₹{waterPending}</span>
-                                            <p className="text-[9px] text-gray-400 font-normal mt-0.5">एकूण: ₹{yr.waterAmount} | वसूल: ₹{yr.waterPaid}</p>
+                                            <p className="text-[9px] text-gray-400 font-normal mt-0.5">
+                                              {lang === "mr" 
+                                                ? `एकूण: ₹${yr.waterAmount} | वसूल: ₹${yr.waterPaid}` 
+                                                : `Total: ₹${yr.waterAmount} | Coll: ₹${yr.waterPaid}`}
+                                            </p>
                                           </div>
                                         )}
                                       </td>
                                       <td className="p-4">
                                         {housePending <= 0 ? (
-                                          <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800">Nil (निरंक)</span>
+                                          <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800">
+                                            {lang === "mr" ? "Nil (निरंक)" : "Nil"}
+                                          </span>
                                         ) : (
                                           <div className="font-bold text-gray-700">
                                             <span>₹{housePending}</span>
-                                            <p className="text-[9px] text-gray-400 font-normal mt-0.5">एकूण: ₹{yr.houseAmount} | वसूल: ₹{yr.housePaid}</p>
+                                            <p className="text-[9px] text-gray-400 font-normal mt-0.5">
+                                              {lang === "mr" 
+                                                ? `एकूण: ₹${yr.houseAmount} | वसूल: ₹${yr.housePaid}` 
+                                                : `Total: ₹${yr.houseAmount} | Coll: ₹${yr.housePaid}`}
+                                            </p>
                                           </div>
                                         )}
                                       </td>
                                       <td className="p-4">
                                         {totalPending <= 0 ? (
-                                          <span className="inline-flex px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-200">सर्व निरंक (All Clear)</span>
+                                          <span className="inline-flex px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                            {lang === "mr" ? "सर्व निरंक (All Clear)" : "All Clear"}
+                                          </span>
                                         ) : (
                                           <span className="font-black text-red-650">₹{totalPending}</span>
                                         )}
@@ -944,7 +988,9 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                                       {/* Water Pending */}
                                       <div className="flex flex-col gap-1.5 pb-2 border-b border-dashed border-slate-100">
                                         <div className="flex justify-between text-xs">
-                                          <span className="text-slate-500 font-bold">१) पाणीपट्टी थकबाकी (सामान्य+विशेष):</span>
+                                          <span className="text-slate-500 font-bold">
+                                            {lang === "mr" ? "१) पाणीपट्टी थकबाकी (सामान्य+विशेष):" : "1) Water Tax Arrears (Gen+Spec):"}
+                                          </span>
                                           {waterPending <= 0 ? (
                                             <span className="text-green-700 font-extrabold">{lang === "mr" ? "निरंक" : "Nil"}</span>
                                           ) : (
@@ -953,7 +999,9 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                                         </div>
                                         {waterPending > 0 && (
                                           <p className="text-[9.5px] text-slate-400 font-semibold self-end">
-                                            एकूण: ₹{yr.waterAmount} | वसूल: ₹{yr.waterPaid}
+                                            {lang === "mr" 
+                                              ? `एकूण: ₹${yr.waterAmount} | वसूल: ₹${yr.waterPaid}` 
+                                              : `Total: ₹${yr.waterAmount} | Coll: ₹${yr.waterPaid}`}
                                           </p>
                                         )}
                                       </div>
@@ -961,7 +1009,9 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                                       {/* House Pending */}
                                       <div className="flex flex-col gap-1.5 pb-2 border-b border-dashed border-slate-100">
                                         <div className="flex justify-between text-xs">
-                                          <span className="text-slate-500 font-bold">२) घरपट्टी थकबाकी (घर+आरोग्य+वीज):</span>
+                                          <span className="text-slate-500 font-bold">
+                                            {lang === "mr" ? "२) घरपट्टी थकबाकी (घर+आरोग्य+वीज):" : "2) House Tax Arrears (House+Health+Elec):"}
+                                          </span>
                                           {housePending <= 0 ? (
                                             <span className="text-green-700 font-extrabold">{lang === "mr" ? "निरंक" : "Nil"}</span>
                                           ) : (
@@ -970,7 +1020,9 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                                         </div>
                                         {housePending > 0 && (
                                           <p className="text-[9.5px] text-slate-400 font-semibold self-end">
-                                            एकूण: ₹{yr.houseAmount} | वसूल: ₹{yr.housePaid}
+                                            {lang === "mr" 
+                                              ? `एकूण: ₹${yr.houseAmount} | वसूल: ₹${yr.housePaid}` 
+                                              : `Total: ₹${yr.houseAmount} | Coll: ₹${yr.housePaid}`}
                                           </p>
                                         )}
                                       </div>
@@ -1007,8 +1059,14 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                     <div className="bg-white rounded-3xl p-6 shadow-xl border border-green-50 flex flex-col justify-between">
                       <div>
                         <div className="border-b pb-3 mb-4">
-                          <h3 className="text-lg font-bold text-green-800">स्वयंचलित कर वेळापत्रक (Auto-Release Schedule)</h3>
-                          <p className="text-xs text-gray-400 font-semibold mt-1">दरवर्षी १ एप्रिल रोजी चालू दरानुसार स्वयंचलित कर आकारणी</p>
+                          <h3 className="text-lg font-bold text-green-800">
+                            {lang === "mr" ? "स्वयंचलित कर वेळापत्रक (Auto-Release Schedule)" : "Auto-Release Schedule"}
+                          </h3>
+                          <p className="text-xs text-gray-400 font-semibold mt-1">
+                            {lang === "mr" 
+                              ? "दरवर्षी १ एप्रिल रोजी चालू दरानुसार स्वयंचलित कर आकारणी" 
+                              : "Automatic tax assessment every year on April 1st based on current rates"}
+                          </p>
                         </div>
 
                         <div className="space-y-4">
@@ -1021,32 +1079,44 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                               <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${schedule?.isPaused ? "bg-rose-500" : "bg-emerald-500 animate-pulse"
                                 }`} />
                               <p className="text-xs font-black uppercase tracking-wider">
-                                {schedule?.isPaused ? "तात्पुरता थांबवला (PAUSED)" : "सक्रिय आणि नियोजित (ACTIVE)"}
+                                {schedule?.isPaused 
+                                  ? (lang === "mr" ? "तात्पुरता थांबवला (PAUSED)" : "PAUSED") 
+                                  : (lang === "mr" ? "सक्रिय आणि नियोजित (ACTIVE)" : "ACTIVE")}
                               </p>
                             </div>
                             <p className="text-lg font-black font-sans mt-2">
-                              वर्ष {schedule?.nextReleaseYear} - {schedule?.nextReleaseYear ? schedule.nextReleaseYear + 1 : ""}
+                              {lang === "mr" ? "वर्ष" : "Year"} {schedule?.nextReleaseYear} - {schedule?.nextReleaseYear ? schedule.nextReleaseYear + 1 : ""}
                             </p>
                             <p className="text-[10px] text-gray-450 mt-1 font-bold">
                               {schedule?.isPaused
-                                ? "स्वयंचलित कर आकारणी थांबवली आहे. १ एप्रिल रोजी कर आपोआप लागू होणार नाही."
-                                : "१ एप्रिल रोजी मागील वर्षाच्या चालू दरानुसार सर्व कुटुंबांना कर आपोआप लागू होईल."
+                                ? (lang === "mr" 
+                                    ? "स्वयंचलित कर आकारणी थांबवली आहे. १ एप्रिल रोजी कर आपोआप लागू होणार नाही." 
+                                    : "Automatic tax assessment is paused. Taxes will not be released automatically on April 1st.")
+                                : (lang === "mr" 
+                                    ? "१ एप्रिल रोजी मागील वर्षाच्या चालू दरानुसार सर्व कुटुंबांना कर आपोआप लागू होईल." 
+                                    : "Taxes will be automatically released to all families on April 1st based on the previous year's current rates.")
                               }
                             </p>
                           </div>
 
                           {/* Earlier release history */}
                           <div className="pt-2">
-                            <p className="text-xs font-extrabold text-gray-550 mb-2">मागील वर्षांचे प्रकाशन (Release History):</p>
+                            <p className="text-xs font-extrabold text-gray-550 mb-2">
+                              {lang === "mr" ? "मागील वर्षांचे प्रकाशन (Release History):" : "Release History:"}
+                            </p>
                             {(!schedule?.history || schedule.history.length === 0) ? (
-                              <p className="text-[11px] text-gray-450 italic">इतिहास उपलब्ध नाही.</p>
+                              <p className="text-[11px] text-gray-450 italic">
+                                {lang === "mr" ? "इतिहास उपलब्ध नाही." : "No history available."}
+                              </p>
                             ) : (
                               <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
                                 {schedule.history.slice().reverse().map((h) => (
                                   <div key={h._id} className="flex justify-between items-center bg-gray-50/60 p-2.5 rounded-xl border border-gray-100 hover:bg-gray-50 transition">
-                                    <span className="text-xs font-bold text-gray-700">वर्ष {h.year} - {h.year + 1}</span>
+                                    <span className="text-xs font-bold text-gray-700">
+                                      {lang === "mr" ? "वर्ष" : "Year"} {h.year} - {h.year + 1}
+                                    </span>
                                     <span className="text-[10px] text-gray-400 font-sans font-semibold">
-                                      {new Date(h.releasedAt).toLocaleDateString()} रोजी लागू
+                                      {lang === "mr" ? `${new Date(h.releasedAt).toLocaleDateString()} रोजी लागू` : `Released on ${new Date(h.releasedAt).toLocaleDateString()}`}
                                     </span>
                                   </div>
                                 ))}
@@ -1065,10 +1135,10 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
     }`}
                       >
                         {togglingSchedule
-                          ? "प्रक्रिया सुरू..."
+                          ? (lang === "mr" ? "प्रक्रिया सुरू..." : "Processing...")
                           : schedule?.isPaused
-                            ? "स्वयंचलित कर सुरू करा / Resume"
-                            : "स्वयंचलित कर थांबवा / Pause"
+                            ? (lang === "mr" ? "स्वयंचलित कर सुरू करा / Resume" : "Resume Auto-Release")
+                            : (lang === "mr" ? "स्वयंचलित कर थांबवा / Pause" : "Pause Auto-Release")
                         }
                       </button>
                     </div>
