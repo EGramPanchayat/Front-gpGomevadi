@@ -251,10 +251,22 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
   const [togglingSchedule, setTogglingSchedule] = useState(false);
 
   // Assign individual tax states
-  const [taxType, setTaxType] = useState("house");
   const [year, setYear] = useState(getCurrentFinancialYear());
-  const [amount, setAmount] = useState("");
   const [assigning, setAssigning] = useState(false);
+  const [taxAmounts, setTaxAmounts] = useState({
+    house: "",
+    samanya_water: "",
+    vishesh_water: "",
+    health: "",
+    electricity: "",
+  });
+  const [initialTaxAmounts, setInitialTaxAmounts] = useState({
+    house: "",
+    samanya_water: "",
+    vishesh_water: "",
+    health: "",
+    electricity: "",
+  });
 
   // Notifications states
   const [notifications, setNotifications] = useState([]);
@@ -488,26 +500,69 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
     }
   };
 
-  // Assign individual tax
+  // Prefill tax fields from existing bills for selected year
+  useEffect(() => {
+    const yearBills = bills.filter((b) => b.year === Number(year));
+    const loadedAmounts = {
+      house: "",
+      samanya_water: "",
+      vishesh_water: "",
+      health: "",
+      electricity: "",
+    };
+    yearBills.forEach((b) => {
+      if (loadedAmounts[b.taxType] !== undefined) {
+        loadedAmounts[b.taxType] = b.amount;
+      }
+    });
+    setTaxAmounts(loadedAmounts);
+    setInitialTaxAmounts(loadedAmounts);
+  }, [year, bills]);
+
+  const handleAmountChange = (type, val) => {
+    setTaxAmounts((prev) => ({
+      ...prev,
+      [type]: val,
+    }));
+  };
+
+  // Assign multiple taxes simultaneously
   const handleAssignTax = async (e) => {
     e.preventDefault();
-    if (!selectedFamilyId || !taxType || !year || !amount) {
-      return toast.error("Please fill all required fields");
+    if (!selectedFamilyId) {
+      return toast.error("Please select a family");
+    }
+
+    // Determine what changed
+    const modifiedTaxes = {};
+    let hasChanges = false;
+
+    Object.keys(taxAmounts).forEach((key) => {
+      const currentVal = taxAmounts[key] === "" ? "" : Number(taxAmounts[key]);
+      const initialVal = initialTaxAmounts[key] === "" ? "" : Number(initialTaxAmounts[key]);
+      
+      // If the value changed or was newly added
+      if (currentVal !== initialVal) {
+        modifiedTaxes[key] = currentVal === "" ? 0 : currentVal;
+        hasChanges = true;
+      }
+    });
+
+    if (!hasChanges) {
+      return toast.info("No modifications detected.");
     }
 
     setAssigning(true);
     try {
-      await axioesInstance.post("/admin/taxes/assign", {
+      await axioesInstance.post("/admin/taxes/assign-multi", {
         familyId: selectedFamilyId,
-        taxType,
         year: Number(year),
-        amount: Number(amount),
+        taxes: modifiedTaxes,
       });
-      toast.success("Tax assigned successfully!");
-      setAmount("");
+      toast.success("Taxes updated successfully!");
       fetchTaxes(selectedFamilyId);
     } catch (err) {
-      toast.error(err.response?.data?.error || "Error assigning tax");
+      toast.error(err.response?.data?.error || "Error assigning taxes");
     } finally {
       setAssigning(false);
     }
@@ -727,11 +782,11 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                               onClick={() => {
                                 setSelectedFamilyId(fam.familyId);
                                 setYear(selectedYearPending);
-                                setTaxType("fine");
                                 setSelectedLedgerYear(selectedYearPending);
                                 setActiveTab("ledger");
                                 setSelectedYearPending(null);
-                                toast.success(`Redirected to Ledger. Pre-filled Year ${selectedYearPending} & Tax Type "Fine"`);
+                                setShowAssignFineModal(true);
+                                toast.success(`Redirected to Ledger. Pre-filled Year ${selectedYearPending} & opened Assign Fine dialog`);
                               }}
                               className="text-xs bg-orange-500 hover:bg-orange-600 text-white font-bold px-3 py-1.5 rounded-lg shadow whitespace-nowrap transition duration-300"
                             >
@@ -1111,55 +1166,83 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                 {lang === "mr" ? "नवीन कर लागू करा" : "Assign Tax"}
               </h4>
               <form onSubmit={handleAssignTax} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">
-                      {lang === "mr" ? "कर प्रकार" : "Tax Type"}
-                    </label>
-                    <select
-                      value={taxType}
-                      onChange={(e) => setTaxType(e.target.value)}
-                      className="border border-green-600 p-2 rounded-xl w-full text-sm outline-none font-semibold"
-                    >
-                      <option value="samanya_water">{lang === "mr" ? "सामान्य पाणीपट्टी" : "General Water Tax"}</option>
-                      <option value="vishesh_water">{lang === "mr" ? "विशेष पाणीपट्टी" : "Special Water Tax"}</option>
-                      <option value="house">{lang === "mr" ? "घरपट्टी" : "House Tax"}</option>
-                      <option value="health">{lang === "mr" ? "आरोग्य कर" : "Health Tax"}</option>
-                      <option value="electricity">{lang === "mr" ? "वीज कर" : "Electricity Tax"}</option>
-                      <option value="fine">{lang === "mr" ? "दंड" : "Fine / Penalty"}</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">
-                      {lang === "mr" ? "आकारणी वर्ष" : "Financial Year"}
-                    </label>
-                    <select
-                      required
-                      value={year}
-                      onChange={(e) => setYear(Number(e.target.value))}
-                      className="border border-green-600 p-2 rounded-xl w-full text-sm outline-none font-semibold"
-                    >
-                      {getFinancialYearOptions().map((yr) => (
-                        <option key={yr} value={yr}>
-                          {yr} - {yr + 1}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-bold text-gray-700 mb-1">
+                    {lang === "mr" ? "आकारणी वर्ष" : "Financial Year"}
+                  </label>
+                  <select
+                    required
+                    value={year}
+                    onChange={(e) => setYear(Number(e.target.value))}
+                    className="border border-green-600 p-2 rounded-xl w-full text-sm outline-none font-semibold"
+                  >
+                    {getFinancialYearOptions().map((yr) => (
+                      <option key={yr} value={yr}>
+                        {yr} - {yr + 1}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">
-                      {lang === "mr" ? "कर रक्कम *" : "Tax Amount *"}
+                    <label className="block text-xs font-bold text-gray-700 mb-1">
+                      {lang === "mr" ? "घरपट्टी" : "House Tax"}
                     </label>
                     <input
                       type="number"
-                      required
-                      placeholder={lang === "mr" ? "उदा. ५००" : "e.g. 500"}
-                      value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
-                      className="border border-green-600 p-2.5 rounded-xl w-full text-sm outline-none font-semibold"
+                      placeholder="e.g. 500"
+                      value={taxAmounts.house}
+                      onChange={(e) => handleAmountChange("house", e.target.value)}
+                      className="border border-green-600 p-2 rounded-xl w-full text-sm outline-none font-semibold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-1">
+                      {lang === "mr" ? "सामान्य पाणीपट्टी" : "General Water Tax"}
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="e.g. 200"
+                      value={taxAmounts.samanya_water}
+                      onChange={(e) => handleAmountChange("samanya_water", e.target.value)}
+                      className="border border-green-600 p-2 rounded-xl w-full text-sm outline-none font-semibold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-1">
+                      {lang === "mr" ? "विशेष पाणीपट्टी" : "Special Water Tax"}
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="e.g. 300"
+                      value={taxAmounts.vishesh_water}
+                      onChange={(e) => handleAmountChange("vishesh_water", e.target.value)}
+                      className="border border-green-600 p-2 rounded-xl w-full text-sm outline-none font-semibold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-1">
+                      {lang === "mr" ? "आरोग्य कर" : "Health Tax"}
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="e.g. 100"
+                      value={taxAmounts.health}
+                      onChange={(e) => handleAmountChange("health", e.target.value)}
+                      className="border border-green-600 p-2 rounded-xl w-full text-sm outline-none font-semibold"
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <label className="block text-xs font-bold text-gray-700 mb-1">
+                      {lang === "mr" ? "वीज कर" : "Electricity Tax"}
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="e.g. 150"
+                      value={taxAmounts.electricity}
+                      onChange={(e) => handleAmountChange("electricity", e.target.value)}
+                      className="border border-green-600 p-2 rounded-xl w-full text-sm outline-none font-semibold"
                     />
                   </div>
                 </div>
@@ -1167,7 +1250,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                 <button
                   type="submit"
                   disabled={assigning}
-                  className="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 rounded-xl shadow transition"
+                  className="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 rounded-xl shadow transition mt-2"
                 >
                   {assigning ? "Please wait..." : "Assign Tax"}
                 </button>
