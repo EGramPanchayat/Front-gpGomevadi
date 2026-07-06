@@ -145,6 +145,7 @@ export default function DakhalaSubmissions() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchSubs = async () => {
     setLoading(true);
@@ -161,6 +162,10 @@ export default function DakhalaSubmissions() {
   useEffect(() => {
     fetchSubs();
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [subs]);
 
   const handleDelete = async (id) => {
     setDeleting(true);
@@ -196,31 +201,69 @@ export default function DakhalaSubmissions() {
       {validSubs.length === 0 ? (
         <p className="text-gray-600 text-left">No submissions yet.</p>
       ) : (
-        <div className="flex flex-col gap-3 w-full">
-          {validSubs.map((sub, index) => (
-            <div
-              key={sub._id}
-              onClick={() => {
-                setModalData(sub);
-                setModalOpen(true);
-              }}
-              className="w-full cursor-pointer bg-gray-50 hover:bg-white rounded-xl shadow-md p-3 flex items-center gap-3 hover:shadow-lg hover:-translate-y-[2px] transition-all"
-            >
-              <div className="bg-green-600 text-white font-bold w-8 h-8 rounded-full flex items-center justify-center">
-                {index + 1}
+        (() => {
+          const itemsPerPage = 10;
+          const totalPages = Math.ceil(validSubs.length / itemsPerPage);
+          const startIndex = (currentPage - 1) * itemsPerPage;
+          const paginatedSubs = validSubs.slice(startIndex, startIndex + itemsPerPage);
+
+          return (
+            <>
+              <div className="flex flex-col gap-3 w-full">
+                {paginatedSubs.map((sub, index) => (
+                  <div
+                    key={sub._id}
+                    onClick={() => {
+                      setModalData(sub);
+                      setModalOpen(true);
+                    }}
+                    className="w-full cursor-pointer bg-gray-50 hover:bg-white rounded-xl shadow-md p-3 flex items-center gap-3 hover:shadow-lg hover:-translate-y-[2px] transition-all"
+                  >
+                    <div className="bg-green-600 text-white font-bold w-8 h-8 rounded-full flex items-center justify-center shrink-0">
+                      {startIndex + index + 1}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-semibold text-gray-800 break-words whitespace-normal">
+                        {sub.forName || 'No Name'}
+                      </h3>
+                      <p className="text-sm text-gray-600 break-words whitespace-normal">
+                        {sub.type || 'Unknown Type'}
+                      </p>
+                    </div>
+                    <span className="text-green-700 font-semibold text-sm shrink-0">View →</span>
+                  </div>
+                ))}
               </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-lg font-semibold text-gray-800 break-words whitespace-normal">
-                  {sub.forName || 'No Name'}
-                </h3>
-                <p className="text-sm text-gray-600 break-words whitespace-normal">
-                  {sub.type || 'Unknown Type'}
-                </p>
-              </div>
-              <span className="text-green-700 font-semibold text-sm">View →</span>
-            </div>
-          ))}
-        </div>
+
+              {/* PAGINATION CONTROLS */}
+              {totalPages > 1 && (
+                <div className="flex justify-between items-center mt-6 pt-4 border-t border-slate-100">
+                  <p className="text-xs text-slate-500 font-bold">
+                    Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, validSubs.length)} of {validSubs.length} submissions
+                  </p>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                      className="px-3.5 py-2 rounded-xl text-xs font-extrabold border border-slate-200 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    >
+                      ← Prev
+                    </button>
+                    <button
+                      type="button"
+                      disabled={currentPage === totalPages}
+                      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                      className="px-3.5 py-2 rounded-xl text-xs font-extrabold border border-slate-200 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    >
+                      Next →
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          );
+        })()
       )}
 
       <DakhalaModal

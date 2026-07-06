@@ -321,6 +321,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
   const [selectedFamilyId, setSelectedFamilyId] = useState("");
   const [bills, setBills] = useState([]);
   const [payments, setPayments] = useState([]);
+  const [paymentsPage, setPaymentsPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
   // Stats states
@@ -528,6 +529,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
   useEffect(() => {
     if (activeTab === "logs") {
       fetchPayments();
+      setPaymentsPage(1);
     }
   }, [activeTab]);
 
@@ -1765,100 +1767,136 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
             </p>
           ) : (
             <>
-              {/* DESKTOP VIEW */}
-              <div className="hidden md:block overflow-x-auto">
-                <table className="w-full text-left text-sm border-collapse">
-                  <thead>
-                    <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
-                      <th className="p-4 rounded-l-xl">{lang === "mr" ? "तारीख" : "Date"}</th>
-                      <th className="p-4">{lang === "mr" ? "कुटुंब आयडी" : "Family ID"}</th>
-                      <th className="p-4">{lang === "mr" ? "कर प्रकार" : "Tax Type"}</th>
-                      <th className="p-4">{lang === "mr" ? "भरलेली रक्कम" : "Amount Paid"}</th>
-                      <th className="p-4">{lang === "mr" ? "भरणा पद्धती" : "Payment Method"}</th>
-                      <th className="p-4 rounded-r-xl">{lang === "mr" ? "व्यवहार आयडी" : "Transaction ID"}</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-50">
-                    {payments.map((p) => (
-                      <tr key={p._id} className="hover:bg-gray-50/50 transition">
-                        <td className="p-4 text-gray-600 font-medium">{new Date(p.paymentDate).toLocaleDateString()}</td>
-                        <td className="p-4 font-mono font-bold text-green-700">{p.familyId}</td>
-                        <td className="p-4 font-bold text-gray-700">{taxTypeLabel(p.taxType)}</td>
-                        <td className="p-4 font-bold text-green-600">₹{p.amountPaid}</td>
-                        <td className="p-4">
-                          <span className="uppercase text-xs bg-gray-100 px-2 py-0.5 rounded text-gray-600 font-bold">
-                            {p.paymentMethod}
-                          </span>
-                        </td>
-                        <td className="p-4 font-mono text-xs text-gray-400 break-all">{p.transactionId}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+            {(() => {
+              const paymentsPerPage = 15;
+              const totalPaymentsPages = Math.ceil(payments.length / paymentsPerPage);
+              const startPayIndex = (paymentsPage - 1) * paymentsPerPage;
+              const paginatedPayments = payments.slice(startPayIndex, startPayIndex + paymentsPerPage);
 
-              {/* MOBILE VIEW CARD LIST */}
-              <div className="block md:hidden space-y-4">
-                {payments.map((p) => {
-                  const isExpanded = expandedPaymentId === p._id;
-                  return (
-                    <div
-                      key={p._id}
-                      className="bg-white border border-green-700 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all"
-                    >
-                      {/* Card Header */}
-                      <div
-                        onClick={() => setExpandedPaymentId(isExpanded ? null : p._id)}
-                        className="flex justify-between items-center cursor-pointer"
+              return (
+                <>
+                  {/* DESKTOP VIEW */}
+                  <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full text-left text-sm border-collapse">
+                      <thead>
+                        <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
+                          <th className="p-4 rounded-l-xl">{lang === "mr" ? "तारीख" : "Date"}</th>
+                          <th className="p-4">{lang === "mr" ? "कुटुंब आयडी" : "Family ID"}</th>
+                          <th className="p-4">{lang === "mr" ? "कर प्रकार" : "Tax Type"}</th>
+                          <th className="p-4">{lang === "mr" ? "भरलेली रक्कम" : "Amount Paid"}</th>
+                          <th className="p-4">{lang === "mr" ? "भरणा पद्धती" : "Payment Method"}</th>
+                          <th className="p-4 rounded-r-xl">{lang === "mr" ? "व्यवहार आयडी" : "Transaction ID"}</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-50">
+                        {paginatedPayments.map((p) => (
+                          <tr key={p._id} className="hover:bg-gray-50/50 transition">
+                            <td className="p-4 text-gray-600 font-medium">{new Date(p.paymentDate).toLocaleDateString()}</td>
+                            <td className="p-4 font-mono font-bold text-green-700">{p.familyId}</td>
+                            <td className="p-4 font-bold text-gray-700">{taxTypeLabel(p.taxType)}</td>
+                            <td className="p-4 font-bold text-green-600">₹{p.amountPaid}</td>
+                            <td className="p-4">
+                              <span className="uppercase text-xs bg-gray-100 px-2 py-0.5 rounded text-gray-600 font-bold">
+                                {p.paymentMethod}
+                              </span>
+                            </td>
+                            <td className="p-4 font-mono text-xs text-gray-400 break-all">{p.transactionId}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* MOBILE VIEW CARD LIST */}
+                  <div className="block md:hidden space-y-4">
+                    {paginatedPayments.map((p) => {
+                      const isExpanded = expandedPaymentId === p._id;
+                      return (
+                        <div
+                          key={p._id}
+                          className="bg-white border border-green-700 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all"
+                        >
+                          {/* Card Header */}
+                          <div
+                            onClick={() => setExpandedPaymentId(isExpanded ? null : p._id)}
+                            className="flex justify-between items-center cursor-pointer"
+                          >
+                            <div className="flex flex-col">
+                              <span className="font-mono font-black text-green-700 text-sm">
+                                {p.familyId}
+                              </span>
+                              <span className="text-[10px] text-gray-400 font-semibold mt-0.5">
+                                {new Date(p.paymentDate).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <div className="text-right">
+                                <p className="font-bold text-gray-700 text-xs">
+                                  {taxTypeLabel(p.taxType)}
+                                </p>
+                                <p className="font-black text-green-600 text-sm mt-0.5">
+                                  ₹{p.amountPaid}
+                                </p>
+                              </div>
+                              <span className="text-slate-400 text-xs transition-transform duration-200">
+                                {isExpanded ? "▲" : "▼"}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Card Details */}
+                          {isExpanded && (
+                            <div className="mt-4 pt-4 border-t border-slate-100 space-y-2.5 text-xs">
+                              <div className="flex justify-between">
+                                <span className="text-slate-500 font-bold">
+                                  {lang === "mr" ? "भरणा पद्धती (Method):" : "Payment Method:"}
+                                </span>
+                                <span className="uppercase font-bold bg-slate-100 px-2 py-0.5 rounded text-slate-700 text-[10px]">
+                                  {p.paymentMethod}
+                                </span>
+                              </div>
+                              <div className="flex flex-col gap-1">
+                                <span className="text-slate-500 font-bold">
+                                  {lang === "mr" ? "व्यवहार आयडी (Transaction ID):" : "Transaction ID:"}
+                                </span>
+                                <span className="font-mono text-slate-400 text-[10px] break-all bg-slate-50 p-2 rounded-lg border border-slate-100">
+                                  {p.transactionId || "—"}
+                                </span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Pagination Controls */}
+                  {totalPaymentsPages > 1 && (
+                    <div className="flex items-center justify-center gap-3 mt-6 pt-4 border-t">
+                      <button
+                        type="button"
+                        disabled={paymentsPage <= 1}
+                        onClick={() => setPaymentsPage(paymentsPage - 1)}
+                        className="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-3 py-1.5 rounded-lg disabled:opacity-40 transition"
                       >
-                        <div className="flex flex-col">
-                          <span className="font-mono font-black text-green-700 text-sm">
-                            {p.familyId}
-                          </span>
-                          <span className="text-[10px] text-gray-400 font-semibold mt-0.5">
-                            {new Date(p.paymentDate).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="text-right">
-                            <p className="font-bold text-gray-700 text-xs">
-                              {taxTypeLabel(p.taxType)}
-                            </p>
-                            <p className="font-black text-green-600 text-sm mt-0.5">
-                              ₹{p.amountPaid}
-                            </p>
-                          </div>
-                          <span className="text-slate-400 text-xs transition-transform duration-200">
-                            {isExpanded ? "▲" : "▼"}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Card Details */}
-                      {isExpanded && (
-                        <div className="mt-4 pt-4 border-t border-slate-100 space-y-2.5 text-xs">
-                          <div className="flex justify-between">
-                            <span className="text-slate-500 font-bold">
-                              {lang === "mr" ? "भरणा पद्धती (Method):" : "Payment Method:"}
-                            </span>
-                            <span className="uppercase font-bold bg-slate-100 px-2 py-0.5 rounded text-slate-700 text-[10px]">
-                              {p.paymentMethod}
-                            </span>
-                          </div>
-                          <div className="flex flex-col gap-1">
-                            <span className="text-slate-500 font-bold">
-                              {lang === "mr" ? "व्यवहार आयडी (Transaction ID):" : "Transaction ID:"}
-                            </span>
-                            <span className="font-mono text-slate-400 text-[10px] break-all bg-slate-50 p-2 rounded-lg border border-slate-100">
-                              {p.transactionId || "—"}
-                            </span>
-                          </div>
-                        </div>
-                      )}
+                        {lang === "mr" ? "◀ मागील" : "◀ Prev"}
+                      </button>
+                      <span className="text-xs font-bold text-gray-600">
+                        {lang === "mr" ? `पान ${paymentsPage} / ${totalPaymentsPages}` : `Page ${paymentsPage} / ${totalPaymentsPages}`}
+                      </span>
+                      <button
+                        type="button"
+                        disabled={paymentsPage >= totalPaymentsPages}
+                        onClick={() => setPaymentsPage(paymentsPage + 1)}
+                        className="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-3 py-1.5 rounded-lg disabled:opacity-40 transition"
+                      >
+                        {lang === "mr" ? "पुढील ▶" : "Next ▶"}
+                      </button>
                     </div>
-                  );
-                })}
-              </div>
+                  )}
+                </>
+              );
+            })()}
             </>
           )}
         </div>

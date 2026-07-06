@@ -26,6 +26,11 @@ export default function VmsApplicationsAdmin() {
   const [loading, setLoading] = useState(true);
   const [selectedApp, setSelectedApp] = useState(null);
   const [activeSubTab, setActiveSubTab] = useState("pending");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeSubTab, applications]);
 
   // Update states
   const [status, setStatus] = useState("pending");
@@ -170,65 +175,105 @@ export default function VmsApplicationsAdmin() {
               : (lang === "mr" ? "सध्या कोणताही पूर्ण झालेला अर्ज नाही." : "No completed applications.")}
           </p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm border-collapse">
-              <thead>
-                <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
-                  <th className="p-4 rounded-l-xl">{lang === "mr" ? "नाव व घर ID" : "Name & House ID"}</th>
-                  <th className="p-4">{lang === "mr" ? "दाखला प्रकार" : "Certificate Type"}</th>
-                  <th className="p-4">{lang === "mr" ? "अर्ज तारीख" : "Application Date"}</th>
-                  {activeSubTab === "completed" && <th className="p-4">{lang === "mr" ? "पूर्ण वेळ" : "Completed At"}</th>}
-                  <th className="p-4">{lang === "mr" ? "स्थिती" : "Status"}</th>
-                  <th className="p-4 rounded-r-xl text-center">{lang === "mr" ? "कृती" : "Action"}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {filteredApps.map((app) => (
-                  <tr key={app._id} className="hover:bg-gray-50/50 transition">
-                    <td className="p-4">
-                      <p className="font-bold text-gray-800">{app.applicantName}</p>
-                      <span className="text-[10px] text-gray-400 font-mono">ID: {app.familyId}</span>
-                    </td>
-                    <td className="p-4 capitalize font-bold text-gray-700">
-                      {getCertificateTypeName(app.type, lang)}
-                    </td>
-                    <td className="p-4 text-gray-500">{new Date(app.createdAt).toLocaleDateString("en-US")}</td>
-                    {activeSubTab === "completed" && (
-                      <td className="p-4 text-gray-500 font-medium">
-                        {new Date(app.completedAt || app.updatedAt).toLocaleString("en-US", {
-                          day: "numeric",
-                          month: "numeric",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: true
-                        })}
-                      </td>
-                    )}
-                    <td className="p-4">
-                      <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                        app.status === "completed" 
-                          ? "bg-green-100 text-green-700" 
-                          : app.status === "need_documents" 
-                          ? "bg-red-100 text-red-600" 
-                          : "bg-orange-100 text-orange-600"
-                      }`}>
-                        {app.status}
-                      </span>
-                    </td>
-                    <td className="p-4 text-center">
-                      <button
-                        onClick={() => handleOpenDetails(app)}
-                        className="bg-green-700 hover:bg-green-800 text-white font-bold px-3 py-1 rounded-xl text-xs shadow"
-                      >
-                        {lang === "mr" ? "पुनरावलोकन" : "Review"}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+            (() => {
+              const itemsPerPage = 10;
+              const totalPages = Math.ceil(filteredApps.length / itemsPerPage);
+              const startIndex = (currentPage - 1) * itemsPerPage;
+              const paginatedApps = filteredApps.slice(startIndex, startIndex + itemsPerPage);
+
+              return (
+                <>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm border-collapse">
+                      <thead>
+                        <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
+                          <th className="p-4 rounded-l-xl">{lang === "mr" ? "नाव व घर ID" : "Name & House ID"}</th>
+                          <th className="p-4">{lang === "mr" ? "दाखला प्रकार" : "Certificate Type"}</th>
+                          <th className="p-4">{lang === "mr" ? "अर्ज तारीख" : "Application Date"}</th>
+                          {activeSubTab === "completed" && <th className="p-4">{lang === "mr" ? "पूर्ण वेळ" : "Completed At"}</th>}
+                          <th className="p-4">{lang === "mr" ? "स्थिती" : "Status"}</th>
+                          <th className="p-4 rounded-r-xl text-center">{lang === "mr" ? "कृती" : "Action"}</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-50">
+                        {paginatedApps.map((app) => (
+                          <tr key={app._id} className="hover:bg-gray-50/50 transition">
+                            <td className="p-4">
+                              <p className="font-bold text-gray-800">{app.applicantName}</p>
+                              <span className="text-[10px] text-gray-400 font-mono">ID: {app.familyId}</span>
+                            </td>
+                            <td className="p-4 capitalize font-bold text-gray-700">
+                              {getCertificateTypeName(app.type, lang)}
+                            </td>
+                            <td className="p-4 text-gray-500">{new Date(app.createdAt).toLocaleDateString("en-US")}</td>
+                            {activeSubTab === "completed" && (
+                              <td className="p-4 text-gray-500 font-medium">
+                                {new Date(app.completedAt || app.updatedAt).toLocaleString("en-US", {
+                                  day: "numeric",
+                                  month: "numeric",
+                                  year: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  hour12: true
+                                })}
+                              </td>
+                            )}
+                            <td className="p-4">
+                              <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                                app.status === "completed" 
+                                  ? "bg-green-100 text-green-700" 
+                                  : app.status === "need_documents" 
+                                  ? "bg-red-100 text-red-600" 
+                                  : "bg-orange-100 text-orange-600"
+                              }`}>
+                                {app.status}
+                              </span>
+                            </td>
+                            <td className="p-4 text-center">
+                              <button
+                                onClick={() => handleOpenDetails(app)}
+                                className="bg-green-700 hover:bg-green-800 text-white font-bold px-3 py-1 rounded-xl text-xs shadow"
+                              >
+                                {lang === "mr" ? "पुनरावलोकन" : "Review"}
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* PAGINATION CONTROLS */}
+                  {totalPages > 1 && (
+                    <div className="flex justify-between items-center mt-6 pt-4 border-t border-slate-100">
+                      <p className="text-xs text-slate-500 font-bold">
+                        {lang === "mr" 
+                          ? `एकूण ${filteredApps.length} पैकी ${startIndex + 1} ते ${Math.min(startIndex + itemsPerPage, filteredApps.length)} अर्ज दर्शवत आहे` 
+                          : `Showing ${startIndex + 1} to ${Math.min(startIndex + itemsPerPage, filteredApps.length)} of ${filteredApps.length} requests`}
+                      </p>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          disabled={currentPage === 1}
+                          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                          className="px-3.5 py-2 rounded-xl text-xs font-extrabold border border-slate-200 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                        >
+                          {lang === "mr" ? "← पूर्वी" : "← Prev"}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={currentPage === totalPages}
+                          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                          className="px-3.5 py-2 rounded-xl text-xs font-extrabold border border-slate-200 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                        >
+                          {lang === "mr" ? "पुढील →" : "Next →"}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              );
+            })()
         )}
       </div>
 
