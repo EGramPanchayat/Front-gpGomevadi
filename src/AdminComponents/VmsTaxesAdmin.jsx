@@ -97,6 +97,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
   const [showFamilyDropdown, setShowFamilyDropdown] = useState(false);
   const familyDropdownRef = React.useRef(null);
   const [expandedYear, setExpandedYear] = useState(null);
+  const [expandedPaymentId, setExpandedPaymentId] = useState(null);
 
   // Close family dropdown on outside click
   React.useEffect(() => {
@@ -1250,36 +1251,98 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
           ) : payments.length === 0 ? (
             <p className="text-gray-500 text-center py-6 font-bold">अद्याप कोणताही व्यवहार झालेला नाही.</p>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm border-collapse">
-                <thead>
-                  <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
-                    <th className="p-4 rounded-l-xl">तारीख</th>
-                    <th className="p-4">कुटुंब आयडी</th>
-                    <th className="p-4">कर प्रकार</th>
-                    <th className="p-4">भरलेली रक्कम</th>
-                    <th className="p-4">भरणा पद्धती</th>
-                    <th className="p-4 rounded-r-xl">व्यवहार आयडी</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {payments.map((p) => (
-                    <tr key={p._id} className="hover:bg-gray-50/50 transition">
-                      <td className="p-4 text-gray-600 font-medium">{new Date(p.paymentDate).toLocaleDateString()}</td>
-                      <td className="p-4 font-mono font-bold text-green-700">{p.familyId}</td>
-                      <td className="p-4 font-bold text-gray-700">{taxTypeLabel(p.taxType)}</td>
-                      <td className="p-4 font-bold text-green-600">₹{p.amountPaid}</td>
-                      <td className="p-4">
-                        <span className="uppercase text-xs bg-gray-100 px-2 py-0.5 rounded text-gray-600 font-bold">
-                          {p.paymentMethod}
-                        </span>
-                      </td>
-                      <td className="p-4 font-mono text-xs text-gray-400 break-all">{p.transactionId}</td>
+            <>
+              {/* DESKTOP VIEW */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-left text-sm border-collapse">
+                  <thead>
+                    <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
+                      <th className="p-4 rounded-l-xl">तारीख</th>
+                      <th className="p-4">कुटुंब आयडी</th>
+                      <th className="p-4">कर प्रकार</th>
+                      <th className="p-4">भरलेली रक्कम</th>
+                      <th className="p-4">भरणा पद्धती</th>
+                      <th className="p-4 rounded-r-xl">व्यवहार आयडी</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50">
+                    {payments.map((p) => (
+                      <tr key={p._id} className="hover:bg-gray-50/50 transition">
+                        <td className="p-4 text-gray-600 font-medium">{new Date(p.paymentDate).toLocaleDateString()}</td>
+                        <td className="p-4 font-mono font-bold text-green-700">{p.familyId}</td>
+                        <td className="p-4 font-bold text-gray-700">{taxTypeLabel(p.taxType)}</td>
+                        <td className="p-4 font-bold text-green-600">₹{p.amountPaid}</td>
+                        <td className="p-4">
+                          <span className="uppercase text-xs bg-gray-100 px-2 py-0.5 rounded text-gray-600 font-bold">
+                            {p.paymentMethod}
+                          </span>
+                        </td>
+                        <td className="p-4 font-mono text-xs text-gray-400 break-all">{p.transactionId}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* MOBILE VIEW CARD LIST */}
+              <div className="block md:hidden space-y-4">
+                {payments.map((p) => {
+                  const isExpanded = expandedPaymentId === p._id;
+                  return (
+                    <div
+                      key={p._id}
+                      className="bg-white border border-green-700 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all"
+                    >
+                      {/* Card Header */}
+                      <div
+                        onClick={() => setExpandedPaymentId(isExpanded ? null : p._id)}
+                        className="flex justify-between items-center cursor-pointer"
+                      >
+                        <div className="flex flex-col">
+                          <span className="font-mono font-black text-green-700 text-sm">
+                            {p.familyId}
+                          </span>
+                          <span className="text-[10px] text-gray-400 font-semibold mt-0.5">
+                            {new Date(p.paymentDate).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="text-right">
+                            <p className="font-bold text-gray-700 text-xs">
+                              {taxTypeLabel(p.taxType)}
+                            </p>
+                            <p className="font-black text-green-600 text-sm mt-0.5">
+                              ₹{p.amountPaid}
+                            </p>
+                          </div>
+                          <span className="text-slate-400 text-xs transition-transform duration-200">
+                            {isExpanded ? "▲" : "▼"}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Card Details */}
+                      {isExpanded && (
+                        <div className="mt-4 pt-4 border-t border-slate-100 space-y-2.5 text-xs">
+                          <div className="flex justify-between">
+                            <span className="text-slate-500 font-bold">भरणा पद्धती (Method):</span>
+                            <span className="uppercase font-bold bg-slate-100 px-2 py-0.5 rounded text-slate-700 text-[10px]">
+                              {p.paymentMethod}
+                            </span>
+                          </div>
+                          <div className="flex flex-col gap-1">
+                            <span className="text-slate-500 font-bold">व्यवहार आयडी (Transaction ID):</span>
+                            <span className="font-mono text-slate-400 text-[10px] break-all bg-slate-50 p-2 rounded-lg border border-slate-100">
+                              {p.transactionId || "—"}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </>
           )}
         </div>
       )}
