@@ -108,7 +108,7 @@ export default function UserLoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="flex flex-col md:flex-row w-full max-w-4xl h-auto md:h-[400px] bg-white shadow-2xl rounded-2xl overflow-hidden">
+      <div className="flex flex-col md:flex-row w-full max-w-4xl h-auto md:min-h-[460px] bg-white shadow-2xl rounded-2xl overflow-hidden">
         
         {/* Left Part - Image & Brand (Exactly like LoginPage.jsx) */}
         <div className="relative w-full md:w-1/2 h-48 md:h-auto">
