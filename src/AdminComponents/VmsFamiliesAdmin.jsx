@@ -1066,14 +1066,14 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
 
           {/* Tax Filter and Search Pills */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-            <div className="flex bg-slate-200/60 p-1 rounded-xl w-fit border border-slate-300/30">
+            <div className="flex bg-slate-200/60 p-1 rounded-xl w-full sm:w-fit border border-slate-300/30">
               <button
                 type="button"
                 onClick={() => {
                   setTaxFilter("all");
                   setCurrentPage(1);
                 }}
-                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                   taxFilter === "all"
                     ? "bg-white text-slate-800 shadow-sm"
                     : "text-slate-500 hover:text-slate-800"
@@ -1087,13 +1087,13 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                   setTaxFilter("pending");
                   setCurrentPage(1);
                 }}
-                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
                   taxFilter === "pending"
                     ? "bg-orange-500 text-white shadow-sm"
                     : "text-slate-500 hover:text-slate-800"
                 }`}
               >
-                <span>{lang === "mr" ? "कर आकारणी शिल्लक" : "Pending Tax"}</span>
+                <span>{lang === "mr" ? "कर आकारणी" : "Pending Tax"}</span>
                 <span className={`px-1.5 py-0.5 rounded text-[9px] font-black ${taxFilter === "pending" ? "bg-white/20 text-white" : "bg-orange-100 text-orange-600"}`}>
                   {latestFamilies.filter(f => !f.hasTaxAssigned).length}
                 </span>
