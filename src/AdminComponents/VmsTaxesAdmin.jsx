@@ -1288,47 +1288,91 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                         <p className="text-gray-505 font-bold font-sans">निवडलेल्या {selectedLedgerYear} वर्षासाठी कोणतेही कर आकारले गेलेले नाहीत.</p>
                       </div>
                     ) : (
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-left text-sm border-collapse">
-                          <thead>
-                            <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
-                              <th className="p-4 rounded-l-xl">कर प्रकार (Tax Type)</th>
-                              <th className="p-4">एकूण रक्कम (Total)</th>
-                              <th className="p-4">जमा रक्कम (Paid)</th>
-                              <th className="p-4">उर्वरित देय (Outstanding)</th>
-                              <th className="p-4 rounded-r-xl">स्थिती (Status)</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-gray-50">
-                            {yearBills.map((b) => {
-                              const outstanding = b.amount - b.paidAmount;
-                              const isOverpaid = outstanding < 0;
-                              return (
-                                <tr key={b._id} className="hover:bg-gray-50/50 transition">
-                                  <td className="p-4 font-bold text-gray-700">{taxTypeLabel(b.taxType)}</td>
-                                  <td className="p-4 text-gray-800 font-semibold">₹{b.amount}</td>
-                                  <td className="p-4 text-green-600 font-bold">₹{b.paidAmount}</td>
-                                  <td className={`p-4 font-black ${isOverpaid ? "text-emerald-600" : "text-red-650"}`}>
-                                    {isOverpaid ? `+₹${Math.abs(outstanding)}` : `₹${outstanding}`}
-                                  </td>
-                                  <td className="p-4">
-                                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${isOverpaid
-                                        ? "bg-emerald-100 text-emerald-800"
-                                        : b.status === "paid"
-                                          ? "bg-green-100 text-green-700"
-                                          : b.status === "partial"
-                                            ? "bg-orange-100 text-orange-655"
-                                            : "bg-red-100 text-red-655"
-                                      }`}>
-                                      {isOverpaid ? "अतिरिक्त" : b.status.toUpperCase()}
+                      <>
+                        {/* Desktop Table View */}
+                        <div className="hidden md:block overflow-x-auto">
+                          <table className="w-full text-left text-sm border-collapse">
+                            <thead>
+                              <tr className="bg-green-50 text-green-800 font-bold border-b border-green-100">
+                                <th className="p-4 rounded-l-xl">कर प्रकार (Tax Type)</th>
+                                <th className="p-4">एकूण रक्कम (Total)</th>
+                                <th className="p-4">जमा रक्कम (Paid)</th>
+                                <th className="p-4">उर्वरित देय (Outstanding)</th>
+                                <th className="p-4 rounded-r-xl">स्थिती (Status)</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-50">
+                              {yearBills.map((b) => {
+                                const outstanding = b.amount - b.paidAmount;
+                                const isOverpaid = outstanding < 0;
+                                return (
+                                  <tr key={b._id} className="hover:bg-gray-50/50 transition">
+                                    <td className="p-4 font-bold text-gray-700">{taxTypeLabel(b.taxType)}</td>
+                                    <td className="p-4 text-gray-800 font-semibold">₹{b.amount}</td>
+                                    <td className="p-4 text-green-600 font-bold">₹{b.paidAmount}</td>
+                                    <td className={`p-4 font-black ${isOverpaid ? "text-emerald-600" : "text-red-650"}`}>
+                                      {isOverpaid ? `+₹${Math.abs(outstanding)}` : `₹${outstanding}`}
+                                    </td>
+                                    <td className="p-4">
+                                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${isOverpaid
+                                          ? "bg-emerald-100 text-emerald-800"
+                                          : b.status === "paid"
+                                            ? "bg-green-100 text-green-700"
+                                            : b.status === "partial"
+                                              ? "bg-orange-100 text-orange-655"
+                                              : "bg-red-100 text-red-655"
+                                        }`}>
+                                        {isOverpaid ? "अतिरिक्त" : b.status.toUpperCase()}
+                                      </span>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        {/* Mobile Card List View */}
+                        <div className="block md:hidden space-y-3">
+                          {yearBills.map((b) => {
+                            const outstanding = b.amount - b.paidAmount;
+                            const isOverpaid = outstanding < 0;
+                            return (
+                              <div key={b._id} className="bg-white rounded-2xl p-4 border border-green-700 shadow-sm space-y-2">
+                                <div className="flex justify-between items-center border-b pb-2">
+                                  <span className="font-extrabold text-slate-800 text-sm">{taxTypeLabel(b.taxType)}</span>
+                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${isOverpaid
+                                      ? "bg-emerald-100 text-emerald-800"
+                                      : b.status === "paid"
+                                        ? "bg-green-100 text-green-700"
+                                        : b.status === "partial"
+                                          ? "bg-orange-100 text-orange-655"
+                                          : "bg-red-100 text-red-655"
+                                    }`}>
+                                    {isOverpaid ? "अतिरिक्त" : b.status.toUpperCase()}
+                                  </span>
+                                </div>
+                                <div className="grid grid-cols-3 gap-2 text-xs font-semibold pt-1">
+                                  <div>
+                                    <span className="block text-[10px] text-gray-400 uppercase">एकूण (Total)</span>
+                                    <span className="text-gray-800">₹{b.amount}</span>
+                                  </div>
+                                  <div>
+                                    <span className="block text-[10px] text-gray-400 uppercase">जमा (Paid)</span>
+                                    <span className="text-green-600">₹{b.paidAmount}</span>
+                                  </div>
+                                  <div>
+                                    <span className="block text-[10px] text-gray-400 uppercase">देय (Due)</span>
+                                    <span className={`font-black ${isOverpaid ? "text-emerald-650" : "text-red-650"}`}>
+                                      {isOverpaid ? `+₹${Math.abs(outstanding)}` : `₹${outstanding}`}
                                     </span>
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
-                      </div>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </>
                     )}
                   </div>
 
