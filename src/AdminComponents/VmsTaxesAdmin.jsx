@@ -272,6 +272,7 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
   const [inlineFineReason, setInlineFineReason] = useState("");
   const [showFineReasonModal, setShowFineReasonModal] = useState(false);
   const [showReceiptsModal, setShowReceiptsModal] = useState(false);
+  const [showAssignFineModal, setShowAssignFineModal] = useState(false);
   const [assigningInlineFine, setAssigningInlineFine] = useState(false);
 
   // Record payment states
@@ -458,6 +459,33 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
       fetchNotifications(1);
     }
   }, [activeTab]);
+
+  // Assign inline fine handler (desktop & mobile)
+  const handleAssignFineSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedFamilyId || !selectedLedgerYear || !inlineFineAmount) {
+      return toast.error("कृपया दंड रक्कम टाका (Please enter fine amount)");
+    }
+    setAssigningInlineFine(true);
+    try {
+      await axioesInstance.post("/admin/taxes/assign", {
+        familyId: selectedFamilyId,
+        taxType: "fine",
+        year: Number(selectedLedgerYear),
+        amount: Number(inlineFineAmount),
+        reason: inlineFineReason,
+      });
+      toast.success(`Fine of ₹${inlineFineAmount} assigned successfully for year ${selectedLedgerYear}!`);
+      setInlineFineAmount("");
+      setInlineFineReason("");
+      setShowAssignFineModal(false);
+      fetchTaxes(selectedFamilyId);
+    } catch (err) {
+      toast.error(err.response?.data?.error || "Error assigning fine");
+    } finally {
+      setAssigningInlineFine(false);
+    }
+  };
 
   // Assign individual tax
   const handleAssignTax = async (e) => {
@@ -1384,32 +1412,10 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                         निवडलेल्या कुटुंबाला या आर्थिक वर्षासाठी विलंब शुल्क किंवा दंड (Late Fine) थेट लागू करा.
                       </p>
 
-                                            <form
-                        onSubmit={async (e) => {
-                          e.preventDefault();
-                          if (!selectedFamilyId || !selectedLedgerYear || !inlineFineAmount) {
-                            return toast.error("कृपया दंड रक्कम टाका (Please enter fine amount)");
-                          }
-                          setAssigningInlineFine(true);
-                          try {
-                            await axioesInstance.post("/admin/taxes/assign", {
-                              familyId: selectedFamilyId,
-                              taxType: "fine",
-                              year: Number(selectedLedgerYear),
-                              amount: Number(inlineFineAmount),
-                              reason: inlineFineReason,
-                            });
-                            toast.success(`Fine of ₹${inlineFineAmount} assigned successfully for year ${selectedLedgerYear}!`);
-                            setInlineFineAmount("");
-                            setInlineFineReason("");
-                            fetchTaxes(selectedFamilyId);
-                          } catch (err) {
-                            toast.error(err.response?.data?.error || "Error assigning fine");
-                          } finally {
-                            setAssigningInlineFine(false);
-                          }
-                        }}
-                        className="space-y-4"
+                                            {/* Desktop direct form */}
+                      <form
+                        onSubmit={handleAssignFineSubmit}
+                        className="hidden md:block space-y-4"
                       >
                         <div>
                           <label className="block text-xs font-bold text-gray-550 mb-1">दंड रक्कम (Fine Amount) *</label>
@@ -1442,6 +1448,15 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                           {assigningInlineFine ? "लागू होत आहे..." : "दंड लागू करा / Assign Fine"}
                         </button>
                       </form>
+
+                      {/* Mobile modal trigger button */}
+                      <button
+                        type="button"
+                        onClick={() => setShowAssignFineModal(true)}
+                        className="block md:hidden w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3.5 rounded-xl shadow text-xs transition duration-300"
+                      >
+                        ⚠️ {lang === "mr" ? "दंड आकारणी (Assign Fine)" : "Assign Fine"}
+                      </button>
                     </div>
 
                     {/* Quick year balance summary */}
@@ -1817,6 +1832,66 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                 बंद करा (Close)
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {showAssignFineModal && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-green-150 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b pb-3 mb-4">
+              <h4 className="text-base font-black flex items-center gap-2" style={{ color: "#14532d" }}>
+                <span>⚠️ वर्ष {selectedLedgerYear} साठी दंड आकारणी</span>
+              </h4>
+              <button
+                onClick={() => setShowAssignFineModal(false)}
+                className="text-gray-400 hover:text-gray-600 font-bold text-lg p-1"
+                aria-label="Close modal"
+              >
+                ✖
+              </button>
+            </div>
+
+            <form onSubmit={handleAssignFineSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">दंड रक्कम (Fine Amount) *</label>
+                <input
+                  type="number"
+                  required
+                  placeholder="उदा. ५०"
+                  value={inlineFineAmount}
+                  onChange={(e) => setInlineFineAmount(e.target.value)}
+                  className="border border-green-600 bg-white p-2.5 rounded-xl w-full text-xs font-semibold outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">दंड आकारण्याचे कारण (Reason for Fine)</label>
+                <textarea
+                  rows={3}
+                  placeholder="उदा. विलंब शुल्क किंवा इतर कारण"
+                  value={inlineFineReason}
+                  onChange={(e) => setInlineFineReason(e.target.value)}
+                  className="border border-green-600 bg-white p-2.5 rounded-xl w-full text-xs font-semibold outline-none resize-none"
+                />
+              </div>
+
+              <div className="pt-2 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowAssignFineModal(false)}
+                  className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition"
+                >
+                  रद्द करा (Cancel)
+                </button>
+                <button
+                  type="submit"
+                  disabled={assigningInlineFine}
+                  className="flex-1 bg-green-700 hover:bg-green-800 text-white font-bold py-2.5 rounded-xl text-xs shadow transition"
+                >
+                  {assigningInlineFine ? "लागू होत आहे..." : "दंड लागू करा"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
