@@ -1304,7 +1304,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
             {/* Green Header */}
             <div className="bg-green-900 px-6 py-4 flex items-center justify-between text-white border-b border-green-800">
               <h4 className="text-base font-black tracking-wide flex items-center gap-1.5">
-                <span className="text-lg">📱</span> कुटुंब QR कोड (Family QR)
+                <span className="text-lg">📱</span> {lang === "mr" ? "कुटुंब QR कोड" : "Family QR Code"}
               </h4>
               <button
                 type="button"
@@ -1325,7 +1325,9 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                   {selectedFamilyForQr.mainMemberName}
                 </h5>
                 <p className="text-[10px] font-black text-orange-650 mt-1 tracking-wider uppercase">
-                  कुटुंब ID: {selectedFamilyForQr.familyId} | घर क्र: {selectedFamilyForQr.houseNumber}
+                  {lang === "mr" 
+                    ? `कुटुंब ID: ${selectedFamilyForQr.familyId} | घर क्र: ${selectedFamilyForQr.houseNumber}` 
+                    : `Family ID: ${selectedFamilyForQr.familyId} | House No: ${selectedFamilyForQr.houseNumber}`}
                 </p>
               </div>
 
@@ -1339,7 +1341,7 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
                   className="w-44 h-44 object-contain shadow-md rounded-xl bg-white p-2.5 border border-slate-200"
                 />
                 <p className="text-[10px] font-black text-green-800 mt-4 tracking-wider uppercase bg-green-50 px-3 py-1 rounded-full border border-green-200">
-                  स्कॅन करा (Scan to View)
+                  {lang === "mr" ? "स्कॅन करा" : "SCAN TO VIEW"}
                 </p>
               </div>
 
