@@ -64,6 +64,11 @@ const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => {
             </li>
           ))}
           <li>
+            <a href="/elibrary" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3.5 py-1.5 rounded-xl ml-2 shadow transition text-sm">
+              {lang === "mr" ? "ई-वाचनालय" : "eLibrary"}
+            </a>
+          </li>
+          <li>
             <a href="/user-login" className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-3.5 py-1.5 rounded-xl ml-2 shadow transition text-sm">
               {citizenLogin}
             </a>
@@ -95,6 +100,13 @@ const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => {
                 {linkLabel(link)}
               </a>
             ))}
+            <a
+              href="/elibrary"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-center py-2.5 rounded-xl text-lg mt-2 shadow transition"
+              onClick={() => setMobileNavOpen(false)}
+            >
+              {lang === "mr" ? "ई-वाचनालय" : "eLibrary"}
+            </a>
             <a
               href="/user-login"
               className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-center py-2.5 rounded-xl text-lg mt-2 shadow transition"
