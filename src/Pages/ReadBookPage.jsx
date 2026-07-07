@@ -258,20 +258,20 @@ export default function ReadBookPage() {
         {!loading && book && (
           <div className="bg-white border-t border-gray-150 px-4 py-3 flex items-center justify-between gap-4 shadow-inner shrink-0 relative z-10">
             {/* Zoom Controls */}
-            <div className="flex items-center bg-slate-50 rounded-xl p-0.5 border border-gray-200">
+            <div className="flex items-center bg-green-50/30 rounded-xl p-0.5 border border-green-200/55">
               <button
                 onClick={handleZoomOut}
-                className="p-1.5 hover:bg-white rounded-lg text-slate-500 hover:text-slate-800 transition active:scale-95 cursor-pointer"
+                className="p-1.5 hover:bg-white rounded-lg text-green-700 hover:text-green-950 transition active:scale-95 cursor-pointer"
                 title="Zoom Out"
               >
                 <ZoomOut className="w-4 h-4" />
               </button>
-              <span className="text-[10px] font-mono font-black w-12 text-center text-orange-600">
+              <span className="text-[10px] font-mono font-black w-12 text-center text-orange-500">
                 {Math.round(scale * 100)}%
               </span>
               <button
                 onClick={handleZoomIn}
-                className="p-1.5 hover:bg-white rounded-lg text-slate-500 hover:text-slate-800 transition active:scale-95 cursor-pointer"
+                className="p-1.5 hover:bg-white rounded-lg text-green-700 hover:text-green-950 transition active:scale-95 cursor-pointer"
                 title="Zoom In"
               >
                 <ZoomIn className="w-4 h-4" />
@@ -279,22 +279,22 @@ export default function ReadBookPage() {
             </div>
 
             {/* Page Navigator */}
-            <div className="flex items-center gap-2 bg-slate-50 rounded-xl p-0.5 border border-gray-200">
+            <div className="flex items-center gap-2 bg-green-50/30 rounded-xl p-0.5 border border-green-200/55">
               <button
                 disabled={pageNumber <= 1}
                 onClick={handlePrevPage}
-                className="p-1.5 hover:bg-white disabled:opacity-30 disabled:hover:bg-transparent rounded-lg text-slate-500 hover:text-slate-800 transition active:scale-90 cursor-pointer"
+                className="p-1.5 hover:bg-white disabled:opacity-30 disabled:hover:bg-transparent rounded-lg text-green-700 hover:text-green-950 transition active:scale-90 cursor-pointer"
                 title="Previous Page"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <span className="text-[10px] font-black text-orange-600 px-1 font-mono">
+              <span className="text-[10px] font-black text-orange-500 px-1 font-mono">
                 {getPageRangeLabel()}
               </span>
               <button
                 disabled={isMobile ? pageNumber >= (numPages || 1) : pageNumber + 1 >= (numPages || 1)}
                 onClick={handleNextPage}
-                className="p-1.5 hover:bg-white disabled:opacity-30 disabled:hover:bg-transparent rounded-lg text-slate-500 hover:text-slate-800 transition active:scale-90 cursor-pointer"
+                className="p-1.5 hover:bg-white disabled:opacity-30 disabled:hover:bg-transparent rounded-lg text-green-700 hover:text-green-950 transition active:scale-90 cursor-pointer"
                 title="Next Page"
               >
                 <ChevronRight className="w-4.5 h-4.5" />
