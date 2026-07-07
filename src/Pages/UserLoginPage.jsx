@@ -27,7 +27,7 @@ export default function UserLoginPage() {
           localStorage.setItem("userToken", data.token);
           toast.success("Session active, redirecting...");
           setTimeout(() => {
-            window.location.href = "/user/dashboard";
+            window.location.replace("/user/dashboard");
           }, 800);
         } else {
           setCheckingSession(false);
@@ -92,7 +92,7 @@ export default function UserLoginPage() {
       }
       toast.success("Login successful!");
       setTimeout(() => {
-        window.location.href = "/user/dashboard";
+        window.location.replace("/user/dashboard");
       }, 1000);
     } catch (err) {
       toast.error(err.response?.data?.error || "Invalid OTP or server error");
