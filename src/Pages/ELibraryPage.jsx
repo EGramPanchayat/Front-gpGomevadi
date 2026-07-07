@@ -27,6 +27,7 @@ export default function ELibraryPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [loading, setLoading] = useState(true);
+  const [selectedBookDetail, setSelectedBookDetail] = useState(null);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -415,7 +416,8 @@ export default function ELibraryPage() {
               {paginatedBooks.map((book) => (
                 <div 
                   key={book._id} 
-                  className={`rounded-2xl border transition-all duration-300 overflow-hidden flex flex-col h-full hover:scale-[1.01] ${
+                  onClick={() => setSelectedBookDetail(book)}
+                  className={`rounded-2xl border transition-all duration-300 overflow-hidden flex flex-col h-full hover:scale-[1.02] active:scale-[0.98] cursor-pointer ${
                     isDarkMode 
                       ? "bg-[#01221a] border-emerald-800/35 hover:border-emerald-500/40 hover:shadow-2xl shadow-emerald-950/50" 
                       : "bg-white border-emerald-800/20 hover:border-emerald-800/35 shadow-md hover:shadow-xl"
@@ -437,52 +439,14 @@ export default function ELibraryPage() {
                     )}
                   </div>
 
-                  {/* DETAILS (BELOW COVER) */}
-                  <div className="p-4 flex-1 flex flex-col justify-between space-y-4">
-                    <div>
-                      <h4 className={`font-extrabold text-sm line-clamp-1 leading-snug tracking-tight ${isDarkMode ? "text-white" : "text-slate-800"}`} title={book.title}>
-                        {book.title}
-                      </h4>
-                      <div className="mt-1.5 space-y-1.5">
-                        <p className={`text-xs font-semibold truncate ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
-                          {lang === "mr" ? "लेखक:" : "Author:"} {book.author}
-                        </p>
-                        <div>
-                          <span className="text-[8px] font-black px-2 py-0.5 rounded-md border uppercase tracking-wider bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/25 inline-block">
-                            {getCategoryBaseName(book.category)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between text-[10px] font-bold text-slate-400">
-                      <span className="flex items-center gap-1 text-orange-600 dark:text-orange-400 font-bold">
-                        <BiDownload />
-                        <span>{book.downloads || 0} {lang === "mr" ? "डाउनलोड" : "downloads"}</span>
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <BiCalendar />
-                        <span>{new Date(book.createdAt).toLocaleDateString(lang === "mr" ? "mr-IN" : "en-IN")}</span>
-                      </span>
-                    </div>
-
-                    {/* CARD FOOTER WITH EXPLICIT CTA ACTIONS */}
-                    <div className={`pt-3 border-t grid grid-cols-2 gap-2 ${isDarkMode ? "border-slate-800/80" : "border-slate-100"}`}>
-                      <button
-                        onClick={() => navigate(`/elibrary/read/${book._id}`)}
-                        className="py-2 rounded-xl text-center text-[10px] font-extrabold bg-orange-550 bg-orange-500 hover:bg-orange-600 text-white transition shadow-md shadow-orange-500/10 flex items-center justify-center gap-1 cursor-pointer"
-                      >
-                        <BiBookOpen className="text-sm" />
-                        <span>{lang === "mr" ? "वाचा" : "Read"}</span>
-                      </button>
-                      <button
-                        onClick={() => handleDownloadBook(book._id, book.title)}
-                        className="py-2 rounded-xl text-center text-[10px] font-bold bg-orange-600/10 hover:bg-orange-600/20 text-orange-600 dark:text-orange-400 transition-colors border border-orange-600/20 flex items-center justify-center gap-1.5 cursor-pointer"
-                      >
-                        <BiDownload className="text-sm" />
-                        <span>{lang === "mr" ? "डाउनलोड" : "Download"}</span>
-                      </button>
-                    </div>
+                  {/* DETAILS (BELOW COVER) - ONLY NAME & AUTHOR */}
+                  <div className="p-3 text-center flex-1 flex flex-col justify-center">
+                    <h4 className={`font-black text-xs sm:text-sm line-clamp-1 leading-snug tracking-tight ${isDarkMode ? "text-white" : "text-slate-800"}`} title={book.title}>
+                      {book.title}
+                    </h4>
+                    <p className={`text-[10px] sm:text-xs font-bold truncate mt-1 ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+                      {book.author}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -517,6 +481,106 @@ export default function ELibraryPage() {
           )}
         </div>
       </main>
+
+      {/* BOOK DETAIL MODAL */}
+      {selectedBookDetail && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div 
+            className={`w-full max-w-md rounded-3xl overflow-hidden shadow-2xl transition-all transform duration-300 scale-100 ${
+              isDarkMode ? "bg-emerald-950 text-slate-100 border border-emerald-800/30" : "bg-white text-slate-800 border border-gray-150"
+            }`}
+          >
+            {/* Header: Cover Image & Close Button */}
+            <div className="relative aspect-[4/3] w-full bg-slate-105 dark:bg-[#01221a]/50 flex items-center justify-center border-b dark:border-emerald-800/20 border-gray-100">
+              {selectedBookDetail.coverImage ? (
+                <img 
+                  src={selectedBookDetail.coverImage} 
+                  alt={selectedBookDetail.title} 
+                  className="w-full h-full object-contain p-4"
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center text-slate-500">
+                  <FiFileText className="text-5xl stroke-[1.5]" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mt-2">No Cover Image</span>
+                </div>
+              )}
+              {/* Close Button */}
+              <button 
+                onClick={() => setSelectedBookDetail(null)}
+                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-900/40 hover:bg-slate-900/60 text-white flex items-center justify-center transition cursor-pointer"
+                title="Close"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Info Body */}
+            <div className="p-6 space-y-4">
+              <div>
+                <span className="text-[9px] font-black px-2.5 py-1 rounded-md border uppercase tracking-wider bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20">
+                  {getCategoryBaseName(selectedBookDetail.category)}
+                </span>
+                <h3 className="text-xl font-black mt-3 leading-snug tracking-tight">
+                  {selectedBookDetail.title}
+                </h3>
+                <p className={`text-sm font-bold mt-1 ${isDarkMode ? "text-slate-400" : "text-slate-550"}`}>
+                  {lang === "mr" ? "लेखक:" : "Author:"} <span className="font-extrabold text-orange-500">{selectedBookDetail.author}</span>
+                </p>
+              </div>
+
+              {/* Stats Block */}
+              <div className={`grid grid-cols-2 gap-4 py-3 border-y ${isDarkMode ? "border-slate-800" : "border-gray-100"}`}>
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 bg-orange-500/10 rounded-xl text-orange-500">
+                    <BiDownload className="text-lg" />
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-extrabold uppercase text-gray-400 leading-none">{lang === "mr" ? "डाउनलोड" : "Downloads"}</p>
+                    <p className="text-sm font-black mt-0.5 leading-none">{selectedBookDetail.downloads || 0}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 bg-emerald-500/10 rounded-xl text-emerald-600 dark:text-emerald-400">
+                    <BiCalendar className="text-lg" />
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-extrabold uppercase text-gray-400 leading-none">{lang === "mr" ? "अपलोड तारीख" : "Uploaded"}</p>
+                    <p className="text-xs font-black mt-0.5 leading-none">
+                      {new Date(selectedBookDetail.createdAt).toLocaleDateString(lang === "mr" ? "mr-IN" : "en-IN")}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <button
+                  onClick={() => {
+                    setSelectedBookDetail(null);
+                    navigate(`/elibrary/read/${selectedBookDetail._id}`);
+                  }}
+                  className="py-3 rounded-2xl text-center text-xs font-extrabold bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white transition-all shadow-md shadow-orange-500/10 flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <BiBookOpen className="text-base" />
+                  <span>{lang === "mr" ? "वाचा" : "Read Now"}</span>
+                </button>
+                <button
+                  onClick={() => {
+                    handleDownloadBook(selectedBookDetail._id, selectedBookDetail.title);
+                  }}
+                  className="py-3 rounded-2xl text-center text-xs font-black bg-orange-600/10 hover:bg-orange-600/20 text-orange-600 dark:text-orange-400 transition-colors border border-orange-600/20 flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <BiDownload className="text-base" />
+                  <span>{lang === "mr" ? "डाउनलोड" : "Download"}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
