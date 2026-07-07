@@ -377,11 +377,11 @@ export default function UserDashboard() {
       localStorage.removeItem("userToken");
       toast.success("Logged out successfully.");
       setTimeout(() => {
-        window.location.href = "/user-login";
+        window.location.replace("/");
       }, 1000);
     } catch {
       localStorage.removeItem("userToken");
-      window.location.href = "/user-login";
+      window.location.replace("/");
     }
   };
 

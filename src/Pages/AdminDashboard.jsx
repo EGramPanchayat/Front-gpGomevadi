@@ -46,7 +46,7 @@ export default function AdminDashboard() {
     } catch (e) {
       // ignore
     }
-    window.location.href = "/login";
+    window.location.replace("/");
   };
 
   const navItems = [
