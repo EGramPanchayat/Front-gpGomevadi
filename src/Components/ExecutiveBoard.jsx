@@ -195,6 +195,7 @@ const ExecutiveBoard = () => {
             </div>
           </div>
         )}
+      </div>
     </section>
   );
 };
