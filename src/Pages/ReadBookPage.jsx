@@ -171,12 +171,12 @@ export default function ReadBookPage() {
       {/* HEADER SECTION (EXACT MATCH OF ELIBRARY PAGE NAV) */}
       <header className="relative bg-green-700 text-white rounded-b-3xl md:rounded-b-[40px] shadow-lg overflow-hidden shrink-0 z-20">
         
-        {/* Subtle Decorative Solid Color Corner Circles (10% opacity, no blur) */}
-        <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-green-500/10 pointer-events-none transform translate-x-10 -translate-y-10" />
-        <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full bg-orange-500/10 pointer-events-none transform -translate-x-6 translate-y-6" />
-        <div className="absolute top-1/2 left-1/3 w-16 h-16 rounded-full bg-white/5 pointer-events-none transform -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute top-4 left-1/4 w-20 h-20 rounded-full bg-orange-500/5 pointer-events-none" />
-        <div className="absolute bottom-2 right-1/4 w-28 h-28 rounded-full bg-green-400/15 pointer-events-none" />
+        {/* Subtle Decorative Solid Color Corner Circles (orangeish theme) */}
+        <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-orange-400/15 pointer-events-none transform translate-x-10 -translate-y-10" />
+        <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full bg-orange-500/20 pointer-events-none transform -translate-x-6 translate-y-6" />
+        <div className="absolute top-1/2 left-1/3 w-16 h-16 rounded-full bg-orange-300/10 pointer-events-none transform -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute top-4 left-1/4 w-20 h-20 rounded-full bg-orange-500/15 pointer-events-none" />
+        <div className="absolute bottom-2 right-1/4 w-28 h-28 rounded-full bg-orange-400/20 pointer-events-none" />
         <div className="absolute -top-10 left-10 w-36 h-36 rounded-full bg-white/5 pointer-events-none" />
 
         {/* 1. MOBILE HEADER LAYOUT (lg:hidden) */}
