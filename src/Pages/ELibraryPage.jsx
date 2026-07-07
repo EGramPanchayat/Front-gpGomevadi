@@ -411,8 +411,42 @@ export default function ELibraryPage() {
               <span>{lang === "mr" ? "श्रेणीनुसार वर्गीकरण" : "Category Wise Separation"}</span>
             </p>
             
-            {/* Unified Tabs Pill Container */}
-            <div className={`flex flex-wrap items-center gap-1 p-1 rounded-2xl border w-full flex-1 ${
+            {/* Mobile Dropdown Select (visible on mobile only) */}
+            <div className="block sm:hidden w-full">
+              <select
+                value={selectedCategory === "" ? "All" : selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value === "All" ? "" : e.target.value)}
+                className={`w-full rounded-2xl py-3 px-4 text-sm font-black outline-none transition-all border cursor-pointer ${
+                  isDarkMode 
+                    ? "bg-[#01221a] border-emerald-800/30 text-slate-200 focus:border-orange-500" 
+                    : "bg-white border-slate-250 text-slate-800 focus:border-orange-500"
+                }`}
+              >
+                {["All", "Agriculture", "Autobiography", "Culinary", "History", "Music", "Mythology", "Personal Essays", "Physical Education", "Short Stories", "Travel", "Other"].map((cat) => {
+                  const label = lang === "mr" ? (
+                    cat === "All" ? "सर्व पुस्तके" :
+                    cat === "Agriculture" ? "शेती" :
+                    cat === "Autobiography" ? "आत्मचरित्र" :
+                    cat === "Culinary" ? "पाककला" :
+                    cat === "History" ? "इतिहास" :
+                    cat === "Music" ? "संगीत" :
+                    cat === "Mythology" ? "पुराणकथा" :
+                    cat === "Personal Essays" ? "वैयक्तिक लेख" :
+                    cat === "Physical Education" ? "शारीरिक शिक्षण" :
+                    cat === "Short Stories" ? "लघुकथा" :
+                    cat === "Travel" ? "प्रवास" : "इतर"
+                  ) : cat;
+                  return (
+                    <option key={cat} value={cat}>
+                      {label}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+
+            {/* Desktop Unified Tabs Pill Container (hidden on mobile) */}
+            <div className={`hidden sm:flex flex-wrap items-center gap-1 p-1 rounded-2xl border w-full flex-1 ${
               isDarkMode 
                 ? "bg-[#01221a]/40 border-emerald-800/20" 
                 : "bg-slate-100/80 border-slate-200/50"
