@@ -225,9 +225,9 @@ const translations = {
     deathReg: "मृत्यू नोंद (₹२०)",
     marriageReg: "विवाह नोंदणी दाखला (₹२०)",
     transcript8a: "८ अ उतारा (₹२०)",
-    noDuesReg: "ग्रामपंचायत येणे बाकी दाखला (₹२०)",
-    bplReg: "दारिद्र्य रेषेखाली असल्याचा दाखला (मोफत)",
-    destituteReg: "निराधार असल्याचा दाखला मागणी (मोफत)",
+    noDuesReg: "येणे बाकी दाखला (₹२०)",
+    bplReg: "दारिद्र्य दाखला (BPL) (मोफत)",
+    destituteReg: "निराधार दाखला (मोफत)",
     childName: "बाळाचे नाव",
     dob: "जन्मतारीख",
     deceasedName: "मृत व्यक्तीचे नाव",
@@ -1350,7 +1350,7 @@ export default function UserDashboard() {
 
         {/* ──────── TAB 1: OVERVIEW ──────── */}
         {activeTab === "overview" && (
-          <div className="space-y-6">
+          <div className="space-y-6 flex flex-col">
 
             {/* Welcome Greeting Banner (Restricted to dashboard tab) */}
             <div className={`relative rounded-3xl pt-8 pb-5 px-6 md:pt-10 md:pb-6 md:px-8 border shadow-sm overflow-hidden transition-colors duration-300 ${isDarkMode
@@ -1362,7 +1362,7 @@ export default function UserDashboard() {
               <div className="absolute top-1/2 -translate-y-1/2 -right-16 w-36 h-36 rounded-full bg-green-100/50 pointer-events-none"></div>
 
               {/* GP Logo & Name Section */}
-              <div className={`relative z-10 border-b pb-4 mb-4 space-y-3 ${isDarkMode ? "border-slate-800" : "border-green-100"}`}>
+              <div className={`relative z-30 border-b pb-4 mb-4 space-y-3 ${isDarkMode ? "border-slate-800" : "border-green-100"}`}>
 
                 {/* Line 1: Action icons at the right */}
                 <div className="flex items-center justify-end gap-1.5 relative z-30 select-none">
@@ -1508,7 +1508,7 @@ export default function UserDashboard() {
             </div>
 
             {/* STATS METERS */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="order-2 md:order-1 grid grid-cols-1 sm:grid-cols-3 gap-6 mt-4 md:mt-0">
               <div className={`rounded-3xl p-6 shadow border flex flex-col justify-between hover:shadow-lg transition duration-200 ${isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-green-100"
                 }`}>
                 <span className="text-gray-400 text-sm font-semibold">{t.outstandingBalance}</span>
@@ -1542,7 +1542,7 @@ export default function UserDashboard() {
             </div>
 
             {/* Restructured Household Profile Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="order-1 md:order-2 grid grid-cols-1 lg:grid-cols-3 gap-6">
 
               {/* Profile Card (1/3 width) */}
               <div className="bg-gradient-to-br from-green-900 to-green-800 text-white rounded-3xl p-6 shadow-xl relative overflow-hidden flex flex-col justify-between">
@@ -1904,7 +1904,7 @@ export default function UserDashboard() {
                       value={form.type}
                       onChange={(e) => setForm({ ...form, type: e.target.value })}
                       disabled={!!editingApplication}
-                      className={`border p-2.5 rounded-xl w-full text-xs font-bold outline-none ${
+                      className={`border p-2.5 rounded-xl w-full max-w-full truncate text-xs font-bold outline-none ${
                         editingApplication ? "bg-slate-100 text-gray-500 opacity-80 cursor-not-allowed" : ""
                       } ${isDarkMode ? "bg-slate-900 border-slate-700 text-white" : "border-green-600 text-gray-800"
                         }`}
