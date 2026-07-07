@@ -376,10 +376,10 @@ export default function QrPartialPage() {
         {/* Header Section (Curved Background) */}
         <div className="bg-gradient-to-br from-green-700 via-emerald-600 to-green-900 pt-12 pb-20 px-6 rounded-b-[2.5rem] shadow-md relative z-0 overflow-hidden">
           {/* Decorative Translucent Circles */}
-          <div className="absolute -top-12 -right-12 w-44 h-44 bg-white/10 rounded-full pointer-events-none z-0"></div>
-          <div className="absolute -bottom-16 -left-10 w-36 h-36 bg-white/5 rounded-full pointer-events-none z-0"></div>
-          <div className="absolute top-1/4 left-1/3 w-16 h-16 bg-white/10 rounded-full pointer-events-none z-0"></div>
-          <div className="absolute top-6 left-6 w-24 h-24 bg-white/5 rounded-full pointer-events-none z-0"></div>
+          <div className="absolute -top-12 -right-12 w-44 h-44 bg-orange-500/10 rounded-full pointer-events-none z-0"></div>
+          <div className="absolute -bottom-16 -left-10 w-36 h-36 bg-orange-500/5 rounded-full pointer-events-none z-0"></div>
+          <div className="absolute top-1/4 left-1/3 w-16 h-16 bg-orange-500/10 rounded-full pointer-events-none z-0"></div>
+          <div className="absolute top-6 left-6 w-24 h-24 bg-orange-500/5 rounded-full pointer-events-none z-0"></div>
 
           <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full z-10">
             <ShieldCheck className="w-4 h-4 text-white animate-pulse" />
@@ -560,7 +560,7 @@ export default function QrPartialPage() {
                   <button
                     type="submit"
                     disabled={verifyingOtp || otp.length !== 4}
-                    className="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition disabled:opacity-50 active:scale-[0.98] shadow-lg shadow-green-600/30 text-sm flex items-center justify-center gap-1.5"
+                    className="w-full py-4 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition disabled:opacity-50 active:scale-[0.98] shadow-lg shadow-orange-500/30 text-sm flex items-center justify-center gap-1.5"
                   >
                     {verifyingOtp ? (
                       <>
