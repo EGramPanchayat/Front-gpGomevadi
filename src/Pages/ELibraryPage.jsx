@@ -378,11 +378,7 @@ export default function ELibraryPage() {
         </div>
 
         {/* BOOKS GRID DIRECTORY */}
-        <div className={`rounded-3xl border p-6 shadow-2xl transition-colors min-h-[500px] flex flex-col ${
-          isDarkMode 
-            ? "bg-[#01221a]/20 border-emerald-800/30" 
-            : "bg-white border-emerald-800/20 shadow-md"
-        }`}>
+        <div className="transition-colors min-h-[500px] flex flex-col bg-transparent">
           
           <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-850/20 border-emerald-800/20">
             <div className="flex items-center gap-3">
