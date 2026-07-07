@@ -257,13 +257,19 @@ const ELibraryAdminDashboard = () => {
           </div>
 
           {/* Title & Subtitle */}
-          <div className="min-w-0">
-            <p className="text-[10px] font-bold tracking-wider uppercase opacity-90 truncate leading-tight">
-              {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
-            </p>
-            <h2 className="text-xs font-black tracking-tight mt-1 leading-tight">
-              {lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary"}
-            </h2>
+          <div className="min-w-0 flex items-center gap-2">
+            {/* Logo in circle (mobile only) */}
+            <div className="w-8 h-8 rounded-full border border-white/20 bg-white overflow-hidden shrink-0 lg:hidden">
+              <img src="/images/satyamev.jpg" alt="Satyamev Jayate" className="w-full h-full object-cover" />
+            </div>
+            <div>
+              <p className="text-sm lg:text-[10px] font-bold tracking-wider uppercase opacity-90 truncate leading-tight">
+                {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
+              </p>
+              <h2 className="text-xs lg:text-xs font-black tracking-tight mt-0.5 leading-tight">
+                {lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary"}
+              </h2>
+            </div>
           </div>
         </div>
       </div>
@@ -294,9 +300,13 @@ const ELibraryAdminDashboard = () => {
               </button>
             </div>
 
-            {/* Second line: Grampanchayat Name */}
-            <div className="relative z-10">
-              <h2 className="text-sm font-bold tracking-wider text-emerald-100 uppercase opacity-95">
+            {/* Second line: Grampanchayat Name with Satyamev Jayate circle logo (Mobile only) */}
+            <div className="relative z-10 flex items-center gap-2.5">
+              {/* Logo in circle (mobile only) */}
+              <div className="w-9 h-9 rounded-full border border-white/20 bg-white overflow-hidden shrink-0 lg:hidden">
+                <img src="/images/satyamev.jpg" alt="Satyamev Jayate" className="w-full h-full object-cover" />
+              </div>
+              <h2 className="text-lg lg:text-sm font-bold tracking-wider text-emerald-100 uppercase opacity-95">
                 {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
               </h2>
             </div>
