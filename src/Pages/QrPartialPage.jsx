@@ -66,7 +66,7 @@ export default function QrPartialPage() {
   const [email, setEmail] = useState("");
   const [maskedEmail, setMaskedEmail] = useState("");
   const [otp, setOtp] = useState("");
-  const [otpValues, setOtpValues] = useState(Array(6).fill(""));
+  const [otpValues, setOtpValues] = useState(Array(4).fill(""));
   const [countdown, setCountdown] = useState(0);
   const [otpVerified, setOtpVerified] = useState(false);
 
@@ -169,8 +169,8 @@ export default function QrPartialPage() {
 
   const handleVerifyOtp = async (e) => {
     if (e) e.preventDefault();
-    if (!otp || otp.length !== 6) {
-      return toast.error("Please enter a valid 6-digit OTP code");
+    if (!otp || otp.length !== 4) {
+      return toast.error("Please enter a valid 4-digit OTP code");
     }
 
     setVerifyingOtp(true);
@@ -212,13 +212,13 @@ export default function QrPartialPage() {
     setOtpValues(newOtp);
     setOtp(newOtp.join(""));
 
-    if (cleanValue && index < 5) {
+    if (cleanValue && index < 3) {
       inputRefs.current[index + 1].focus();
     }
   };
 
   useEffect(() => {
-    if (otp.length === 6) {
+    if (otp.length === 4) {
       handleVerifyOtp();
     }
   }, [otp]);
@@ -232,11 +232,11 @@ export default function QrPartialPage() {
   const handleOtpPaste = (e) => {
     e.preventDefault();
     const data = e.clipboardData.getData("text").replace(/\D/g, "");
-    if (!/^\d{6}$/.test(data)) return;
+    if (!/^\d{4}$/.test(data)) return;
     const newOtp = data.split("");
     setOtpValues(newOtp);
     setOtp(data);
-    inputRefs.current[5].focus();
+    inputRefs.current[3].focus();
   };
 
   const loadRazorpayScript = () => {
@@ -559,7 +559,7 @@ export default function QrPartialPage() {
 
                   <button
                     type="submit"
-                    disabled={verifyingOtp || otp.length !== 6}
+                    disabled={verifyingOtp || otp.length !== 4}
                     className="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition disabled:opacity-50 active:scale-[0.98] shadow-lg shadow-green-600/30 text-sm flex items-center justify-center gap-1.5"
                   >
                     {verifyingOtp ? (
