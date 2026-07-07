@@ -1738,9 +1738,6 @@ export default function UserDashboard() {
                           <h4 className="font-black text-sm text-green-900">
                             {CATEGORY_NAMES[group.id][language]}
                           </h4>
-                          <p className="text-[10px] text-green-700/70 mt-1 font-bold">
-                            {language === "mr" ? "वैयक्तिक वर्ष निवडण्याची गरज नाही" : "No individual year selection needed"}
-                          </p>
                         </div>
                       </div>
                       <span className={`rounded-full px-3 py-1 text-[10px] font-black ${isPaid ? "bg-green-50 text-green-700 border border-green-100" : "bg-orange-50 text-orange-700 border border-orange-100"}`}>
