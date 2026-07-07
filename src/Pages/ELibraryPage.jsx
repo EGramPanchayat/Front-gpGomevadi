@@ -207,25 +207,15 @@ export default function ELibraryPage() {
 
         {/* 1. MOBILE HEADER LAYOUT (lg:hidden) */}
         <div className="lg:hidden p-5 flex flex-col gap-4">
-          {/* Top line: Back Arrow, Logo, Grampanchayat Name, and Compact Settings Capsule */}
+          {/* Top line: Back Arrow and Compact Settings Capsule */}
           <div className="relative z-10 flex items-center justify-between gap-3 w-full">
-            <div className="flex items-center gap-2 min-w-0">
-              <button
-                onClick={() => navigate("/")}
-                className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition active:scale-95 cursor-pointer shadow-sm shrink-0"
-                title={lang === "mr" ? "मुख्यपृष्ठावर जा" : "Back to Home"}
-              >
-                <BiArrowBack className="text-lg" />
-              </button>
-              <div className="flex items-center gap-1.5 min-w-0">
-                <div className="w-7 h-7 rounded-full border border-white/20 bg-white overflow-hidden shrink-0">
-                  <img src="/images/satyamev.jpg" alt="Satyamev Jayate" className="w-full h-full object-cover" />
-                </div>
-                <h2 className="text-xs font-bold tracking-wider text-emerald-100 uppercase opacity-95 truncate">
-                  {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
-                </h2>
-              </div>
-            </div>
+            <button
+              onClick={() => navigate("/")}
+              className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition active:scale-95 cursor-pointer shadow-sm shrink-0"
+              title={lang === "mr" ? "मुख्यपृष्ठावर जा" : "Back to Home"}
+            >
+              <BiArrowBack className="text-lg" />
+            </button>
 
             {/* Compact Settings Capsule (En/Mr + Theme) */}
             <div className="flex items-center gap-1 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full p-0.5 shrink-0">
@@ -270,7 +260,17 @@ export default function ELibraryPage() {
             </div>
           </div>
 
-          {/* Second line: eLibrary Title */}
+          {/* Second line: Logo and Grampanchayat Name */}
+          <div className="relative z-10 flex items-center gap-2">
+            <div className="w-7 h-7 rounded-full border border-white/20 bg-white overflow-hidden shrink-0">
+              <img src="/images/satyamev.jpg" alt="Satyamev Jayate" className="w-full h-full object-cover" />
+            </div>
+            <h2 className="text-sm font-bold tracking-wider text-emerald-100 uppercase opacity-95">
+              {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
+            </h2>
+          </div>
+
+          {/* Third line: eLibrary Title */}
           <div className="relative z-10">
             <h1 className="text-3xl lg:text-2xl font-black text-white tracking-tight leading-none">
               eLibrary
