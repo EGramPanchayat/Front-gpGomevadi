@@ -38,9 +38,16 @@ const MainPage = () => {
   // Mobile nav state
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
-
   const { config, loading } = useSiteConfig();
   const { lang } = useLanguage();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50/50 via-white to-orange-50/50">
+        <div className="w-12 h-12 border-4 border-green-700 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   const stats = config?.stats || [];
   const heroTitle = config?.heroTitle 
@@ -160,15 +167,7 @@ const MainPage = () => {
 
 <NewsSection />
 
-    <section id="development" className="pt-0 md:py-10 w-full flex flex-col items-center bg-gray-50 ">
-  <div className="max-w-6xl w-full mx-auto px-2 sm:px-0">
-        <h2 className="text-3xl md:text-[2.5rem] font-bold text-green-700 text-center my-15 relative">
-          {lang === "mr" ? "विकास कामे" : "Development Works"}
-          <span className="block w-24 h-1 bg-orange-400 rounded absolute left-1/2 -translate-x-1/2 -bottom-3"></span>
-        </h2>
-        <DevelopmentSlideshow />
-      </div>
-    </section>
+<DevelopmentSlideshow />
 
 
 

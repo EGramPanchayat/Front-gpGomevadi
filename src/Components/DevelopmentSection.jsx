@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axioesInstance from "../utils/axioesInstance";
+import { useLanguage } from "../utils/LanguageContext";
 
 function useDevelopmentWorks() {
   const [items, setItems] = useState([]);
@@ -26,6 +27,7 @@ function useDevelopmentWorks() {
 
 function DevelopmentSlideshow() {
   const { items: developmentItems, loading, error } = useDevelopmentWorks();
+  const { lang } = useLanguage();
   const [current, setCurrent] = useState(0);
 
   // Swipe gesture state
@@ -69,64 +71,73 @@ function DevelopmentSlideshow() {
     }
   };
 
-  if (loading) return <div className="w-full text-center py-10">विकास कामे लोड होत आहेत...</div>;
-  if (error) return <div className="w-full text-center py-10 ">विकास कामे उपलब्ध नाहीत.</div>;
-  if (!developmentItems.length) return <div className="w-full text-center py-10">विकास कामे उपलब्ध नाहीत.</div>;
+  if (loading || error || !developmentItems.length) {
+    return null;
+  }
 
   const item = developmentItems[current];
 
   return (
-    <div className="flex justify-center items-center w-full flex-grow">
-      <div className="w-full mx-auto max-w-[1200px] rounded-3xl overflow-hidden bg-white shadow-lg p-6 md:p-10" style={{ borderRadius: '24px' }}>
-        {/* Image Section with swipe and click listeners */}
-        <div 
-          className="relative h-[280px] sm:h-[340px] w-full flex justify-center items-center overflow-hidden bg-gray-100 rounded-2xl select-none"
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
-        >
-          <img
-            src={item.image?.url || item.image}
-            alt={item.title}
-            className="h-full w-full object-cover pointer-events-none"
-          />
-          {/* Invisible click guides on desktop */}
-          <div 
-            onClick={(e) => { e.stopPropagation(); goPrev(); }}
-            className="hidden md:block absolute top-0 left-0 h-full w-1/2 cursor-w-resize z-10"
-            title="Previous (मागे)"
-          />
-          <div 
-            onClick={(e) => { e.stopPropagation(); goNext(); }}
-            className="hidden md:block absolute top-0 right-0 h-full w-1/2 cursor-e-resize z-10"
-            title="Next (पुढे)"
-          />
-        </div>
-        {/* Info Section */}
-        <div className="w-full flex flex-col justify-between items-center bg-white px-3 py-3 h-[170px] sm:h-[180px]">
-          <div className="flex flex-col items-center text-center w-full px-2">
-            <h5 className="text-base sm:text-lg font-bold mb-1 mt-1 break-words line-clamp-2">
-              {item.title}
-            </h5>
-            <p className="text-xs sm:text-sm text-gray-700 break-words line-clamp-3">
-              {item.description}
-            </p>
-          </div>
-          {/* Dots */}
-          <div className="flex gap-2 mt-2">
-            {developmentItems.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrent(idx)}
-                className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-                  idx === current ? "bg-green-600" : "bg-gray-300"
-                }`}
+    <section id="development" className="pt-0 md:py-10 w-full flex flex-col items-center bg-gray-50">
+      <div className="max-w-6xl w-full mx-auto px-2 sm:px-0">
+        <h2 className="text-3xl md:text-[2.5rem] font-bold text-green-700 text-center my-15 relative">
+          {lang === "mr" ? "विकास कामे" : "Development Works"}
+          <span className="block w-24 h-1 bg-orange-400 rounded absolute left-1/2 -translate-x-1/2 -bottom-3"></span>
+        </h2>
+
+        <div className="flex justify-center items-center w-full flex-grow">
+          <div className="w-full mx-auto max-w-[1200px] rounded-3xl overflow-hidden bg-white shadow-lg p-6 md:p-10" style={{ borderRadius: '24px' }}>
+            {/* Image Section with swipe and click listeners */}
+            <div 
+              className="relative h-[280px] sm:h-[340px] w-full flex justify-center items-center overflow-hidden bg-gray-100 rounded-2xl select-none"
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+            >
+              <img
+                src={item.image?.url || item.image}
+                alt={item.title}
+                className="h-full w-full object-cover pointer-events-none"
               />
-            ))}
+              {/* Invisible click guides on desktop */}
+              <div 
+                onClick={(e) => { e.stopPropagation(); goPrev(); }}
+                className="hidden md:block absolute top-0 left-0 h-full w-1/2 cursor-w-resize z-10"
+                title="Previous (मागे)"
+              />
+              <div 
+                onClick={(e) => { e.stopPropagation(); goNext(); }}
+                className="hidden md:block absolute top-0 right-0 h-full w-1/2 cursor-e-resize z-10"
+                title="Next (पुढे)"
+              />
+            </div>
+            {/* Info Section */}
+            <div className="w-full flex flex-col justify-between items-center bg-white px-3 py-3 h-[170px] sm:h-[180px]">
+              <div className="flex flex-col items-center text-center w-full px-2">
+                <h5 className="text-base sm:text-lg font-bold mb-1 mt-1 break-words line-clamp-2">
+                  {item.title}
+                </h5>
+                <p className="text-xs sm:text-sm text-gray-700 break-words line-clamp-3">
+                  {item.description}
+                </p>
+              </div>
+              {/* Dots */}
+              <div className="flex gap-2 mt-2">
+                {developmentItems.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrent(idx)}
+                    className={`w-3 h-3 rounded-full transition-colors duration-300 ${
+                      idx === current ? "bg-green-600" : "bg-gray-300"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 

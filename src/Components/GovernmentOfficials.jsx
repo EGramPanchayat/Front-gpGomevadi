@@ -18,15 +18,7 @@ const GovernmentOfficials = () => {
       });
   }, []);
 
-  if (loading) {
-    return (
-      <section id="gov-officials" className="w-full flex justify-center items-center bg-white py-16 px-5 md:px-20">
-        <div className="text-center text-green-700 font-semibold text-lg">लोड होत आहे...</div>
-      </section>
-    );
-  }
-
-  if (!officials.length) return null;
+  if (loading || !officials.length) return null;
 
   return (
     <section

@@ -3,7 +3,7 @@ import axioesInstance from "../utils/axioesInstance";
 import { BiNews, BiCalendar, BiChevronLeft, BiChevronRight } from "react-icons/bi";
 
 const NewsSection = () => {
-  const [newsItems, setNewsItems] = useState([]);
+  const [newsItems, setNewsItems] = useState(null);
   const [visibleItems, setVisibleItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalIndex, setModalIndex] = useState(0);
@@ -20,10 +20,15 @@ const NewsSection = () => {
         setNewsItems(sorted);
       } catch (err) {
         console.error("Error fetching news:", err);
+        setNewsItems([]); // fallback to empty array
       }
     };
     fetchNews();
   }, []);
+
+  if (newsItems === null) {
+    return null;
+  }
 
   // Limit home grid view to latest 2 news items
   const latestNews = newsItems.slice(0, 2);
