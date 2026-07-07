@@ -1440,9 +1440,26 @@ export default function UserDashboard() {
               <div className="absolute -top-24 -left-24 w-48 h-48 rounded-full bg-green-500/5 blur-sm pointer-events-none"></div>
               <div className="absolute top-1/2 -translate-y-1/2 -right-16 w-36 h-36 rounded-full bg-green-100/50 pointer-events-none"></div>
 
+              {/* GP Logo & Name Row */}
+              <div className={`flex items-center gap-4 border-b pb-4 mb-4 ${isDarkMode ? "border-slate-800" : "border-green-100"}`}>
+                <img
+                  src="/images/satyamev.jpg"
+                  alt="GP Logo"
+                  className="h-16 w-16 rounded-full border-2 border-white shadow object-cover shrink-0"
+                />
+                <div>
+                  <h2 className={`text-xl md:text-2xl font-black tracking-tight ${isDarkMode ? "text-green-400" : "text-green-800"}`}>
+                    {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
+                  </h2>
+                  <p className={`text-xs font-semibold mt-0.5 ${isDarkMode ? "text-slate-400" : "text-gray-550"}`}>
+                    {config?.taluka && `ता. ${config.taluka}`}{config?.district && ` | जि. ${config.district}`}
+                  </p>
+                </div>
+              </div>
+
               {/* Left part: Welcome message */}
-              <div className="space-y-2 relative z-10 pr-28 md:pr-36">
-                <h1 className={`text-xl md:text-2xl font-black tracking-tight transition-colors duration-300 ${isDarkMode ? "text-green-400" : "text-green-700"
+              <div className="space-y-2 relative z-10">
+                <h1 className={`text-lg md:text-xl font-black tracking-tight transition-colors duration-300 ${isDarkMode ? "text-green-400" : "text-green-700"
                   }`}>
                   {language === "en" ? `Hello, ${family?.mainMemberName || "Citizen"}!` : `नमस्कार, ${family?.mainMemberName || "नागरिक"}!`} <span className="inline-block hover:animate-bounce cursor-default select-none">👋</span>
                 </h1>
