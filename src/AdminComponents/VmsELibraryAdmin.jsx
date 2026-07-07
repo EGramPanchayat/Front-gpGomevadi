@@ -21,9 +21,19 @@ const VmsELibraryAdmin = () => {
   const [booksList, setBooksList] = useState([]);
   const [loadingList, setLoadingList] = useState(false);
 
-  const categories = lang === "mr"
-    ? ["शिक्षण (Educational)", "इतिहास (Historical)", "साहित्य (Literature)", "विज्ञान (Science)", "इतर (Other)"]
-    : ["Educational", "Historical", "Literature", "Science", "Other"];
+  const categories = [
+    "Agriculture",
+    "Autobiography",
+    "Culinary",
+    "History",
+    "Music",
+    "Mythology",
+    "Personal Essays",
+    "Physical Education",
+    "Short Stories",
+    "Travel",
+    "Other"
+  ];
 
   useEffect(() => {
     fetchBooks();

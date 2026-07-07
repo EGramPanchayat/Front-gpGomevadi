@@ -30,6 +30,17 @@ const ELibraryAdminDashboard = () => {
     localStorage.setItem("darkMode", isDarkMode);
   }, [isDarkMode]);
 
+  // Sticky mobile header scroll detection
+  const [showStickyMobileHeader, setShowStickyMobileHeader] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowStickyMobileHeader(window.scrollY > 200);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   // Form & Modal states
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -47,16 +58,33 @@ const ELibraryAdminDashboard = () => {
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("All");
   const [stats, setStats] = useState({ totalBooks: 0, totalDownloads: 0 });
 
-  const categories = lang === "mr"
-    ? ["शिक्षण (Educational)", "इतिहास (Historical)", "साहित्य (Literature)", "विज्ञान (Science)", "इतर (Other)"]
-    : ["Educational", "Historical", "Literature", "Science", "Other"];
+  const categories = [
+    "Agriculture",
+    "Autobiography",
+    "Culinary",
+    "History",
+    "Music",
+    "Mythology",
+    "Personal Essays",
+    "Physical Education",
+    "Short Stories",
+    "Travel",
+    "Other"
+  ];
 
-  // Helper to map search categories
+  // Helper to map DB category to base filter category
   const getCategoryBaseName = (cat) => {
-    if (cat.includes("Educational") || cat.includes("शिक्षण")) return "Educational";
-    if (cat.includes("Historical") || cat.includes("इतिहास")) return "Historical";
-    if (cat.includes("Literature") || cat.includes("साहित्य")) return "Literature";
-    if (cat.includes("Science") || cat.includes("विज्ञान")) return "Science";
+    if (!cat) return "Other";
+    if (cat.includes("Agriculture")) return "Agriculture";
+    if (cat.includes("Autobiography")) return "Autobiography";
+    if (cat.includes("Culinary")) return "Culinary";
+    if (cat.includes("History")) return "History";
+    if (cat.includes("Music")) return "Music";
+    if (cat.includes("Mytholog")) return "Mythology";
+    if (cat.includes("Personal Essays") || cat.includes("Self Help")) return "Personal Essays";
+    if (cat.includes("Physical Education")) return "Physical Education";
+    if (cat.includes("Short Stor") || cat.includes("Short Stories")) return "Short Stories";
+    if (cat.includes("Travel")) return "Travel";
     return "Other";
   };
 
@@ -176,126 +204,268 @@ const ELibraryAdminDashboard = () => {
   };
 
   // Filter books list based on search and category filter
-  const filteredBooks = booksList.filter(book => {
-    const matchesSearch = 
-      book.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      book.author?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      book.category?.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    if (selectedCategoryFilter === "All") return matchesSearch;
-    const bookBaseCat = getCategoryBaseName(book.category);
-    return matchesSearch && bookBaseCat === selectedCategoryFilter;
-  });
+  const filteredBooks = (() => {
+    const filtered = booksList.filter(book => {
+      const matchesSearch = 
+        book.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        book.author?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        book.category?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      if (selectedCategoryFilter === "All") return matchesSearch;
+      const bookBaseCat = getCategoryBaseName(book.category);
+      return matchesSearch && bookBaseCat === selectedCategoryFilter;
+    });
+
+    // Books always shown at the top row (in this order)
+    const PINNED_TITLES = ["लिश्टेनस्टाईन", "ययाति", "खिडकी", "अभिव्यक्ती"];
+
+    // Pin featured books to top (in specified order), rest follow
+    const pinned = PINNED_TITLES
+      .map(t => filtered.find(b => b.title === t))
+      .filter(Boolean);
+    const rest = filtered.filter(b => !PINNED_TITLES.includes(b.title));
+    return [...pinned, ...rest];
+  })();
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 font-sans antialiased p-4 md:p-8 ${
+    <div className={`min-h-screen transition-colors duration-300 font-sans antialiased ${
       isDarkMode 
         ? "bg-slate-950 text-white" 
         : "bg-gradient-to-br from-green-50/50 via-white to-orange-50/50 text-slate-800"
     }`}>
-      {/* MAIN CONTAINER */}
-      <div className="max-w-7xl mx-auto space-y-8">
-        
-        {/* HEADER BAR */}
-        <header className={`flex flex-col md:flex-row items-center justify-between gap-6 rounded-3xl p-6 shadow-xl relative overflow-hidden transition-all duration-300 border text-white ${
-          isDarkMode ? "bg-slate-900 border-slate-800" : "bg-green-900 border-green-850"
+
+      {/* STICKY COMPACT MOBILE HEADER */}
+      <div
+        className={`fixed top-0 left-0 right-0 z-40 lg:hidden text-white shadow-md transition-all duration-300 transform ${
+          isDarkMode ? "bg-slate-900" : "bg-green-900"
+        } ${
+          showStickyMobileHeader ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
+        }`}
+      >
+        <div className="h-16 px-4 flex items-center gap-3">
+          {/* Back button */}
+          <button
+            onClick={() => navigate("/admin")}
+            className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white shrink-0 active:scale-90 transition cursor-pointer"
+          >
+            <BiArrowBack className="text-lg" />
+          </button>
+
+          {/* Book Logo */}
+          <div className="w-9 h-9 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0">
+            <BiBookOpen className="text-base text-orange-300" />
+          </div>
+
+          {/* Title & Subtitle */}
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold tracking-wider uppercase opacity-90 truncate leading-tight">
+              {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
+            </p>
+            <h2 className="text-xs font-black tracking-tight mt-1 leading-tight">
+              {lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary"}
+            </h2>
+          </div>
+        </div>
+      </div>
+
+      {/* HEADER SECTION */}
+      <header className={`relative text-white rounded-b-3xl md:rounded-b-[40px] shadow-lg overflow-hidden ${
+          isDarkMode ? "bg-slate-900" : "bg-green-900"
         }`}>
-          {/* Geometric corner circles without blur but low opacity */}
-          <div className="absolute -top-16 -right-16 w-48 h-48 bg-orange-500/10 rounded-full pointer-events-none" />
-          <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-green-500/10 rounded-full pointer-events-none" />
-          
-          <div className="flex items-center gap-4 relative z-10">
-            <button
-              onClick={() => navigate("/admin")}
-              className="group h-14 px-4 bg-gradient-to-r from-orange-500 to-amber-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-orange-500/20 hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2"
-              title={lang === "mr" ? "मुख्य डॅशबोर्डवर परत जा" : "Back to Admin Dashboard"}
-            >
-              <BiArrowBack className="text-xl group-hover:-translate-x-0.5 transition-transform" />
-              <span className="text-xs uppercase tracking-wider hidden sm:inline">{lang === "mr" ? "परत जा" : "Back"}</span>
-            </button>
-            
-            {/* Outline Book Logo */}
-            <div className="w-14 h-14 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 shrink-0">
-              <BiBookOpen className="text-3xl" />
+
+          {/* Decorative Corner Circles */}
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-orange-500/10 pointer-events-none transform translate-x-10 -translate-y-10" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full bg-green-500/10 pointer-events-none transform -translate-x-6 translate-y-6" />
+          <div className="absolute top-1/2 left-1/3 w-16 h-16 rounded-full bg-white/5 pointer-events-none transform -translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute top-4 left-1/4 w-20 h-20 rounded-full bg-orange-500/5 pointer-events-none" />
+          <div className="absolute bottom-2 right-1/4 w-28 h-28 rounded-full bg-green-400/15 pointer-events-none" />
+          <div className="absolute -top-10 left-10 w-36 h-36 rounded-full bg-white/5 pointer-events-none" />
+
+          {/* 1. MOBILE HEADER LAYOUT (lg:hidden) */}
+          <div className="lg:hidden p-5 flex flex-col gap-4">
+            {/* Top line: Back Arrow */}
+            <div className="relative z-10 flex items-center">
+              <button
+                onClick={() => navigate("/admin")}
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition active:scale-95 cursor-pointer shadow-sm"
+                title={lang === "mr" ? "अॅडमिन डॅशबोर्डवर जा" : "Back to Admin Dashboard"}
+              >
+                <BiArrowBack className="text-xl" />
+              </button>
             </div>
-            
-            <div>
-              <h1 className="text-2xl md:text-3xl font-black text-white">
-                {config?.gpName 
-                  ? (lang === "mr" ? `${config.gpName} डिजिटल ई-वाचनालय` : `${config.gpName} eLibrary Admin Console`)
-                  : (lang === "mr" ? "डिजिटल ई-वाचनालय" : "eLibrary Admin Console")}
+
+            {/* Second line: Grampanchayat Name */}
+            <div className="relative z-10">
+              <h2 className="text-sm font-bold tracking-wider text-emerald-100 uppercase opacity-95">
+                {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
+              </h2>
+            </div>
+
+            {/* Third line: eLibrary Admin Title */}
+            <div className="relative z-10">
+              <h1 className="text-2xl font-black text-white tracking-tight leading-none">
+                {lang === "mr" ? "डिजिटल ई-वाचनालय" : "eLibrary Admin Console"}
               </h1>
-              <p className="text-xs mt-1 font-semibold text-slate-350">
-                {lang === "mr"
-                  ? "वाचनातून विचार, विचारातून विकास."
-                  : "Read to Think, Think to Progress."}
+              <p className="text-slate-200 text-xs font-semibold mt-1">
+                {lang === "mr" ? "वाचनातून विचार, विचारातून विकास." : "Read to Think, Think to Progress."}
               </p>
+            </div>
+
+            {/* Fourth line: Stats + Controls Capsules */}
+            <div className="relative z-10 flex items-center gap-3 mt-2 w-full">
+              {/* Total Books Capsule */}
+              <div className="h-12 px-4 rounded-2xl flex items-center gap-3 bg-emerald-950/40 border border-emerald-800/30 text-white shadow-sm flex-1 min-w-0">
+                <div className="p-1.5 bg-green-500/10 rounded-xl text-[#34d399] shrink-0">
+                  <BiSolidBook className="text-lg animate-pulse" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[9px] uppercase tracking-wider font-extrabold text-slate-400 leading-none truncate">{lang === "mr" ? "एकूण पुस्तके" : "Books"}</p>
+                  <p className="text-sm font-black text-white mt-0.5 leading-none">{stats.totalBooks}</p>
+                </div>
+              </div>
+
+              {/* Unified Controls Capsule */}
+              <div className="h-12 flex items-center justify-between gap-3 border border-emerald-800/30 rounded-2xl px-4 bg-emerald-950/40 text-white shadow-sm flex-1 min-w-0">
+                {/* Language Switcher */}
+                <div className="flex items-center gap-0.5">
+                  <button
+                    onClick={() => setLang("mr")}
+                    className={`px-3 py-1 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
+                      lang === "mr"
+                        ? "bg-green-700 text-white shadow-sm"
+                        : "text-slate-400 hover:text-white"
+                    }`}
+                  >
+                    मराठी
+                  </button>
+                  <button
+                    onClick={() => setLang("en")}
+                    className={`px-3 py-1 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
+                      lang === "en"
+                        ? "bg-green-700 text-white shadow-sm"
+                        : "text-slate-400 hover:text-white"
+                    }`}
+                  >
+                    En
+                  </button>
+                </div>
+
+                {/* Divider */}
+                <div className="w-px h-4 bg-slate-700/40" />
+
+                {/* Theme Toggle */}
+                <button
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className="p-1 text-[#f59e0b] hover:text-amber-400 transition-transform hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
+                  title={lang === "mr" ? "थीम बदला" : "Toggle Theme"}
+                >
+                  {isDarkMode ? (
+                    <svg className="w-4 h-4 fill-amber-400 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4 text-[#f59e0b] stroke-current fill-none" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* RIGHT SIDEBAR (STATS + UNIFIED CONTROLS) */}
-          <div className="flex items-center flex-wrap gap-4 shrink-0 relative z-10">
-            {/* STATS CAPSULES */}
-            <div className="flex items-center gap-3">
-              <div className="h-14 px-4 border rounded-2xl flex items-center gap-3 shadow-inner transition-colors bg-emerald-950/40 border-emerald-800/30 text-white">
-                <div className="p-2 bg-green-500/10 rounded-xl text-green-450 text-[#34d399]">
+          {/* 2. DESKTOP HEADER LAYOUT (hidden lg:flex) */}
+          <div className="hidden lg:flex p-8 flex-row items-center justify-between gap-6 w-full">
+            {/* TITLE AND LOGO */}
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="w-14 h-14 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 shrink-0">
+                <BiBookOpen className="text-3xl" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-black text-white tracking-tight leading-tight">
+                  {config?.gpName 
+                    ? (lang === "mr" ? `${config.gpName} डिजिटल ई-वाचनालय` : `${config.gpName} eLibrary Admin Console`)
+                    : (lang === "mr" ? "डिजिटल ई-वाचनालय" : "eLibrary Admin Console")}
+                </h1>
+                <p className="text-slate-200 text-sm font-semibold mt-0.5">
+                  {lang === "mr" ? "वाचनातून विचार, विचारातून विकास." : "Read to Think, Think to Progress."}
+                </p>
+              </div>
+            </div>
+
+            {/* HEADER CONTROLS */}
+            <div className="flex flex-row items-center gap-4 relative z-10 shrink-0">
+              {/* STATS CAPSULE */}
+              <div className="h-14 px-4 rounded-2xl flex items-center gap-3 bg-emerald-950/40 border border-emerald-800/30 text-white shadow-inner">
+                <div className="p-2 bg-green-500/10 rounded-xl text-[#34d399]">
                   <BiSolidBook className="text-xl animate-pulse" />
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase tracking-wider font-bold text-slate-400">{lang === "mr" ? "एकूण पुस्तके" : "Books"}</p>
-                  <p className="text-base font-black text-white">{stats.totalBooks}</p>
+                  <p className="text-[10px] uppercase tracking-wider font-extrabold text-slate-400 leading-none">{lang === "mr" ? "एकूण पुस्तके" : "Books"}</p>
+                  <p className="text-base font-black text-white mt-1 leading-none">{stats.totalBooks}</p>
                 </div>
               </div>
-            </div>
 
-            {/* UNIFIED CONTROLS CAPSULE */}
-            <div className="h-14 flex items-center gap-3 border rounded-2xl px-4 transition-all bg-emerald-950/40 border-emerald-800/30">
-              {/* Language Switcher */}
-              <div className="flex items-center gap-1">
+              {/* UNIFIED CONTROLS CAPSULE */}
+              <div className="h-14 flex items-center gap-3 border rounded-2xl px-4 bg-emerald-950/40 border-emerald-800/30">
+                {/* Language Switcher */}
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setLang("mr")}
+                    className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
+                      lang === "mr"
+                        ? "bg-green-700 text-white shadow-sm"
+                        : "text-slate-400 hover:text-white"
+                    }`}
+                  >
+                    मराठी
+                  </button>
+                  <button
+                    onClick={() => setLang("en")}
+                    className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
+                      lang === "en"
+                        ? "bg-green-700 text-white shadow-sm"
+                        : "text-slate-400 hover:text-white"
+                    }`}
+                  >
+                    En
+                  </button>
+                </div>
+
+                {/* Divider */}
+                <div className="w-px h-4 bg-slate-700/40" />
+
+                {/* Theme Toggle */}
                 <button
-                  onClick={() => setLang("mr")}
-                  className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
-                    lang === "mr"
-                      ? "bg-green-700 text-white shadow-sm"
-                      : "text-slate-400 hover:text-white"
-                  }`}
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className="p-1 text-[#f59e0b] hover:text-amber-400 transition-transform hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
+                  title={lang === "mr" ? "थीम बदला" : "Toggle Theme"}
                 >
-                  मराठी
-                </button>
-                <button
-                  onClick={() => setLang("en")}
-                  className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
-                    lang === "en"
-                      ? "bg-green-700 text-white shadow-sm"
-                      : "text-slate-400 hover:text-white"
-                  }`}
-                >
-                  En
+                  {isDarkMode ? (
+                    <svg className="w-4 h-4 fill-amber-455 text-amber-450" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4 text-[#f59e0b] stroke-current fill-none" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                    </svg>
+                  )}
                 </button>
               </div>
 
-              {/* Divider */}
-              <div className="w-px h-4 bg-slate-700/40" />
-
-              {/* Theme Toggle */}
+              {/* BACK TO ADMIN DASHBOARD */}
               <button
-                onClick={() => setIsDarkMode(!isDarkMode)}
-                className="p-1 text-amber-450 text-[#f59e0b] hover:text-amber-400 transition-transform hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
-                title={lang === "mr" ? "थीम बदला" : "Toggle Theme"}
+                onClick={() => navigate("/admin")}
+                className="h-14 px-5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-455 hover:to-amber-550 text-white font-extrabold rounded-2xl shadow-lg hover:shadow-orange-500/20 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 cursor-pointer text-xs uppercase tracking-wider"
               >
-                {isDarkMode ? (
-                  <svg className="w-4 h-4 fill-amber-455 text-amber-450" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
-                  </svg>
-                ) : (
-                  <svg className="w-4 h-4 text-[#f59e0b] stroke-current fill-none" strokeWidth="2.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-                  </svg>
-                )}
+                <BiArrowBack className="text-base" />
+                <span>{lang === "mr" ? "परत जा" : "Back to Admin"}</span>
               </button>
             </div>
           </div>
-        </header>
+      </header>
+
+      {/* MAIN CONTAINER */}
+      <div className="max-w-7xl mx-auto space-y-8 px-4 py-8 md:px-8">
 
         {/* SEARCH, FILTER, AND UPLOAD BAR (FULL WIDTH AT TOP) */}
         <div className={`rounded-3xl p-6 border transition-all duration-300 ${
@@ -347,14 +517,20 @@ const ELibraryAdminDashboard = () => {
                 ? "bg-emerald-950/40 border-emerald-800/20" 
                 : "bg-slate-100/80 border-slate-200/50"
             }`}>
-              {["All", "Educational", "Historical", "Literature", "Science", "Other"].map((cat) => {
+              {["All", "Agriculture", "Autobiography", "Culinary", "History", "Music", "Mythology", "Personal Essays", "Physical Education", "Short Stories", "Travel", "Other"].map((cat) => {
                 const isSelected = selectedCategoryFilter === cat;
                 const label = lang === "mr" ? (
                   cat === "All" ? "सर्व पुस्तके" :
-                  cat === "Educational" ? "शिक्षण" :
-                  cat === "Historical" ? "इतिहास" :
-                  cat === "Literature" ? "साहित्य" :
-                  cat === "Science" ? "विज्ञान" : "इतर"
+                  cat === "Agriculture" ? "शेती" :
+                  cat === "Autobiography" ? "आत्मचरित्र" :
+                  cat === "Culinary" ? "पाककला" :
+                  cat === "History" ? "इतिहास" :
+                  cat === "Music" ? "संगीत" :
+                  cat === "Mythology" ? "पुराणकथा" :
+                  cat === "Personal Essays" ? "वैयक्तिक लेख" :
+                  cat === "Physical Education" ? "शारीरिक शिक्षण" :
+                  cat === "Short Stories" ? "लघुकथा" :
+                  cat === "Travel" ? "प्रवास" : "इतर"
                 ) : cat;
 
                 return (
@@ -478,13 +654,24 @@ const ELibraryAdminDashboard = () => {
                         <BiDownload className="text-sm" />
                         <span>{lang === "mr" ? "डाउनलोड" : "Download"}</span>
                       </button>
-                      <button
-                        onClick={() => handleDelete(book._id)}
-                        className="p-2 hover:bg-rose-500/15 text-rose-500 hover:text-rose-400 rounded-xl transition cursor-pointer border border-transparent hover:border-red-500/10 active:scale-95 shrink-0"
-                        title={lang === "mr" ? "पुस्तक हटवा" : "Delete Book"}
-                      >
-                        <FiTrash2 className="w-4 h-4" />
-                      </button>
+                      {book.isProtected ? (
+                        <div
+                          className="p-2 text-slate-400 rounded-xl shrink-0 cursor-not-allowed"
+                          title={lang === "mr" ? "हे पुस्तक संरक्षित आहे" : "Protected — cannot delete"}
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                          </svg>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => handleDelete(book._id)}
+                          className="p-2 hover:bg-rose-500/15 text-rose-500 hover:text-rose-400 rounded-xl transition cursor-pointer border border-transparent hover:border-red-500/10 active:scale-95 shrink-0"
+                          title={lang === "mr" ? "पुस्तक हटवा" : "Delete Book"}
+                        >
+                          <FiTrash2 className="w-4 h-4" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

@@ -98,24 +98,42 @@ export default function ELibraryPage() {
 
   const getCategoryBaseName = (cat) => {
     if (!cat) return lang === "mr" ? "इतर" : "Other";
-    const mapping = {
-      "Educational": lang === "mr" ? "शिक्षण" : "Educational",
-      "Historical": lang === "mr" ? "इतिहास" : "Historical",
-      "Literature": lang === "mr" ? "साहित्य" : "Literature",
-      "Science": lang === "mr" ? "विज्ञान" : "Science",
-      "Other": lang === "mr" ? "इतर" : "Other"
-    };
-    return mapping[cat] || cat;
+    const c = cat;
+    if (c.includes("Agriculture")) return lang === "mr" ? "शेती" : "Agriculture";
+    if (c.includes("Autobiography")) return lang === "mr" ? "आत्मचरित्र" : "Autobiography";
+    if (c.includes("Culinary")) return lang === "mr" ? "पाककला" : "Culinary";
+    if (c.includes("History")) return lang === "mr" ? "इतिहास" : "History";
+    if (c.includes("Music")) return lang === "mr" ? "संगीत" : "Music";
+    if (c.includes("Mytholog")) return lang === "mr" ? "पुराणकथा" : "Mythology";
+    if (c.includes("Personal Essays") || c.includes("Self Help")) return lang === "mr" ? "वैयक्तिक लेख" : "Personal Essays";
+    if (c.includes("Physical Education")) return lang === "mr" ? "शारीरिक शिक्षण" : "Physical Education";
+    if (c.includes("Short Stor") || c.includes("Short Stories")) return lang === "mr" ? "लघुकथा" : "Short Stories";
+    if (c.includes("Travel")) return lang === "mr" ? "प्रवास" : "Travel";
+    return lang === "mr" ? "इतर" : "Other";
   };
 
+  // Books always shown at the top row (in this order)
+  const PINNED_TITLES = ["लिश्टेनस्टाईन", "ययाति", "खिडकी", "अभिव्यक्ती"];
+
   // Filtering books
-  const filteredBooks = books.filter(book => {
-    const matchesSearch = 
-      book.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      book.author?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory ? book.category === selectedCategory : true;
-    return matchesSearch && matchesCategory;
-  });
+  const filteredBooks = (() => {
+    const filtered = books.filter(book => {
+      const matchesSearch =
+        book.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        book.author?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = selectedCategory
+        ? book.category?.includes(selectedCategory)
+        : true;
+      return matchesSearch && matchesCategory;
+    });
+
+    // Pin featured books to top (in specified order), rest follow
+    const pinned = PINNED_TITLES
+      .map(t => filtered.find(b => b.title === t))
+      .filter(Boolean);
+    const rest = filtered.filter(b => !PINNED_TITLES.includes(b.title));
+    return [...pinned, ...rest];
+  })();
 
   // Pagination calculations
   const totalPages = Math.ceil(filteredBooks.length / itemsPerPage);
@@ -130,26 +148,26 @@ export default function ELibraryPage() {
           showStickyMobileHeader ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
         }`}
       >
-        <div className="h-14 px-4 flex items-center gap-3">
+        <div className="h-16 px-4 flex items-center gap-3">
           {/* Back button */}
           <button
             onClick={() => navigate("/")}
-            className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white shrink-0 active:scale-90 transition cursor-pointer"
+            className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white shrink-0 active:scale-90 transition cursor-pointer"
           >
             <BiArrowBack className="text-lg" />
           </button>
 
           {/* Book Stack Logo */}
-          <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+          <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
             <BiBookOpen className="text-base text-orange-300" />
           </div>
 
           {/* Title & Subtitle */}
           <div className="min-w-0">
-            <p className="text-[10px] font-bold tracking-wider uppercase opacity-90 truncate leading-none">
+            <p className="text-[10px] font-bold tracking-wider uppercase opacity-90 truncate leading-tight">
               {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
             </p>
-            <h2 className="text-xs font-black tracking-tight mt-0.5 leading-none">
+            <h2 className="text-xs font-black tracking-tight mt-1 leading-tight">
               {lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary"}
             </h2>
           </div>
@@ -392,14 +410,20 @@ export default function ELibraryPage() {
                 ? "bg-[#01221a]/40 border-emerald-800/20" 
                 : "bg-slate-100/80 border-slate-200/50"
             }`}>
-              {["All", "Educational", "Historical", "Literature", "Science", "Other"].map((cat) => {
+              {["All", "Agriculture", "Autobiography", "Culinary", "History", "Music", "Mythology", "Personal Essays", "Physical Education", "Short Stories", "Travel", "Other"].map((cat) => {
                 const isSelected = selectedCategory === (cat === "All" ? "" : cat);
                 const label = lang === "mr" ? (
                   cat === "All" ? "सर्व पुस्तके" :
-                  cat === "Educational" ? "शिक्षण" :
-                  cat === "Historical" ? "इतिहास" :
-                  cat === "Literature" ? "साहित्य" :
-                  cat === "Science" ? "विज्ञान" : "इतर"
+                  cat === "Agriculture" ? "शेती" :
+                  cat === "Autobiography" ? "आत्मचरित्र" :
+                  cat === "Culinary" ? "पाककला" :
+                  cat === "History" ? "इतिहास" :
+                  cat === "Music" ? "संगीत" :
+                  cat === "Mythology" ? "पुराणकथा" :
+                  cat === "Personal Essays" ? "वैयक्तिक लेख" :
+                  cat === "Physical Education" ? "शारीरिक शिक्षण" :
+                  cat === "Short Stories" ? "लघुकथा" :
+                  cat === "Travel" ? "प्रवास" : "इतर"
                 ) : cat;
 
                 return (
@@ -435,7 +459,7 @@ export default function ELibraryPage() {
                 <BiBookOpen className="text-lg" />
               </div>
               <h3 className={`text-base font-bold ${isDarkMode ? "text-white" : "text-slate-800"}`}>
-                {lang === "mr" ? "सर्व पुस्तके" : "Shared Books Directory"}
+                {lang === "mr" ? "सर्व पुस्तके" : "सर्व पुस्तके"}
               </h3>
             </div>
             <div className={`text-[10px] font-black tracking-wider ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
