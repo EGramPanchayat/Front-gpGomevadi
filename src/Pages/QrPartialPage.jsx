@@ -113,7 +113,7 @@ export default function QrPartialPage() {
               });
               setPayAmounts(initialCategoryAmounts);
               setOtpVerified(true);
-              toast.success("सत्र सक्रिय आहे, थेट देयके तपासा / Active session detected, view bills directly.");
+              toast.success("Active session detected, view bills directly.");
             }
           } catch {
             // Silence session check failures
