@@ -33,6 +33,12 @@ const services = [
     description: "महत्वाच्या शासकीय सूचना आणि परिपत्रकांची माहिती पहा.",
     type: "dynamic",
   },
+  {
+    emoji: "📂",
+    title: "माहिती अधिकार",
+    description: "माहितीचा अधिकार आणि संबंधित कागदपत्रे.",
+    url: "https://zpsangli.maharashtra.gov.in/%E0%A4%AE%E0%A4%BE%E0%A4%B9%E0%A4%BF%E0%A4%A4%E0%A5%80%E0%A4%9A%E0%A4%BE-%E0%A4%85%E0%A4%A7%E0%A4%BF%E0%A4%95%E0%A4%BE%E0%A4%B0-%E0%A4%95%E0%A4%BE%E0%A4%97%E0%A4%A6%E0%A4%AA%E0%A4%A4%E0%A5%8D%E0%A4%B0/",
+  },
 ];
 
 const AamchyaSeva = () => {
@@ -111,7 +117,7 @@ const AamchyaSeva = () => {
           </div>
 
           {/* Services Grid */}
-          <div className="grid grid-cols-1 pb-30 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8 overflow-hidden">
+          <div className="grid grid-cols-1 pb-30 sm:grid-cols-2 md:grid-cols-3 gap-8 overflow-hidden">
             {services.map((service, index) => (
               <div
                 key={index}
