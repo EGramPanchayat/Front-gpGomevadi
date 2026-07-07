@@ -230,26 +230,26 @@ export default function ELibraryPage() {
           {/* HEADER CONTROLS AND ACTION BUTTON */}
           <div className="flex flex-row items-center gap-4 relative z-10 shrink-0">
             {/* STATS CAPSULES */}
-            <div className="h-14 px-4 rounded-2xl flex items-center gap-3 shadow-inner bg-emerald-900/50 border border-emerald-700/30 text-white">
-              <div className="p-2 bg-green-500/10 rounded-xl text-[#34d399]">
+            <div className="h-14 px-4 rounded-2xl flex items-center gap-3 bg-white text-slate-800 border border-gray-100 shadow-sm">
+              <div className="p-2 bg-emerald-50 rounded-xl text-emerald-700">
                 <BiSolidBook className="text-xl" />
               </div>
               <div>
-                <p className="text-[10px] uppercase tracking-wider font-bold text-slate-400">{lang === "mr" ? "एकूण पुस्तके" : "Books"}</p>
-                <p className="text-base font-black text-white">{books.length}</p>
+                <p className="text-[10px] uppercase tracking-wider font-extrabold text-gray-400 leading-none">{lang === "mr" ? "एकूण पुस्तके" : "Books"}</p>
+                <p className="text-base font-black text-slate-800 mt-1 leading-none">{books.length}</p>
               </div>
             </div>
 
             {/* UNIFIED CONTROLS CAPSULE */}
-            <div className="h-14 flex items-center gap-3 border rounded-2xl px-4 bg-emerald-900/50 border-emerald-700/30 text-white">
+            <div className="h-14 flex items-center gap-3 border rounded-2xl px-4 bg-white border-gray-100 text-slate-800 shadow-sm">
               {/* Language Switcher */}
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => setLang("mr")}
                   className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
                     lang === "mr"
-                      ? "bg-green-700 text-white shadow-sm"
-                      : "text-slate-350 hover:text-white"
+                      ? "bg-emerald-700 text-white shadow-sm"
+                      : "text-gray-550 hover:text-gray-900"
                   }`}
                 >
                   मराठी
@@ -258,8 +258,8 @@ export default function ELibraryPage() {
                   onClick={() => setLang("en")}
                   className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
                     lang === "en"
-                      ? "bg-green-700 text-white shadow-sm"
-                      : "text-slate-350 hover:text-white"
+                      ? "bg-emerald-700 text-white shadow-sm"
+                      : "text-gray-550 hover:text-gray-900"
                   }`}
                 >
                   En
@@ -267,20 +267,20 @@ export default function ELibraryPage() {
               </div>
 
               {/* Divider */}
-              <div className="w-px h-4 bg-slate-700/40" />
+              <div className="w-px h-4 bg-gray-200" />
 
               {/* Theme Toggle */}
               <button
                 onClick={() => setIsDarkMode(!isDarkMode)}
-                className="p-1 text-[#f59e0b] hover:text-amber-400 transition-transform hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
+                className="p-1 text-amber-500 hover:text-amber-600 transition-transform hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
                 title={lang === "mr" ? "थीम बदला" : "Toggle Theme"}
               >
                 {isDarkMode ? (
-                  <svg className="w-4 h-4 fill-amber-455 text-amber-450" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707 .707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
+                  <svg className="w-4 h-4 fill-amber-500 text-amber-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
                   </svg>
                 ) : (
-                  <svg className="w-4 h-4 text-[#f59e0b] stroke-current fill-none" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-amber-500 stroke-current fill-none" strokeWidth="2.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
                   </svg>
                 )}
