@@ -71,7 +71,7 @@ const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => {
           ))}
           <li>
             <a href="/elibrary" className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-3.5 py-1.5 rounded-xl ml-2 shadow transition text-sm">
-              {lang === "mr" ? "ई-वाचनालय" : "eLibrary"}
+              e-Library
             </a>
           </li>
           <li>
@@ -111,7 +111,7 @@ const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => {
               className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-center py-2.5 rounded-xl text-lg mt-2 shadow transition"
               onClick={() => setMobileNavOpen(false)}
             >
-              {lang === "mr" ? "ई-वाचनालय" : "eLibrary"}
+              e-Library
             </a>
             <a
               href="/user-login"
