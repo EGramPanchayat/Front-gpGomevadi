@@ -192,26 +192,23 @@ export default function ELibraryPage() {
 
         {/* 1. MOBILE HEADER LAYOUT (lg:hidden) */}
         <div className="lg:hidden p-5 flex flex-col gap-4">
-          {/* Top line: Back Arrow */}
-          <div className="relative z-10 flex items-center">
+          {/* Top line: Back Arrow, Logo, and Grampanchayat Name */}
+          <div className="relative z-10 flex items-center gap-3">
             <button
               onClick={() => navigate("/")}
-              className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition active:scale-95 cursor-pointer shadow-sm"
+              className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition active:scale-95 cursor-pointer shadow-sm shrink-0"
               title={lang === "mr" ? "मुख्यपृष्ठावर जा" : "Back to Home"}
             >
               <BiArrowBack className="text-xl" />
             </button>
-          </div>
-
-          {/* Second line: Grampanchayat Name with Satyamev Jayate circle logo (Mobile only) */}
-          <div className="relative z-10 flex items-center gap-2.5">
-            {/* Logo in circle (mobile only) */}
-            <div className="w-9 h-9 rounded-full border border-white/20 bg-white overflow-hidden shrink-0 lg:hidden">
-              <img src="/images/satyamev.jpg" alt="Satyamev Jayate" className="w-full h-full object-cover" />
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full border border-white/20 bg-white overflow-hidden shrink-0">
+                <img src="/images/satyamev.jpg" alt="Satyamev Jayate" className="w-full h-full object-cover" />
+              </div>
+              <h2 className="text-lg font-bold tracking-wider text-emerald-100 uppercase opacity-95">
+                {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
+              </h2>
             </div>
-            <h2 className="text-xl lg:text-sm font-bold tracking-wider text-emerald-100 uppercase opacity-95">
-              {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
-            </h2>
           </div>
 
           {/* Third line: eLibrary Title */}
