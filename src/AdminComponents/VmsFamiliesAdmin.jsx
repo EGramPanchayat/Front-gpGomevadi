@@ -121,13 +121,33 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
       return toast.error("Please fill all required fields");
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return toast.error("Please enter a valid email address");
+    }
+
+    let finalPhone = "";
+    if (whatsappNumber) {
+      const cleaned = whatsappNumber.replace(/\D/g, "");
+      const phoneToValidate = (cleaned.length === 12 && cleaned.startsWith("91")) 
+        ? cleaned.substring(2) 
+        : (cleaned.length === 11 && cleaned.startsWith("0")) 
+          ? cleaned.substring(1) 
+          : cleaned;
+      
+      if (phoneToValidate.length !== 10 || !/^[6-9]\d{9}$/.test(phoneToValidate)) {
+        return toast.error("Please enter a valid 10-digit mobile number (e.g. 98xxxxxxxx)");
+      }
+      finalPhone = phoneToValidate;
+    }
+
     setSaving(true);
     try {
       const res = await axioesInstance.put(`/admin/families/${selectedFamily._id}`, {
         houseNumber,
         mainMemberName,
-        email,
-        whatsappNumber,
+        email: email.trim().toLowerCase(),
+        whatsappNumber: finalPhone,
         address,
         menCount: Number(menCount),
         womenCount: Number(womenCount),
@@ -151,19 +171,39 @@ export default function VmsFamiliesAdmin({ onRedirectToTax }) {
       return toast.error("Please fill all required fields");
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return toast.error("Please enter a valid email address");
+    }
+
+    let finalPhone = "";
+    if (whatsappNumber) {
+      const cleaned = whatsappNumber.replace(/\D/g, "");
+      const phoneToValidate = (cleaned.length === 12 && cleaned.startsWith("91")) 
+        ? cleaned.substring(2) 
+        : (cleaned.length === 11 && cleaned.startsWith("0")) 
+          ? cleaned.substring(1) 
+          : cleaned;
+      
+      if (phoneToValidate.length !== 10 || !/^[6-9]\d{9}$/.test(phoneToValidate)) {
+        return toast.error("Please enter a valid 10-digit mobile number (e.g. 98xxxxxxxx)");
+      }
+      finalPhone = phoneToValidate;
+    }
+
     setSaving(true);
     try {
       await axioesInstance.post("/admin/families", {
         familyId,
         houseNumber,
         mainMemberName,
-        email,
-        whatsappNumber,
+        email: email.trim().toLowerCase(),
+        whatsappNumber: finalPhone,
         address,
-        menCount,
-        womenCount,
-        seniorCount,
-        childrenCount,
+        menCount: Number(menCount),
+        womenCount: Number(womenCount),
+        seniorCount: Number(seniorCount),
+        childrenCount: Number(childrenCount),
       });
       toast.success("Family registered successfully!");
       // Reset form
