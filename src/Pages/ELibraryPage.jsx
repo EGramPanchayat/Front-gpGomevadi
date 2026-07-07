@@ -417,14 +417,10 @@ export default function ELibraryPage() {
                 <div 
                   key={book._id} 
                   onClick={() => setSelectedBookDetail(book)}
-                  className={`rounded-2xl border transition-all duration-300 overflow-hidden flex flex-col h-full hover:scale-[1.02] active:scale-[0.98] cursor-pointer ${
-                    isDarkMode 
-                      ? "bg-[#01221a] border-emerald-800/35 hover:border-emerald-500/40 hover:shadow-2xl shadow-emerald-950/50" 
-                      : "bg-white border-emerald-800/20 hover:border-emerald-800/35 shadow-md hover:shadow-xl"
-                  }`}
+                  className="transition-all duration-300 flex flex-col h-full hover:scale-[1.02] active:scale-[0.98] cursor-pointer bg-transparent"
                 >
-                  {/* COVER FRAME */}
-                  <div className="relative aspect-[3/4] w-full bg-slate-100 dark:bg-[#01221a]/50 overflow-hidden flex items-center justify-center border-b border-slate-850/10 dark:border-emerald-800/20">
+                  {/* COVER FRAME (WITH SOFT ROUNDED SHADOW AND BORDER) */}
+                  <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden flex items-center justify-center bg-slate-100 dark:bg-[#01221a]/50 shadow-md hover:shadow-lg border border-slate-150/40 dark:border-emerald-800/10">
                     {book.coverImage ? (
                       <img
                         src={book.coverImage}
@@ -434,18 +430,18 @@ export default function ELibraryPage() {
                     ) : (
                       <div className="flex flex-col items-center justify-center text-slate-500 p-4">
                         <FiFileText className="text-3xl stroke-[1.5]" />
-                        <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mt-2">No Cover</span>
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mt-2">{lang === "mr" ? "कव्हर नाही" : "No Cover"}</span>
                       </div>
                     )}
                   </div>
 
                   {/* DETAILS (BELOW COVER) - ONLY NAME & AUTHOR */}
-                  <div className="p-3 text-center flex-1 flex flex-col justify-center">
+                  <div className="pt-3 pb-1 text-center flex-1 flex flex-col justify-start bg-transparent">
                     <h4 className={`font-black text-xs sm:text-sm line-clamp-1 leading-snug tracking-tight ${isDarkMode ? "text-white" : "text-slate-800"}`} title={book.title}>
                       {book.title}
                     </h4>
-                    <p className={`text-[10px] sm:text-xs font-bold truncate mt-1 ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
-                      {book.author}
+                    <p className={`text-[10px] sm:text-xs font-semibold truncate mt-1 ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+                      {lang === "mr" ? "Author : " : "Author : "}{book.author}
                     </p>
                   </div>
                 </div>
