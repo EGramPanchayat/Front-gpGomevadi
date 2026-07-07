@@ -278,6 +278,7 @@ export default function UserDashboard() {
   const [showFineModal, setShowFineModal] = useState(false);
   const [selectedFineForModal, setSelectedFineForModal] = useState(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem("darkMode") === "true");
 
   // Notifications states
@@ -1371,46 +1372,14 @@ export default function UserDashboard() {
                     <h2 className={`text-xl md:text-2xl font-black tracking-tight ${isDarkMode ? "text-green-400" : "text-green-800"}`}>
                       {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
                     </h2>
-                    <p className={`text-xs font-semibold mt-0.5 ${isDarkMode ? "text-slate-400" : "text-gray-550"}`}>
+                    <p className={`text-xs font-semibold mt-0.5 ${isDarkMode ? "text-slate-400" : "text-gray-555"}`}>
                       {config?.taluka && `ता. ${config.taluka}`}{config?.district && ` | जि. ${config.district}`}
                     </p>
                   </div>
                 </div>
 
-                {/* Inline Settings capsule - No absolute positioning to prevent overlap */}
-                <div className={`flex items-center gap-3.5 p-1 rounded-full border transition shadow-md self-end lg:self-auto select-none ${isDarkMode
-                  ? "border-slate-805 bg-slate-950/80 backdrop-blur-md"
-                  : "border-gray-200 bg-white"
-                  }`}>
-                  {/* Cylinder language buttons */}
-                  <div className="flex items-center">
-                    <button
-                      onClick={() => setLanguage("mr")}
-                      className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${language === "mr"
-                        ? "bg-gradient-to-r from-green-700 to-emerald-800 text-white shadow scale-105"
-                        : isDarkMode
-                          ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
-                          : "text-green-800/85 hover:text-green-950 hover:bg-green-50"
-                        }`}
-                    >
-                      मराठी
-                    </button>
-                    <button
-                      onClick={() => setLanguage("en")}
-                      className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${language === "en"
-                        ? "bg-gradient-to-r from-green-700 to-emerald-800 text-white shadow scale-105"
-                        : isDarkMode
-                          ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
-                          : "text-green-800/85 hover:text-green-905 hover:bg-green-50"
-                        }`}
-                    >
-                      En
-                    </button>
-                  </div>
-
-                  {/* Divider line */}
-                  <div className={`h-4 w-px ${isDarkMode ? "bg-slate-800" : "bg-green-200"}`}></div>
-
+                {/* Header Actions: Notifications, Theme, and Hamburger Menu */}
+                <div className="flex items-center gap-2 self-end lg:self-auto relative z-30 select-none">
                   {/* Bell Notification Button */}
                   <button
                     onClick={() => {
@@ -1419,7 +1388,7 @@ export default function UserDashboard() {
                         fetchUserNotifications();
                       }
                     }}
-                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 relative group ${isDarkMode ? "hover:bg-slate-800 text-slate-350 hover:text-white" : "hover:bg-green-50 text-green-800"
+                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 relative group ${isDarkMode ? "hover:bg-slate-800 text-slate-350 hover:text-white" : "hover:bg-green-50 text-green-800"
                       }`}
                     title={t.notifications}
                   >
@@ -1438,7 +1407,7 @@ export default function UserDashboard() {
                   {/* Dark Mode toggle button */}
                   <button
                     onClick={() => setIsDarkMode(!isDarkMode)}
-                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group ${isDarkMode ? "hover:bg-slate-800 text-yellow-300" : "hover:bg-green-50 text-amber-500"
+                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 group ${isDarkMode ? "hover:bg-slate-800 text-yellow-300" : "hover:bg-green-50 text-amber-500"
                       }`}
                     title={isDarkMode ? "Light Mode" : "Dark Mode"}
                   >
@@ -1457,6 +1426,75 @@ export default function UserDashboard() {
                       </div>
                     )}
                   </button>
+
+                  {/* Hamburger Menu Button (3 lines) */}
+                  <button
+                    onClick={() => setShowMenu(!showMenu)}
+                    className={`w-9 h-9 rounded-full flex flex-col justify-center items-center gap-1.5 transition-all duration-300 ${
+                      isDarkMode ? "hover:bg-slate-800 text-slate-300" : "hover:bg-green-50 text-green-800"
+                    }`}
+                    title="Menu"
+                  >
+                    <span className={`w-5 h-0.5 transition-all duration-300 ${isDarkMode ? "bg-slate-300" : "bg-green-800"} ${showMenu ? "rotate-45 translate-y-2" : ""}`} />
+                    <span className={`w-5 h-0.5 transition-all duration-300 ${isDarkMode ? "bg-slate-300" : "bg-green-800"} ${showMenu ? "opacity-0" : ""}`} />
+                    <span className={`w-5 h-0.5 transition-all duration-300 ${isDarkMode ? "bg-slate-300" : "bg-green-800"} ${showMenu ? "-rotate-45 -translate-y-2" : ""}`} />
+                  </button>
+
+                  {/* Dropdown Menu Popup */}
+                  {showMenu && (
+                    <div className={`absolute top-11 right-0 w-48 rounded-2xl shadow-xl border p-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200 z-50 ${
+                      isDarkMode ? "bg-slate-900 border-slate-800 text-white" : "bg-white border-gray-150 text-gray-800"
+                    }`}>
+                      {/* Language Selection */}
+                      <div>
+                        <p className="text-[9px] uppercase tracking-wider font-extrabold opacity-60 mb-1.5">
+                          {language === "mr" ? "भाषा / Language" : "Language"}
+                        </p>
+                        <div className={`flex rounded-lg p-0.5 ${isDarkMode ? "bg-slate-950" : "bg-slate-100"}`}>
+                          <button
+                            onClick={() => {
+                              setLanguage("mr");
+                              setShowMenu(false);
+                            }}
+                            className={`flex-1 py-1 rounded text-[10px] font-black transition ${
+                              language === "mr" 
+                                ? "bg-green-700 text-white shadow-sm" 
+                                : isDarkMode ? "text-slate-400 hover:text-slate-200" : "text-gray-650 hover:text-gray-900"
+                            }`}
+                          >
+                            मराठी
+                          </button>
+                          <button
+                            onClick={() => {
+                              setLanguage("en");
+                              setShowMenu(false);
+                            }}
+                            className={`flex-1 py-1 rounded text-[10px] font-black transition ${
+                              language === "en" 
+                                ? "bg-green-700 text-white shadow-sm" 
+                                : isDarkMode ? "text-slate-400 hover:text-slate-200" : "text-gray-650 hover:text-gray-900"
+                            }`}
+                          >
+                            En
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className={`border-t ${isDarkMode ? "border-slate-800" : "border-gray-100"}`} />
+
+                      {/* Logout Action */}
+                      <button
+                        onClick={() => {
+                          setShowMenu(false);
+                          setShowLogoutConfirm(true);
+                        }}
+                        className="w-full text-left py-1 flex items-center gap-2 text-[11px] font-bold text-red-500 hover:text-red-605 transition"
+                      >
+                        <span>🚪</span>
+                        <span>{language === "mr" ? "बाहेर पडा (Logout)" : "Logout"}</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
 
