@@ -22,7 +22,7 @@ export default function UserLoginPage() {
         const { data } = await axioesInstance.post("/auth/otp/refresh");
         if (data.token) {
           localStorage.setItem("userToken", data.token);
-          toast.success("सत्र सक्रिय आहे, थेट डॅशबोर्डवर नेले जात आहे... / Session active, redirecting...");
+          toast.success("Session active, redirecting...");
           setTimeout(() => {
             window.location.href = "/user/dashboard";
           }, 800);
@@ -133,7 +133,7 @@ export default function UserLoginPage() {
         <div className="bg-white p-8 rounded-2xl shadow-xl flex flex-col items-center max-w-sm w-full text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-700 mb-4 animate-duration-1000"></div>
           <p className="text-gray-700 font-bold">
-            {lang === "mr" ? "सत्र सक्रियता तपासत आहे..." : "Checking active session..."}
+            Checking active session...
           </p>
         </div>
         <ToastContainer />
