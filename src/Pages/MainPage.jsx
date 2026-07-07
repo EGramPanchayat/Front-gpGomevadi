@@ -114,7 +114,7 @@ const MainPage = () => {
               className={
                 `bg-white rounded-xl shadow-lg px-8 py-5 flex flex-col items-center 
                 border-l-4 border-green-400 hover:-translate-y-1 hover:shadow-xl transition
-                flex-1 min-w-[160px]
+                w-full sm:flex-1 sm:min-w-[160px]
                 animate-[fadeUpSmall_0.7s_ease-out]`
               }
               style={{animationDelay: `${0.1 + idx * 0.1}s`}}>
