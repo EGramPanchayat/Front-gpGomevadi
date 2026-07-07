@@ -108,9 +108,9 @@ export default function ELibraryPage() {
   const paginatedBooks = filteredBooks.slice(startIndex, startIndex + itemsPerPage);
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? "bg-emerald-950 text-slate-100" : "bg-slate-50 text-slate-800"} font-sans flex flex-col`}>
+    <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? "bg-emerald-950/90 text-slate-100" : "bg-slate-50 text-slate-800"} font-sans flex flex-col`}>
       {/* HEADER SECTION (SOLID DARK EMERALD BACKGROUND WITH DECORATIVE CIRCLES) */}
-      <header className="relative bg-[#022c22] text-white p-6 md:p-8 rounded-b-[40px] shadow-lg overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <header className="relative bg-gradient-to-r from-emerald-700 via-emerald-800 to-green-700 text-white p-5 md:p-8 rounded-b-3xl md:rounded-b-[40px] shadow-lg overflow-hidden flex flex-col lg:flex-row lg:items-center justify-between gap-5">
         
         {/* Subtle Decorative Solid Color Corner Circles (10% opacity, no blur) */}
         <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-green-500/10 pointer-events-none transform translate-x-10 -translate-y-10" />
@@ -119,25 +119,25 @@ export default function ELibraryPage() {
         {/* TITLE AND LOGO */}
         <div className="flex items-center gap-4 relative z-10">
           <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center shadow-inner shrink-0">
-            <BiBookOpen className="text-3xl text-orange-400" />
+            <BiBookOpen className="text-3xl text-orange-355" />
           </div>
           <div>
-            <h1 className="text-xl md:text-2xl font-black text-white tracking-tight">
+            <h1 className="text-lg md:text-2xl font-black text-white tracking-tight leading-tight">
               {config?.gpName 
                 ? (lang === "mr" ? `${config.gpName} डिजिटल ई-वाचनालय` : `${config.gpName} Digital eLibrary`)
                 : (lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary")}
             </h1>
-            <p className="text-slate-350 text-xs md:text-sm font-semibold mt-0.5">
+            <p className="text-slate-200 text-xs md:text-sm font-semibold mt-0.5">
               {lang === "mr" ? "वाचनातून विचार, विचारातून विकास." : "Read to Think, Think to Progress."}
             </p>
           </div>
         </div>
 
         {/* HEADER CONTROLS AND ACTION BUTTON */}
-        <div className="flex items-center flex-wrap gap-4 shrink-0 relative z-10">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full lg:w-auto relative z-10">
           {/* STATS CAPSULES */}
           <div className="flex items-center gap-3">
-            <div className="h-14 px-4 rounded-2xl flex items-center gap-3 shadow-inner bg-emerald-955 bg-[#01221a] border border-emerald-800/30 text-white">
+            <div className="h-14 px-4 rounded-2xl flex items-center gap-3 shadow-inner bg-emerald-900/50 border border-emerald-700/30 text-white flex-1 sm:flex-initial">
               <div className="p-2 bg-green-500/10 rounded-xl text-[#34d399]">
                 <BiSolidBook className="text-xl" />
               </div>
@@ -149,7 +149,7 @@ export default function ELibraryPage() {
           </div>
 
           {/* UNIFIED CONTROLS CAPSULE */}
-          <div className="h-14 flex items-center gap-3 border rounded-2xl px-4 bg-emerald-955 bg-[#01221a] border-emerald-800/30">
+          <div className="h-14 flex items-center justify-between sm:justify-start gap-3 border rounded-2xl px-4 bg-emerald-900/50 border-emerald-700/30 flex-1 sm:flex-initial">
             {/* Language Switcher */}
             <div className="flex items-center gap-1">
               <button
@@ -212,7 +212,7 @@ export default function ELibraryPage() {
         {/* SEARCH & FILTER BAR */}
         <div className={`rounded-3xl p-6 border transition-all duration-300 ${
           isDarkMode 
-            ? "bg-emerald-955/20 bg-[#01221a]/20 border-emerald-800/30 shadow-[0_8px_30px_rgb(0,0,0,0.3)]" 
+            ? "bg-emerald-900/10 border-emerald-700/20 shadow-[0_8px_30px_rgb(0,0,0,0.3)]" 
             : "bg-white border-emerald-800/20 shadow-[0_8px_30px_rgb(2,44,34,0.04)]"
         } space-y-5`}>
           
