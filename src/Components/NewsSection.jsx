@@ -128,7 +128,7 @@ const NewsSection = () => {
 
       {/* Bottom Ribbon Bar */}
       {newsItems.length > 0 && (
-        <div className="w-full bg-green-900 text-white py-4 px-6 md:px-10 flex items-center relative overflow-hidden gap-4 min-h-[68px]">
+        <div className="w-full bg-green-700 text-white py-4 px-6 md:px-10 flex items-center relative overflow-hidden gap-4 min-h-[68px]">
           {/* Ribbon Label Badge */}
           <div className="bg-orange-500 text-white text-xs font-black px-4 py-2.5 rounded-xl shrink-0 uppercase tracking-wider select-none animate-pulse">
             महत्वाचे
