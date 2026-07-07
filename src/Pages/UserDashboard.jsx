@@ -383,6 +383,34 @@ export default function UserDashboard() {
     }
   };
 
+  // Re-fetch all dashboard data without a full page reload
+  const refreshDashboardData = async () => {
+    try {
+      const [taxRes, appRes, notifRes] = await Promise.all([
+        axioesInstance.get(`/taxes/${family.familyId}`),
+        axioesInstance.get("/user/applications"),
+        axioesInstance.get("/user/notifications"),
+      ]);
+      const loadedBills = taxRes.data.bills || [];
+      setBills(loadedBills);
+      setPayments(taxRes.data.payments || []);
+      setApplications(Array.isArray(appRes.data) ? appRes.data : (appRes.data.applications || []));
+      setNotifications(notifRes.data.notifications || []);
+      setUnreadNotifCount(notifRes.data.unreadCount || 0);
+
+      // Recalculate payment amounts
+      const initialCategoryAmounts = {};
+      TAX_CATEGORIES.forEach((category) => {
+        initialCategoryAmounts[category.id] = billTotals(
+          loadedBills.filter((bill) => category.types.includes(bill.taxType)),
+        ).remaining;
+      });
+      setPayAmounts(initialCategoryAmounts);
+    } catch {
+      // Silent fail — data will be stale but user stays on dashboard
+    }
+  };
+
   const fetchUserNotifications = () => {
     setLoadingNotifs(true);
     axioesInstance
@@ -477,7 +505,7 @@ export default function UserDashboard() {
               mock: true,
             });
             toast.success("Payment of ₹" + payAmt + " successful!");
-            setTimeout(() => window.location.reload(), 1500);
+            await refreshDashboardData();
           } catch {
             toast.error("Payment verification failed");
           }
@@ -505,7 +533,7 @@ export default function UserDashboard() {
               razorpaySignature: response.razorpay_signature,
             });
             toast.success("Payment completed successfully!");
-            setTimeout(() => window.location.reload(), 1500);
+            await refreshDashboardData();
           } catch {
             toast.error("Payment verification failed");
           }
