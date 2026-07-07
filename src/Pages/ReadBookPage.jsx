@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Document, Page, pdfjs } from "react-pdf";
 import { ArrowLeft, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Loader2 } from "lucide-react";
-import { BiBookOpen } from "react-icons/bi";
+import { BiBookOpen, BiArrowBack, BiSolidBook } from "react-icons/bi";
 import axioesInstance from "../utils/axioesInstance";
 import { useLanguage } from "../utils/LanguageContext";
 import { useSiteConfig } from "../utils/SiteConfigContext";
@@ -13,7 +13,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pd
 
 export default function ReadBookPage() {
   const { id } = useParams();
-  const { lang } = useLanguage();
+  const { lang, setLang } = useLanguage();
   const { config } = useSiteConfig();
   const navigate = useNavigate();
 
@@ -24,6 +24,14 @@ export default function ReadBookPage() {
   const [pageNumber, setPageNumber] = useState(1);
   const [scale, setScale] = useState(1.0);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return localStorage.getItem("elibraryTheme") === "dark";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("elibraryTheme", isDarkMode ? "dark" : "light");
+  }, [isDarkMode]);
 
   const activeUrlRef = useRef(null);
   const containerRef = useRef(null);
@@ -160,44 +168,199 @@ export default function ReadBookPage() {
 
   return (
     <div className="h-screen bg-slate-50 text-slate-800 flex flex-col font-sans overflow-hidden">
-      {/* 1. TOP COMPACT NAVBAR */}
-      <div className="h-14 px-4 bg-white border-b border-gray-150 flex items-center justify-between shadow-sm relative z-10 shrink-0">
-        <div className="flex items-center gap-3">
-          {/* Back button */}
-          <button
-            onClick={() => navigate("/elibrary")}
-            className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center shrink-0 transition active:scale-90 cursor-pointer"
-            title={lang === "mr" ? "परत जा" : "Go Back"}
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
+      {/* HEADER SECTION (EXACT MATCH OF ELIBRARY PAGE NAV) */}
+      <header className="relative bg-green-700 text-white rounded-b-3xl md:rounded-b-[40px] shadow-lg overflow-hidden shrink-0 z-20">
+        
+        {/* Subtle Decorative Solid Color Corner Circles (10% opacity, no blur) */}
+        <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-green-500/10 pointer-events-none transform translate-x-10 -translate-y-10" />
+        <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full bg-orange-500/10 pointer-events-none transform -translate-x-6 translate-y-6" />
+        <div className="absolute top-1/2 left-1/3 w-16 h-16 rounded-full bg-white/5 pointer-events-none transform -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute top-4 left-1/4 w-20 h-20 rounded-full bg-orange-500/5 pointer-events-none" />
+        <div className="absolute bottom-2 right-1/4 w-28 h-28 rounded-full bg-green-400/15 pointer-events-none" />
+        <div className="absolute -top-10 left-10 w-36 h-36 rounded-full bg-white/5 pointer-events-none" />
 
-          {/* Book Stack Logo */}
-          <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
-            <BiBookOpen className="text-base text-orange-500" />
+        {/* 1. MOBILE HEADER LAYOUT (lg:hidden) */}
+        <div className="lg:hidden p-5 flex flex-col gap-4">
+          {/* Top line: Back Arrow */}
+          <div className="relative z-10 flex items-center">
+            <button
+              onClick={() => navigate("/elibrary")}
+              className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition active:scale-95 cursor-pointer shadow-sm"
+              title={lang === "mr" ? "ई-ग्रंथालय" : "eLibrary"}
+            >
+              <BiArrowBack className="text-xl" />
+            </button>
           </div>
 
-          {/* Title & Subtitle */}
-          <div className="min-w-0">
-            <p className="text-[9px] font-bold tracking-wider uppercase text-slate-400 leading-none">
+          {/* Second line: Grampanchayat Name */}
+          <div className="relative z-10">
+            <h2 className="text-sm font-bold tracking-wider text-emerald-100 uppercase opacity-95">
               {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
-            </p>
-            <h2 className="text-xs font-black tracking-tight text-slate-800 mt-0.5 leading-none">
-              {lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary"}
             </h2>
           </div>
+
+          {/* Third line: eLibrary Title */}
+          <div className="relative z-10">
+            <h1 className="text-2xl font-black text-white tracking-tight leading-none">
+              {lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary"}
+            </h1>
+            <p className="text-slate-200 text-xs md:text-sm font-semibold mt-1">
+              {lang === "mr" ? "वाचनातून विचार, विचारातून विकास." : "Read to Think, Think to Progress."}
+            </p>
+          </div>
+
+          {/* Fourth line: Book Title and Settings Capsule with WHITE background */}
+          <div className="relative z-10 flex items-center gap-3 mt-2 w-full">
+            {/* Current Book Capsule (White Background) */}
+            <div className="h-12 px-4 rounded-2xl flex items-center gap-3 bg-white text-slate-800 border border-gray-100 shadow-sm flex-1 min-w-0">
+              <div className="p-1.5 bg-emerald-50 rounded-xl text-emerald-700 shrink-0">
+                <BiSolidBook className="text-lg" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[9px] uppercase tracking-wider font-extrabold text-gray-400 leading-none truncate">{lang === "mr" ? "वाचन सुरू" : "Reading"}</p>
+                <p className="text-xs font-black text-slate-800 mt-0.5 leading-none truncate" title={book?.title}>{loading ? "..." : book?.title}</p>
+              </div>
+            </div>
+
+            {/* Unified Controls Capsule (White Background) */}
+            <div className="h-12 flex items-center justify-between gap-3 border border-gray-100 rounded-2xl px-4 bg-white text-slate-800 shadow-sm flex-1 min-w-0">
+              {/* Language Switcher */}
+              <div className="flex items-center gap-0.5">
+                <button
+                  onClick={() => setLang("mr")}
+                  className={`px-3 py-1 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
+                    lang === "mr"
+                      ? "bg-emerald-700 text-white shadow-sm"
+                      : "text-gray-550 hover:text-gray-900"
+                  }`}
+                >
+                  मराठी
+                </button>
+                <button
+                  onClick={() => setLang("en")}
+                  className={`px-3 py-1 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
+                    lang === "en"
+                      ? "bg-emerald-700 text-white shadow-sm"
+                      : "text-gray-555 hover:text-gray-900"
+                  }`}
+                >
+                  En
+                </button>
+              </div>
+
+              {/* Divider */}
+              <div className="w-px h-4 bg-gray-200" />
+
+              {/* Theme Toggle */}
+              <button
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className="p-1 text-amber-500 hover:text-amber-600 transition-transform hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
+                title={lang === "mr" ? "थीम बदला" : "Toggle Theme"}
+              >
+                {isDarkMode ? (
+                  <svg className="w-4 h-4 fill-amber-500 text-amber-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4 text-amber-500 stroke-current fill-none" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                  </svg>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* Book Title */}
-        <div className="text-right min-w-0 max-w-[250px] sm:max-w-[400px]">
-          <p className="text-xs font-black text-slate-800 truncate leading-none" title={book?.title}>
-            {loading ? "..." : book?.title}
-          </p>
-          <p className="text-[9px] font-bold text-slate-400 leading-none mt-1">
-            {lang === "mr" ? "लेखक:" : "Author:"} {loading ? "..." : book?.author}
-          </p>
+        {/* 2. DESKTOP HEADER LAYOUT (hidden lg:flex) */}
+        <div className="hidden lg:flex p-8 flex-row items-center justify-between gap-6 w-full">
+          {/* TITLE AND LOGO */}
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center shadow-inner shrink-0">
+              <BiBookOpen className="text-3xl text-orange-400" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-black text-white tracking-tight leading-tight">
+                {config?.gpName 
+                  ? (lang === "mr" ? `${config.gpName} डिजिटल ई-वाचनालय` : `${config.gpName} Digital eLibrary`)
+                  : (lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary")}
+              </h1>
+              <p className="text-slate-200 text-sm font-semibold mt-0.5">
+                {lang === "mr" ? "वाचनातून विचार, विचारातून विकास." : "Read to Think, Think to Progress."}
+              </p>
+            </div>
+          </div>
+
+          {/* HEADER CONTROLS AND ACTION BUTTON */}
+          <div className="flex flex-row items-center gap-4 relative z-10 shrink-0">
+            {/* BOOK DETAILS CAPSULE */}
+            <div className="h-14 px-4 rounded-2xl flex items-center gap-3 bg-white text-slate-800 border border-gray-100 shadow-sm max-w-[280px]">
+              <div className="p-2 bg-emerald-50 rounded-xl text-emerald-700 shrink-0">
+                <BiSolidBook className="text-xl" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[10px] uppercase tracking-wider font-extrabold text-gray-400 leading-none truncate">{lang === "mr" ? "वाचन सुरू" : "Reading"}</p>
+                <p className="text-sm font-black text-slate-800 mt-1 leading-none truncate" title={book?.title}>{loading ? "..." : book?.title}</p>
+              </div>
+            </div>
+
+            {/* UNIFIED CONTROLS CAPSULE */}
+            <div className="h-14 flex items-center gap-3 border rounded-2xl px-4 bg-white border-gray-100 text-slate-800 shadow-sm">
+              {/* Language Switcher */}
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setLang("mr")}
+                  className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
+                    lang === "mr"
+                      ? "bg-emerald-700 text-white shadow-sm"
+                      : "text-gray-550 hover:text-gray-900"
+                  }`}
+                >
+                  मराठी
+                </button>
+                <button
+                  onClick={() => setLang("en")}
+                  className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
+                    lang === "en"
+                      ? "bg-emerald-700 text-white shadow-sm"
+                      : "text-gray-555 hover:text-gray-900"
+                  }`}
+                >
+                  En
+                </button>
+              </div>
+
+              {/* Divider */}
+              <div className="w-px h-4 bg-gray-200" />
+
+              {/* Theme Toggle */}
+              <button
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className="p-1 text-amber-500 hover:text-amber-600 transition-transform hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
+                title={lang === "mr" ? "थीम बदला" : "Toggle Theme"}
+              >
+                {isDarkMode ? (
+                  <svg className="w-4 h-4 fill-amber-500 text-amber-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4 text-amber-500 stroke-current fill-none" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                  </svg>
+                )}
+              </button>
+            </div>
+
+            {/* EXIT READER / BACK TO eLIBRARY */}
+            <button
+              onClick={() => navigate("/elibrary")}
+              className="h-14 px-5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-extrabold rounded-2xl shadow-lg hover:shadow-orange-500/20 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 cursor-pointer text-xs uppercase tracking-wider"
+            >
+              <BiArrowBack className="text-base" />
+              <span>{lang === "mr" ? "ई-ग्रंथालय" : "eLibrary"}</span>
+            </button>
+          </div>
         </div>
-      </div>
+      </header>
 
       {/* Main Reader Wrapper */}
       <main className="flex-1 w-full mx-auto flex flex-col h-full overflow-hidden relative">
@@ -254,51 +417,57 @@ export default function ReadBookPage() {
           )}
         </div>
 
-        {/* 2. BOTTOM CONTROLS BAR (ZOOM & PAGE NAVIGATOR) */}
+        {/* 2. BOTTOM CONTROLS BAR (ZOOM & PAGE NAVIGATOR - GREEN bg with WHITE capsules) */}
         {!loading && book && (
-          <div className="bg-white border-t border-gray-150 px-4 py-3 flex items-center justify-between gap-4 shadow-inner shrink-0 relative z-10">
-            {/* Zoom Controls */}
-            <div className="flex items-center bg-green-50/30 rounded-xl p-0.5 border border-green-200/55">
-              <button
-                onClick={handleZoomOut}
-                className="p-1.5 hover:bg-white rounded-lg text-green-700 hover:text-green-950 transition active:scale-95 cursor-pointer"
-                title="Zoom Out"
-              >
-                <ZoomOut className="w-4 h-4" />
-              </button>
-              <span className="text-[10px] font-mono font-black w-12 text-center text-orange-500">
-                {Math.round(scale * 100)}%
-              </span>
-              <button
-                onClick={handleZoomIn}
-                className="p-1.5 hover:bg-white rounded-lg text-green-700 hover:text-green-950 transition active:scale-95 cursor-pointer"
-                title="Zoom In"
-              >
-                <ZoomIn className="w-4 h-4" />
-              </button>
-            </div>
+          <div className="relative bg-green-700 text-white rounded-t-2xl md:rounded-t-3xl shadow-inner shrink-0 z-10 overflow-hidden">
+            {/* Subtle Decorative Solid Color Circles */}
+            <div className="absolute top-0 left-1/4 w-16 h-16 rounded-full bg-white/5 pointer-events-none" />
+            <div className="absolute bottom-0 right-1/4 w-20 h-20 rounded-full bg-orange-500/5 pointer-events-none" />
 
-            {/* Page Navigator */}
-            <div className="flex items-center gap-2 bg-green-50/30 rounded-xl p-0.5 border border-green-200/55">
-              <button
-                disabled={pageNumber <= 1}
-                onClick={handlePrevPage}
-                className="p-1.5 hover:bg-white disabled:opacity-30 disabled:hover:bg-transparent rounded-lg text-green-700 hover:text-green-950 transition active:scale-90 cursor-pointer"
-                title="Previous Page"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              <span className="text-[10px] font-black text-orange-500 px-1 font-mono">
-                {getPageRangeLabel()}
-              </span>
-              <button
-                disabled={isMobile ? pageNumber >= (numPages || 1) : pageNumber + 1 >= (numPages || 1)}
-                onClick={handleNextPage}
-                className="p-1.5 hover:bg-white disabled:opacity-30 disabled:hover:bg-transparent rounded-lg text-green-700 hover:text-green-950 transition active:scale-90 cursor-pointer"
-                title="Next Page"
-              >
-                <ChevronRight className="w-4.5 h-4.5" />
-              </button>
+            <div className="px-4 py-3 flex items-center justify-between gap-4 relative z-10">
+              {/* Zoom Controls (White Capsule) */}
+              <div className="flex items-center bg-white rounded-xl p-0.5 border border-gray-100 shadow-sm text-slate-800">
+                <button
+                  onClick={handleZoomOut}
+                  className="p-1.5 hover:bg-slate-50 rounded-lg text-slate-500 hover:text-slate-855 transition active:scale-95 cursor-pointer"
+                  title="Zoom Out"
+                >
+                  <ZoomOut className="w-4 h-4" />
+                </button>
+                <span className="text-[10px] font-mono font-black w-12 text-center text-orange-550">
+                  {Math.round(scale * 100)}%
+                </span>
+                <button
+                  onClick={handleZoomIn}
+                  className="p-1.5 hover:bg-slate-50 rounded-lg text-slate-500 hover:text-slate-855 transition active:scale-95 cursor-pointer"
+                  title="Zoom In"
+                >
+                  <ZoomIn className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Page Navigator (White Capsule) */}
+              <div className="flex items-center gap-2 bg-white rounded-xl p-0.5 border border-gray-100 shadow-sm text-slate-800">
+                <button
+                  disabled={pageNumber <= 1}
+                  onClick={handlePrevPage}
+                  className="p-1.5 hover:bg-slate-50 disabled:opacity-30 disabled:hover:bg-transparent rounded-lg text-slate-500 hover:text-slate-855 transition active:scale-90 cursor-pointer"
+                  title="Previous Page"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <span className="text-[10px] font-black text-orange-550 px-1 font-mono">
+                  {getPageRangeLabel()}
+                </span>
+                <button
+                  disabled={isMobile ? pageNumber >= (numPages || 1) : pageNumber + 1 >= (numPages || 1)}
+                  onClick={handleNextPage}
+                  className="p-1.5 hover:bg-slate-50 disabled:opacity-30 disabled:hover:bg-transparent rounded-lg text-slate-500 hover:text-slate-855 transition active:scale-90 cursor-pointer"
+                  title="Next Page"
+                >
+                  <ChevronRight className="w-4.5 h-4.5" />
+                </button>
+              </div>
             </div>
           </div>
         )}

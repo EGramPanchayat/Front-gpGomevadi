@@ -431,7 +431,7 @@ export default function ELibraryPage() {
                 <BiBookOpen className="text-lg" />
               </div>
               <h3 className={`text-base font-bold ${isDarkMode ? "text-white" : "text-slate-800"}`}>
-                {lang === "mr" ? "एकत्रित पुस्तक सूची" : "Shared Books Directory"}
+                {lang === "mr" ? "सर्व पुस्तके" : "Shared Books Directory"}
               </h3>
             </div>
             <div className={`text-[10px] font-bold ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
