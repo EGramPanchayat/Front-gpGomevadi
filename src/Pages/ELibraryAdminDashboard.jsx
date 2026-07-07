@@ -190,14 +190,16 @@ const ELibraryAdminDashboard = () => {
   return (
     <div className={`min-h-screen transition-colors duration-300 font-sans antialiased p-4 md:p-8 ${
       isDarkMode 
-        ? "bg-emerald-955 bg-[#022c22] text-white" // Solid dark emerald background
+        ? "bg-slate-950 text-white" 
         : "bg-gradient-to-br from-green-50/50 via-white to-orange-50/50 text-slate-800"
     }`}>
       {/* MAIN CONTAINER */}
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* HEADER BAR */}
-        <header className="flex flex-col md:flex-row items-center justify-between gap-6 backdrop-blur-xl rounded-3xl p-6 shadow-2xl relative overflow-hidden transition-all duration-300 border bg-[#022c22] border-emerald-800/40 text-white">
+        <header className={`flex flex-col md:flex-row items-center justify-between gap-6 rounded-3xl p-6 shadow-xl relative overflow-hidden transition-all duration-300 border text-white ${
+          isDarkMode ? "bg-slate-900 border-slate-800" : "bg-green-900 border-green-850"
+        }`}>
           {/* Geometric corner circles without blur but low opacity */}
           <div className="absolute -top-16 -right-16 w-48 h-48 bg-orange-500/10 rounded-full pointer-events-none" />
           <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-green-500/10 rounded-full pointer-events-none" />

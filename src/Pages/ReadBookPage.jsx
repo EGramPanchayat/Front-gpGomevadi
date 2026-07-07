@@ -169,8 +169,7 @@ export default function ReadBookPage() {
   return (
     <div className="h-screen bg-slate-50 text-slate-800 flex flex-col font-sans overflow-hidden">
       {/* HEADER SECTION (EXACT MATCH OF ELIBRARY PAGE NAV) */}
-      {!isFullscreen && (
-        <header className="relative bg-green-700 text-white rounded-b-3xl md:rounded-b-[40px] shadow-lg overflow-hidden shrink-0 z-20">
+      <header className="relative bg-green-700 text-white rounded-b-3xl md:rounded-b-[40px] shadow-lg overflow-hidden shrink-0 z-20">
         
         {/* Subtle Decorative Solid Color Corner Circles (10% opacity, no blur) */}
         <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-green-500/10 pointer-events-none transform translate-x-10 -translate-y-10" />
@@ -362,7 +361,6 @@ export default function ReadBookPage() {
           </div>
         </div>
       </header>
-      )}
 
       {/* Main Reader Wrapper */}
       <main className="flex-1 w-full mx-auto flex flex-col h-full overflow-hidden relative">
@@ -379,7 +377,7 @@ export default function ReadBookPage() {
               </span>
             </div>
           ) : (
-            <div className="shadow-lg border border-gray-150 bg-white p-3 rounded-2xl overflow-hidden transition-all duration-200">
+            <div className="overflow-hidden transition-all duration-200 bg-transparent">
               <Document
                 file={pdfFileUrl}
                 onLoadSuccess={onDocumentLoadSuccess}
@@ -447,24 +445,6 @@ export default function ReadBookPage() {
                   <ZoomIn className="w-4 h-4" />
                 </button>
               </div>
-
-              {/* Fullscreen Toggle Button (White Capsule) */}
-              <button
-                onClick={() => setIsFullscreen(!isFullscreen)}
-                className="h-9 px-4 bg-white rounded-xl border border-gray-100 shadow-sm text-slate-800 hover:text-slate-950 transition active:scale-95 flex items-center gap-1.5 cursor-pointer font-black text-[10px] select-none"
-              >
-                {isFullscreen ? (
-                  <>
-                    <Minimize2 className="w-4 h-4 text-green-700" />
-                    <span>{lang === "mr" ? "बाहेर पडा" : "Exit Full"}</span>
-                  </>
-                ) : (
-                  <>
-                    <Maximize2 className="w-4 h-4 text-green-700" />
-                    <span>{lang === "mr" ? "पूर्ण स्क्रीन" : "Fullscreen"}</span>
-                  </>
-                )}
-              </button>
 
               {/* Page Navigator (White Capsule) */}
               <div className="flex items-center gap-2 bg-white rounded-xl p-0.5 border border-gray-100 shadow-sm text-slate-800">

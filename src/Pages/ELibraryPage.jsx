@@ -380,7 +380,7 @@ export default function ELibraryPage() {
           </div>
 
           {/* Bottom Row: Category Separation Tab Bar */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-1.5 border-t border-slate-700/10 dark:border-emerald-800/20">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-1.5">
             <p className={`text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 shrink-0 ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
               <BiCategory className="text-sm" />
               <span>{lang === "mr" ? "श्रेणीनुसार वर्गीकरण" : "Category Wise Separation"}</span>
@@ -423,7 +423,11 @@ export default function ELibraryPage() {
         </div>
 
         {/* BOOKS GRID DIRECTORY */}
-        <div className="transition-colors min-h-[500px] flex flex-col bg-transparent">
+        <div className={`transition-colors min-h-[500px] flex flex-col ${
+          isDarkMode 
+            ? "lg:bg-[#01221a]/20 lg:border lg:border-emerald-800/35 lg:rounded-3xl lg:p-6 lg:shadow-2xl bg-transparent" 
+            : "lg:bg-white lg:border lg:border-emerald-800/20 lg:rounded-3xl lg:p-6 lg:shadow-md bg-transparent"
+        }`}>
           
           <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-850/20 border-emerald-800/20">
             <div className="flex items-center gap-3">
@@ -434,8 +438,8 @@ export default function ELibraryPage() {
                 {lang === "mr" ? "सर्व पुस्तके" : "Shared Books Directory"}
               </h3>
             </div>
-            <div className={`text-[10px] font-bold ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
-              {lang === "mr" ? `${filteredBooks.length} आढळले` : `${filteredBooks.length} Books Found`}
+            <div className={`text-[10px] font-black tracking-wider ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+              TOTAL BOOKS : {filteredBooks.length}
             </div>
           </div>
 
