@@ -202,7 +202,7 @@ export default function ReadBookPage() {
           {/* Third line: eLibrary Title */}
           <div className="relative z-10">
             <h1 className="text-2xl font-black text-white tracking-tight leading-none">
-              {lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary"}
+              eLibrary
             </h1>
             <p className="text-slate-200 text-xs md:text-sm font-semibold mt-1">
               {lang === "mr" ? "वाचनातून विचार, विचारातून विकास." : "Read to Think, Think to Progress."}
@@ -281,8 +281,8 @@ export default function ReadBookPage() {
             <div>
               <h1 className="text-2xl font-black text-white tracking-tight leading-tight">
                 {config?.gpName 
-                  ? (lang === "mr" ? `${config.gpName} डिजिटल ई-वाचनालय` : `${config.gpName} Digital eLibrary`)
-                  : (lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary")}
+                  ? `${config.gpName} eLibrary`
+                  : "eLibrary"}
               </h1>
               <p className="text-slate-200 text-sm font-semibold mt-0.5">
                 {lang === "mr" ? "वाचनातून विचार, विचारातून विकास." : "Read to Think, Think to Progress."}

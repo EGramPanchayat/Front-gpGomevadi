@@ -267,7 +267,7 @@ const ELibraryAdminDashboard = () => {
                 {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
               </p>
               <h2 className="text-lg lg:text-xs font-black tracking-tight mt-1 leading-tight">
-                {lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary"}
+                eLibrary
               </h2>
             </div>
           </div>
@@ -314,26 +314,15 @@ const ELibraryAdminDashboard = () => {
             {/* Third line: eLibrary Admin Title */}
             <div className="relative z-10">
               <h1 className="text-2xl font-black text-white tracking-tight leading-none">
-                {lang === "mr" ? "डिजिटल ई-वाचनालय" : "eLibrary Admin Console"}
+                eLibrary Admin Console
               </h1>
               <p className="text-slate-200 text-xs font-semibold mt-1">
                 {lang === "mr" ? "वाचनातून विचार, विचारातून विकास." : "Read to Think, Think to Progress."}
               </p>
             </div>
 
-            {/* Fourth line: Stats + Controls Capsules */}
+            {/* Fourth line: Controls Capsule */}
             <div className="relative z-10 flex items-center gap-3 mt-2 w-full">
-              {/* Total Books Capsule */}
-              <div className="h-12 px-4 rounded-2xl flex items-center gap-3 bg-emerald-950/40 border border-emerald-800/30 text-white shadow-sm flex-1 min-w-0">
-                <div className="p-1.5 bg-green-500/10 rounded-xl text-[#34d399] shrink-0">
-                  <BiSolidBook className="text-lg animate-pulse" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[9px] uppercase tracking-wider font-extrabold text-slate-400 leading-none truncate">{lang === "mr" ? "एकूण पुस्तके" : "Books"}</p>
-                  <p className="text-sm font-black text-white mt-0.5 leading-none">{stats.totalBooks}</p>
-                </div>
-              </div>
-
               {/* Unified Controls Capsule */}
               <div className="h-12 flex items-center justify-between gap-3 border border-emerald-800/30 rounded-2xl px-4 bg-emerald-950/40 text-white shadow-sm flex-1 min-w-0">
                 {/* Language Switcher */}
@@ -393,8 +382,8 @@ const ELibraryAdminDashboard = () => {
               <div>
                 <h1 className="text-2xl font-black text-white tracking-tight leading-tight">
                   {config?.gpName 
-                    ? (lang === "mr" ? `${config.gpName} डिजिटल ई-वाचनालय` : `${config.gpName} eLibrary Admin Console`)
-                    : (lang === "mr" ? "डिजिटल ई-वाचनालय" : "eLibrary Admin Console")}
+                    ? `${config.gpName} eLibrary Admin Console`
+                    : "eLibrary Admin Console"}
                 </h1>
                 <p className="text-slate-200 text-sm font-semibold mt-0.5">
                   {lang === "mr" ? "वाचनातून विचार, विचारातून विकास." : "Read to Think, Think to Progress."}
@@ -404,17 +393,6 @@ const ELibraryAdminDashboard = () => {
 
             {/* HEADER CONTROLS */}
             <div className="flex flex-row items-center gap-4 relative z-10 shrink-0">
-              {/* STATS CAPSULE */}
-              <div className="h-14 px-4 rounded-2xl flex items-center gap-3 bg-emerald-950/40 border border-emerald-800/30 text-white shadow-inner">
-                <div className="p-2 bg-green-500/10 rounded-xl text-[#34d399]">
-                  <BiSolidBook className="text-xl animate-pulse" />
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase tracking-wider font-extrabold text-slate-400 leading-none">{lang === "mr" ? "एकूण पुस्तके" : "Books"}</p>
-                  <p className="text-base font-black text-white mt-1 leading-none">{stats.totalBooks}</p>
-                </div>
-              </div>
-
               {/* UNIFIED CONTROLS CAPSULE */}
               <div className="h-14 flex items-center gap-3 border rounded-2xl px-4 bg-emerald-950/40 border-emerald-800/30">
                 {/* Language Switcher */}
