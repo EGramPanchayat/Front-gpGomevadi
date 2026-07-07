@@ -289,29 +289,70 @@ const ELibraryAdminDashboard = () => {
 
           {/* 1. MOBILE HEADER LAYOUT (lg:hidden) */}
           <div className="lg:hidden p-5 flex flex-col gap-4">
-            {/* Top line: Back Arrow */}
-            <div className="relative z-10 flex items-center">
-              <button
-                onClick={() => navigate("/admin")}
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition active:scale-95 cursor-pointer shadow-sm"
-                title={lang === "mr" ? "अॅडमिन डॅशबोर्डवर जा" : "Back to Admin Dashboard"}
-              >
-                <BiArrowBack className="text-xl" />
-              </button>
-            </div>
-
-            {/* Second line: Grampanchayat Name with Satyamev Jayate circle logo (Mobile only) */}
-            <div className="relative z-10 flex items-center gap-2.5">
-              {/* Logo in circle (mobile only) */}
-              <div className="w-9 h-9 rounded-full border border-white/20 bg-white overflow-hidden shrink-0 lg:hidden">
-                <img src="/images/satyamev.jpg" alt="Satyamev Jayate" className="w-full h-full object-cover" />
+            {/* Top line: Back Arrow, Grampanchayat Name, and Compact Settings Capsule */}
+            <div className="relative z-10 flex items-center justify-between gap-3 w-full">
+              <div className="flex items-center gap-2 min-w-0">
+                <button
+                  onClick={() => navigate("/admin")}
+                  className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition active:scale-95 cursor-pointer shadow-sm shrink-0"
+                  title={lang === "mr" ? "अॅडमिन डॅशबोर्डवर जा" : "Back to Admin Dashboard"}
+                >
+                  <BiArrowBack className="text-lg" />
+                </button>
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <div className="w-7 h-7 rounded-full border border-white/20 bg-white overflow-hidden shrink-0">
+                    <img src="/images/satyamev.jpg" alt="Satyamev Jayate" className="w-full h-full object-cover" />
+                  </div>
+                  <h2 className="text-xs font-bold tracking-wider text-emerald-100 uppercase opacity-95 truncate">
+                    {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
+                  </h2>
+                </div>
               </div>
-              <h2 className="text-xl lg:text-sm font-bold tracking-wider text-emerald-100 uppercase opacity-95">
-                {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
-              </h2>
+
+              {/* Compact Settings Capsule (En/Mr + Theme) */}
+              <div className="flex items-center gap-1 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full p-0.5 shrink-0">
+                <div className="flex items-center">
+                  <button
+                    onClick={() => setLang("mr")}
+                    className={`px-2 py-0.5 rounded-full text-[9px] font-black transition-all cursor-pointer ${
+                      lang === "mr"
+                        ? "bg-white text-slate-800 shadow-sm"
+                        : "text-white/80 hover:text-white"
+                    }`}
+                  >
+                    मराठी
+                  </button>
+                  <button
+                    onClick={() => setLang("en")}
+                    className={`px-2 py-0.5 rounded-full text-[9px] font-black transition-all cursor-pointer ${
+                      lang === "en"
+                        ? "bg-white text-slate-800 shadow-sm"
+                        : "text-white/80 hover:text-white"
+                    }`}
+                  >
+                    En
+                  </button>
+                </div>
+                <div className="w-px h-3 bg-white/20" />
+                <button
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className="p-1 text-amber-300 hover:text-amber-400 transition-transform active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
+                  title={lang === "mr" ? "थीम बदला" : "Toggle Theme"}
+                >
+                  {isDarkMode ? (
+                    <svg className="w-3 h-3 fill-amber-300 text-amber-300" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
+                    </svg>
+                  ) : (
+                    <svg className="w-3 h-3 text-amber-300 stroke-current fill-none" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
 
-            {/* Third line: eLibrary Admin Title */}
+            {/* Second line: eLibrary Admin Title */}
             <div className="relative z-10">
               <h1 className="text-2xl font-black text-white tracking-tight leading-none">
                 eLibrary Admin Console
@@ -319,56 +360,6 @@ const ELibraryAdminDashboard = () => {
               <p className="text-slate-200 text-xs font-semibold mt-1">
                 {lang === "mr" ? "वाचनातून विचार, विचारातून विकास." : "Read to Think, Think to Progress."}
               </p>
-            </div>
-
-            {/* Fourth line: Controls Capsule */}
-            <div className="relative z-10 flex items-center gap-3 mt-2 w-full">
-              {/* Unified Controls Capsule */}
-              <div className="h-12 flex items-center justify-between gap-3 border border-emerald-800/30 rounded-2xl px-4 bg-emerald-950/40 text-white shadow-sm flex-1 min-w-0">
-                {/* Language Switcher */}
-                <div className="flex items-center gap-0.5">
-                  <button
-                    onClick={() => setLang("mr")}
-                    className={`px-3 py-1 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
-                      lang === "mr"
-                        ? "bg-green-700 text-white shadow-sm"
-                        : "text-slate-400 hover:text-white"
-                    }`}
-                  >
-                    मराठी
-                  </button>
-                  <button
-                    onClick={() => setLang("en")}
-                    className={`px-3 py-1 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
-                      lang === "en"
-                        ? "bg-green-700 text-white shadow-sm"
-                        : "text-slate-400 hover:text-white"
-                    }`}
-                  >
-                    En
-                  </button>
-                </div>
-
-                {/* Divider */}
-                <div className="w-px h-4 bg-slate-700/40" />
-
-                {/* Theme Toggle */}
-                <button
-                  onClick={() => setIsDarkMode(!isDarkMode)}
-                  className="p-1 text-[#f59e0b] hover:text-amber-400 transition-transform hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
-                  title={lang === "mr" ? "थीम बदला" : "Toggle Theme"}
-                >
-                  {isDarkMode ? (
-                    <svg className="w-4 h-4 fill-amber-400 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
-                    </svg>
-                  ) : (
-                    <svg className="w-4 h-4 text-[#f59e0b] stroke-current fill-none" strokeWidth="2.5" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-                    </svg>
-                  )}
-                </button>
-              </div>
             </div>
           </div>
 
