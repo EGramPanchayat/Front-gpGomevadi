@@ -277,6 +277,7 @@ export default function UserDashboard() {
   const [editingApplication, setEditingApplication] = useState(null);
   const [showFineModal, setShowFineModal] = useState(false);
   const [selectedFineForModal, setSelectedFineForModal] = useState(null);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem("darkMode") === "true");
 
   // Notifications states
@@ -1250,7 +1251,7 @@ export default function UserDashboard() {
         </div>
 
         <button
-          onClick={handleLogout}
+          onClick={() => setShowLogoutConfirm(true)}
           className="w-full mt-8 bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl font-bold transition border border-white/20 shadow-md flex items-center justify-center gap-2"
         >
           <span>🚪</span> {t.logout}
@@ -1343,89 +1344,7 @@ export default function UserDashboard() {
               </div>
             )}
           </div>
-        ) : (
-          /* Floating Settings capsule - Available globally across all tabs when in overview */
-          <div className={`absolute top-6 right-6 md:top-8 md:right-10 flex items-center gap-3 p-1 rounded-full border transition z-30 shadow-md ${isDarkMode
-            ? "border-slate-800 bg-slate-950 backdrop-blur-md"
-            : "border-gray-200 bg-white"
-            }`}>
-            {/* Cylinder language buttons */}
-            <div className="flex items-center">
-              <button
-                onClick={() => setLanguage("mr")}
-                className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${language === "mr"
-                  ? "bg-gradient-to-r from-green-700 to-emerald-800 text-white shadow scale-105"
-                  : isDarkMode
-                    ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
-                    : "text-green-800/85 hover:text-green-950 hover:bg-green-50"
-                  }`}
-              >
-                मराठी
-              </button>
-              <button
-                onClick={() => setLanguage("en")}
-                className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${language === "en"
-                  ? "bg-gradient-to-r from-green-700 to-emerald-800 text-white shadow scale-105"
-                  : isDarkMode
-                    ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
-                    : "text-green-800/85 hover:text-green-905 hover:bg-green-50"
-                  }`}
-              >
-                En
-              </button>
-            </div>
-
-            {/* Divider line */}
-            <div className={`h-4 w-px ${isDarkMode ? "bg-slate-800" : "bg-green-200"}`}></div>
-
-            {/* Bell Notification Button */}
-            <button
-              onClick={() => {
-                setShowNotifPanel(!showNotifPanel);
-                if (!showNotifPanel) {
-                  fetchUserNotifications();
-                }
-              }}
-              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 relative group ${isDarkMode ? "hover:bg-slate-800 text-slate-350 hover:text-white" : "hover:bg-green-50 text-green-800"
-                }`}
-              title={t.notifications}
-            >
-              <div className="relative">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
-                {unreadNotifCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center animate-bounce shadow">
-                    {unreadNotifCount}
-                  </span>
-                )}
-              </div>
-            </button>
-
-            {/* Dark Mode toggle button */}
-            <button
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group ${isDarkMode ? "hover:bg-slate-800 text-yellow-300" : "hover:bg-green-50 text-amber-500"
-                }`}
-              title={isDarkMode ? "Light Mode" : "Dark Mode"}
-            >
-              {isDarkMode ? (
-                <div className="relative w-5 h-5 flex items-center justify-center">
-                  <svg className="w-4 h-4 text-yellow-300 drop-shadow-[0_0_5px_rgba(253,224,71,0.6)] transition-all duration-300 transform group-hover:rotate-12 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-                  </svg>
-                  <span className="absolute -top-1 -right-0.5 text-[8px] text-yellow-200 animate-pulse select-none">✦</span>
-                </div>
-              ) : (
-                <div className="relative w-5 h-5 flex items-center justify-center">
-                  <svg className="w-4 h-4 text-amber-500 drop-shadow-[0_0_4px_rgba(245,158,11,0.4)] transition-all duration-300 transform group-hover:rotate-45 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m0 13.5V21M4.93 4.93l1.59 1.59m10.96 10.96l1.59 1.59M3 12h2.25m13.5 0H21m-16.07 7.07l1.59-1.59M16.93 7.07l1.59-1.59M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                  </svg>
-                </div>
-              )}
-            </button>
-          </div>
-        )}
+        ) : null}
 
         {/* ──────── TAB 1: OVERVIEW ──────── */}
         {activeTab === "overview" && (
@@ -1441,19 +1360,103 @@ export default function UserDashboard() {
               <div className="absolute top-1/2 -translate-y-1/2 -right-16 w-36 h-36 rounded-full bg-green-100/50 pointer-events-none"></div>
 
               {/* GP Logo & Name Row */}
-              <div className={`flex items-center gap-4 border-b pb-4 mb-4 ${isDarkMode ? "border-slate-800" : "border-green-100"}`}>
-                <img
-                  src="/images/satyamev.jpg"
-                  alt="GP Logo"
-                  className="h-16 w-16 rounded-full border-2 border-white shadow object-cover shrink-0"
-                />
-                <div>
-                  <h2 className={`text-xl md:text-2xl font-black tracking-tight ${isDarkMode ? "text-green-400" : "text-green-800"}`}>
-                    {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
-                  </h2>
-                  <p className={`text-xs font-semibold mt-0.5 ${isDarkMode ? "text-slate-400" : "text-gray-550"}`}>
-                    {config?.taluka && `ता. ${config.taluka}`}{config?.district && ` | जि. ${config.district}`}
-                  </p>
+              <div className={`relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b pb-4 mb-4 ${isDarkMode ? "border-slate-800" : "border-green-100"}`}>
+                <div className="flex items-center gap-4">
+                  <img
+                    src="/images/satyamev.jpg"
+                    alt="GP Logo"
+                    className="h-16 w-16 rounded-full border-2 border-white shadow object-cover shrink-0"
+                  />
+                  <div>
+                    <h2 className={`text-xl md:text-2xl font-black tracking-tight ${isDarkMode ? "text-green-400" : "text-green-800"}`}>
+                      {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
+                    </h2>
+                    <p className={`text-xs font-semibold mt-0.5 ${isDarkMode ? "text-slate-400" : "text-gray-550"}`}>
+                      {config?.taluka && `ता. ${config.taluka}`}{config?.district && ` | जि. ${config.district}`}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Inline Settings capsule - No absolute positioning to prevent overlap */}
+                <div className={`flex items-center gap-3.5 p-1 rounded-full border transition shadow-md self-end lg:self-auto select-none ${isDarkMode
+                  ? "border-slate-805 bg-slate-950/80 backdrop-blur-md"
+                  : "border-gray-200 bg-white"
+                  }`}>
+                  {/* Cylinder language buttons */}
+                  <div className="flex items-center">
+                    <button
+                      onClick={() => setLanguage("mr")}
+                      className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${language === "mr"
+                        ? "bg-gradient-to-r from-green-700 to-emerald-800 text-white shadow scale-105"
+                        : isDarkMode
+                          ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
+                          : "text-green-800/85 hover:text-green-950 hover:bg-green-50"
+                        }`}
+                    >
+                      मराठी
+                    </button>
+                    <button
+                      onClick={() => setLanguage("en")}
+                      className={`px-3.5 py-1 rounded-full text-xs font-black transition-all duration-300 ${language === "en"
+                        ? "bg-gradient-to-r from-green-700 to-emerald-800 text-white shadow scale-105"
+                        : isDarkMode
+                          ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
+                          : "text-green-800/85 hover:text-green-905 hover:bg-green-50"
+                        }`}
+                    >
+                      En
+                    </button>
+                  </div>
+
+                  {/* Divider line */}
+                  <div className={`h-4 w-px ${isDarkMode ? "bg-slate-800" : "bg-green-200"}`}></div>
+
+                  {/* Bell Notification Button */}
+                  <button
+                    onClick={() => {
+                      setShowNotifPanel(!showNotifPanel);
+                      if (!showNotifPanel) {
+                        fetchUserNotifications();
+                      }
+                    }}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 relative group ${isDarkMode ? "hover:bg-slate-800 text-slate-350 hover:text-white" : "hover:bg-green-50 text-green-800"
+                      }`}
+                    title={t.notifications}
+                  >
+                    <div className="relative">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                      </svg>
+                      {unreadNotifCount > 0 && (
+                        <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center animate-bounce shadow">
+                          {unreadNotifCount}
+                        </span>
+                      )}
+                    </div>
+                  </button>
+
+                  {/* Dark Mode toggle button */}
+                  <button
+                    onClick={() => setIsDarkMode(!isDarkMode)}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group ${isDarkMode ? "hover:bg-slate-800 text-yellow-300" : "hover:bg-green-50 text-amber-500"
+                      }`}
+                    title={isDarkMode ? "Light Mode" : "Dark Mode"}
+                  >
+                    {isDarkMode ? (
+                      <div className="relative w-5 h-5 flex items-center justify-center">
+                        <svg className="w-4 h-4 text-yellow-300 drop-shadow-[0_0_5px_rgba(253,224,71,0.6)] transition-all duration-300 transform group-hover:rotate-12 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                        </svg>
+                        <span className="absolute -top-1 -right-0.5 text-[8px] text-yellow-200 animate-pulse select-none">✦</span>
+                      </div>
+                    ) : (
+                      <div className="relative w-5 h-5 flex items-center justify-center">
+                        <svg className="w-4 h-4 text-amber-500 drop-shadow-[0_0_4px_rgba(245,158,11,0.4)] transition-all duration-300 transform group-hover:rotate-45 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m0 13.5V21M4.93 4.93l1.59 1.59m10.96 10.96l1.59 1.59M3 12h2.25m13.5 0H21m-16.07 7.07l1.59-1.59M16.93 7.07l1.59-1.59M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                        </svg>
+                      </div>
+                    )}
+                  </button>
                 </div>
               </div>
 
@@ -2369,13 +2372,53 @@ export default function UserDashboard() {
           <span>{language === "mr" ? "दाखला अर्ज" : "Certificates"}</span>
         </button>
         <button
-          onClick={handleLogout}
+          onClick={() => setShowLogoutConfirm(true)}
           className="flex flex-col items-center gap-0.5 text-[10px] font-extrabold text-red-500 opacity-80 hover:opacity-100 transition"
         >
           <span className="text-lg">🚪</span>
           <span>{language === "mr" ? "बाहेर पडा" : "Logout"}</span>
         </button>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-[100] p-4">
+          <div className={`rounded-3xl p-6 max-w-sm w-full shadow-2xl border animate-in fade-in zoom-in-95 duration-200 ${
+            isDarkMode ? "bg-slate-900 border-slate-800 text-white" : "bg-white border-green-150 text-gray-800"
+          }`}>
+            <h4 className="text-lg font-black mb-3 flex items-center gap-2" style={{ color: isDarkMode ? "#4ade80" : "#15803d" }}>
+              <span>🚪 {language === "mr" ? "बाहेर पडा" : "Logout"}</span>
+            </h4>
+            <p className="text-sm font-semibold mb-6">
+              {language === "mr" 
+                ? "तुम्हाला खरोखर लॉगआउट करायचे आहे का?" 
+                : "Are you sure you want to log out?"}
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                type="button"
+                onClick={() => setShowLogoutConfirm(false)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition ${
+                  isDarkMode ? "bg-slate-800 hover:bg-slate-700 text-slate-350" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                }`}
+              >
+                {language === "mr" ? "रद्द करा" : "Cancel"}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowLogoutConfirm(false);
+                  handleLogout();
+                }}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-red-650 hover:bg-red-700 shadow-md transition"
+              >
+                {language === "mr" ? "बाहेर पडा" : "Logout"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showFineModal && selectedFineForModal && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
           <div className={`rounded-3xl p-6 max-w-md w-full shadow-2xl border animate-in fade-in zoom-in-95 duration-200 ${
