@@ -41,6 +41,25 @@ const MainPage = () => {
   const { config, loading } = useSiteConfig();
   const { lang } = useLanguage();
 
+  useEffect(() => {
+    const handleScroll = () => {
+      for (let i = sectionIds.length - 1; i >= 0; i--) {
+        const section = document.getElementById(sectionIds[i]);
+
+        if (section && section.offsetTop <= window.scrollY + 100) {
+          setActiveSection(sectionIds[i]);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50/50 via-white to-orange-50/50">
@@ -64,27 +83,6 @@ const MainPage = () => {
     : (lang === "mr" ? "गावाची माहिती" : "Village Profile");
 
   const aboutParagraphs = config?.aboutParagraphs || [];
-
-
-
-  useEffect(() => {
-    const handleScroll = () => {
-      for (let i = sectionIds.length - 1; i >= 0; i--) {
-        const section = document.getElementById(sectionIds[i]);
-
-        if (section && section.offsetTop <= window.scrollY + 100) {
-          setActiveSection(sectionIds[i]);
-          break;
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
 
   return (
       <div className="min-h-screen bg-gradient-to-br from-gray-100 to-blue-100 font-sans ">
