@@ -13,10 +13,13 @@ export default function UserLoginPage() {
   const [countdown, setCountdown] = useState(0);
   const [otpValues, setOtpValues] = useState(Array(4).fill(""));
   const [checkingSession, setCheckingSession] = useState(true);
-  
+  const sessionChecked = useRef(false);
   const inputRefs = useRef([]);
 
   useEffect(() => {
+    if (sessionChecked.current) return;
+    sessionChecked.current = true;
+
     const checkActiveSession = async () => {
       try {
         const { data } = await axioesInstance.post("/auth/otp/refresh");
