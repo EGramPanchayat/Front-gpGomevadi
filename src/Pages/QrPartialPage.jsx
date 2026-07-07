@@ -771,16 +771,18 @@ export default function QrPartialPage() {
             </div>
           )}
 
-          {/* Always Visible Go to Dashboard Button at the bottom of the scrollable container */}
-          <button
-            onClick={() => {
-              window.location.href = "/user/dashboard";
-            }}
-            className="w-full mt-4 bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition shadow-lg flex items-center justify-center gap-2.5 text-base cursor-pointer"
-          >
-            <LayoutDashboard className="w-5.5 h-5.5 text-white/80" />
-            {language === "mr" ? "तुमच्या डॅशबोर्डवर जा" : "Go to your dashboard"}
-          </button>
+          {/* Go to Dashboard Button at the bottom of the scrollable container - only show post OTP verification */}
+          {otpVerified && (
+            <button
+              onClick={() => {
+                window.location.href = "/user/dashboard";
+              }}
+              className="w-full mt-4 bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition shadow-lg flex items-center justify-center gap-2.5 text-base cursor-pointer"
+            >
+              <LayoutDashboard className="w-5.5 h-5.5 text-white/80" />
+              {language === "mr" ? "तुमच्या डॅशबोर्डवर जा" : "Go to your dashboard"}
+            </button>
+          )}
         </div>
 
         {/* Sticky Bottom Action Bar (Post-OTP Verified Only) */}
