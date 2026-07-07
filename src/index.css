@@ -11,3 +11,30 @@
 .animate-fadeUp {
   animation: fadeUp 0.8s ease-out forwards;
 }
+
+/* ============================================================
+   MOBILE FONT SIZE OVERRIDES (screens < 1024px / Tailwind lg)
+   Increases all text to be comfortably readable on mobile.
+   ============================================================ */
+@media (max-width: 1023px) {
+  /* Bump root font size so rem-based sizes scale up */
+  html {
+    font-size: 17px;
+  }
+
+  /* Override Tailwind's tiny pixel-size classes */
+  .text-\[8px\]  { font-size: 12px !important; }
+  .text-\[9px\]  { font-size: 13px !important; }
+  .text-\[10px\] { font-size: 14px !important; }
+  .text-\[11px\] { font-size: 14px !important; }
+
+  /* Override Tailwind named size classes */
+  .text-xs   { font-size: 0.85rem !important; }   /* ~14.5px */
+  .text-sm   { font-size: 0.95rem !important; }   /* ~16px   */
+  .text-base { font-size: 1.05rem !important; }   /* ~18px   */
+  .text-lg   { font-size: 1.2rem  !important; }   /* ~20px   */
+  .text-xl   { font-size: 1.35rem !important; }   /* ~23px   */
+  .text-2xl  { font-size: 1.6rem  !important; }   /* ~27px   */
+  .text-3xl  { font-size: 1.9rem  !important; }   /* ~32px   */
+  .text-4xl  { font-size: 2.2rem  !important; }   /* ~37px   */
+}
