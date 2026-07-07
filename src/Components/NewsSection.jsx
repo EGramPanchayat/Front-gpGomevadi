@@ -75,7 +75,7 @@ const NewsSection = () => {
     <section
       id="news-section"
       ref={sectionRef}
-      className="w-full bg-gradient-to-b from-orange-50/20 to-white pt-16 border-[3px] border-green-900 border-b-0 rounded-t-[36px] overflow-hidden"
+      className="max-w-[1200px] mx-4 md:mx-8 xl:mx-auto bg-gradient-to-b from-orange-50/20 to-white pt-16 border-[3px] border-green-900 rounded-[28px] overflow-hidden shadow-lg my-12"
     >
       <div className="max-w-6xl mx-auto flex flex-col items-center px-4 md:px-20 mb-12">
         {/* Section Heading */}
@@ -126,9 +126,9 @@ const NewsSection = () => {
         )}
       </div>
 
-      {/* Bottom Ribbon Bar - 100% Width */}
+      {/* Bottom Ribbon Bar */}
       {newsItems.length > 0 && (
-        <div className="w-full bg-green-905 bg-green-900 text-white py-4 px-6 md:px-20 flex items-center shadow-lg relative overflow-hidden gap-4 min-h-[68px]">
+        <div className="w-full bg-green-900 text-white py-4 px-6 md:px-10 flex items-center relative overflow-hidden gap-4 min-h-[68px]">
           {/* Ribbon Label Badge */}
           <div className="bg-orange-500 text-white text-xs font-black px-4 py-2.5 rounded-xl shrink-0 uppercase tracking-wider select-none animate-pulse">
             महत्वाचे
