@@ -301,13 +301,6 @@ export default function QrPartialPage() {
         return;
       }
 
-      // Sanitize phone: strip country code (+91 / 0091 / 91) and spaces, keep 10 digits
-      const rawContact = String(family?.whatsappNumber || "").replace(/\D/g, "");
-      const sanitizedContact = rawContact.length === 12 && rawContact.startsWith("91")
-        ? rawContact.slice(2)
-        : rawContact.length === 13 && rawContact.startsWith("091")
-          ? rawContact.slice(3)
-          : rawContact.slice(-10);
 
       const options = {
         key: orderData.keyId,
@@ -338,7 +331,6 @@ export default function QrPartialPage() {
         prefill: {
           name: family?.mainMemberName,
           email: family?.email,
-          contact: sanitizedContact,
         },
         // Explicitly enable all payment methods including UPI
         config: {
