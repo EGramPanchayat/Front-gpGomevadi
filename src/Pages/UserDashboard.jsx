@@ -1262,6 +1262,126 @@ export default function UserDashboard() {
       {/* MAIN CONTAINER */}
       <main className="flex-1 pt-6 px-4 md:pt-8 md:px-8 pb-28 md:pb-10 space-y-4 md:space-y-6 overflow-y-auto relative">
 
+        {/* Global Float Header Actions (Top Most Right Corner) */}
+        <div className="fixed top-4 right-4 md:top-6 md:right-8 z-50 flex items-center gap-2 select-none">
+          {/* Bell Notification Button */}
+          <button
+            onClick={() => {
+              setShowNotifPanel(!showNotifPanel);
+              if (!showNotifPanel) {
+                fetchUserNotifications();
+              }
+            }}
+            className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 relative border shadow-sm ${
+              isDarkMode 
+                ? "bg-slate-900/90 border-slate-800 text-slate-355 hover:text-white" 
+                : "bg-white/90 border-gray-200/85 text-green-800 hover:bg-slate-50"
+            }`}
+            title={t.notifications}
+          >
+            <div className="relative">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+              {unreadNotifCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center animate-bounce shadow">
+                  {unreadNotifCount}
+                </span>
+              )}
+            </div>
+          </button>
+
+          {/* Dark Mode toggle button */}
+          <button
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 border shadow-sm ${
+              isDarkMode 
+                ? "bg-slate-900/90 border-slate-800 text-yellow-300 hover:text-yellow-250" 
+                : "bg-white/90 border-gray-200/85 text-amber-500 hover:bg-slate-50"
+            }`}
+            title={isDarkMode ? "Light Mode" : "Dark Mode"}
+          >
+            {isDarkMode ? (
+              <svg className="w-5 h-5 text-yellow-300" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m0 13.5V21M4.93 4.93l1.59 1.59m10.96 10.96l1.59 1.59M3 12h2.25m13.5 0H21m-16.07 7.07l1.59-1.59M16.93 7.07l1.59-1.59M12 8a4 4 0 100 8 4 4 0 000-8z" />
+              </svg>
+            )}
+          </button>
+
+          {/* Hamburger Menu Button (3 lines) */}
+          <button
+            onClick={() => setShowMenu(!showMenu)}
+            className={`w-9 h-9 rounded-full flex flex-col justify-center items-center gap-1.5 transition-all duration-300 border shadow-sm ${
+              isDarkMode 
+                ? "bg-slate-900/90 border-slate-800 text-slate-350" 
+                : "bg-white/90 border-gray-200/85 text-green-800 hover:bg-slate-50"
+            }`}
+            title="Menu"
+          >
+            <span className={`w-5 h-0.5 transition-all duration-300 ${isDarkMode ? "bg-slate-300" : "bg-green-800"} ${showMenu ? "rotate-45 translate-y-2" : ""}`} />
+            <span className={`w-5 h-0.5 transition-all duration-300 ${isDarkMode ? "bg-slate-300" : "bg-green-800"} ${showMenu ? "opacity-0" : ""}`} />
+            <span className={`w-5 h-0.5 transition-all duration-300 ${isDarkMode ? "bg-slate-300" : "bg-green-800"} ${showMenu ? "-rotate-45 -translate-y-2" : ""}`} />
+          </button>
+
+          {/* Dropdown Menu Popup - Solid White background, full width on mobile viewports */}
+          {showMenu && (
+            <div className="fixed top-[52px] left-0 right-0 w-full bg-white text-gray-800 border-y border-gray-200 shadow-2xl p-6 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300 z-50 rounded-b-3xl md:absolute md:top-11 md:right-0 md:left-auto md:w-52 md:rounded-2xl md:border md:p-4">
+              {/* Language Selection */}
+              <div>
+                <p className="text-[9px] uppercase tracking-wider font-extrabold text-gray-400 mb-1.5">
+                  {language === "mr" ? "भाषा / Language" : "Language"}
+                </p>
+                <div className="flex rounded-lg p-0.5 bg-slate-100">
+                  <button
+                    onClick={() => {
+                      setLanguage("mr");
+                      setShowMenu(false);
+                    }}
+                    className={`flex-1 py-1.5 rounded text-[10px] font-black transition ${
+                      language === "mr" 
+                        ? "bg-green-700 text-white shadow-sm" 
+                        : "text-gray-650 hover:text-gray-900"
+                    }`}
+                  >
+                    मराठी
+                  </button>
+                  <button
+                    onClick={() => {
+                      setLanguage("en");
+                      setShowMenu(false);
+                    }}
+                    className={`flex-1 py-1.5 rounded text-[10px] font-black transition ${
+                      language === "en" 
+                        ? "bg-green-700 text-white shadow-sm" 
+                        : "text-gray-650 hover:text-gray-900"
+                    }`}
+                  >
+                    En
+                  </button>
+                </div>
+              </div>
+
+              <div className="border-t border-gray-100" />
+
+              {/* Logout Action */}
+              <button
+                onClick={() => {
+                  setShowMenu(false);
+                  setShowLogoutConfirm(true);
+                }}
+                className="w-full text-left py-1 flex items-center gap-2 text-[11px] font-bold text-red-500 hover:text-red-650 transition"
+              >
+                <span>🚪</span>
+                <span>{language === "mr" ? "बाहेर पडा (Logout)" : "Logout"}</span>
+              </button>
+            </div>
+          )}
+        </div>
+
         {/* Emerald header navbar for Pay Taxes and Certificates tabs */}
         {activeTab !== "overview" ? (
           <div className="relative overflow-hidden bg-green-900 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -1361,140 +1481,19 @@ export default function UserDashboard() {
               <div className="absolute top-1/2 -translate-y-1/2 -right-16 w-36 h-36 rounded-full bg-green-100/50 pointer-events-none"></div>
 
               {/* GP Logo & Name Row */}
-              <div className={`relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b pb-4 mb-4 ${isDarkMode ? "border-slate-800" : "border-green-100"}`}>
-                <div className="flex items-center gap-4">
-                  <img
-                    src="/images/satyamev.jpg"
-                    alt="GP Logo"
-                    className="h-16 w-16 rounded-full border-2 border-white shadow object-cover shrink-0"
-                  />
-                  <div>
-                    <h2 className={`text-xl md:text-2xl font-black tracking-tight ${isDarkMode ? "text-green-400" : "text-green-800"}`}>
-                      {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
-                    </h2>
-                    <p className={`text-xs font-semibold mt-0.5 ${isDarkMode ? "text-slate-400" : "text-gray-555"}`}>
-                      {config?.taluka && `ता. ${config.taluka}`}{config?.district && ` | जि. ${config.district}`}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Header Actions: Notifications, Theme, and Hamburger Menu */}
-                <div className="flex items-center gap-2 self-end lg:self-auto relative z-30 select-none">
-                  {/* Bell Notification Button */}
-                  <button
-                    onClick={() => {
-                      setShowNotifPanel(!showNotifPanel);
-                      if (!showNotifPanel) {
-                        fetchUserNotifications();
-                      }
-                    }}
-                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 relative group ${isDarkMode ? "hover:bg-slate-800 text-slate-350 hover:text-white" : "hover:bg-green-50 text-green-800"
-                      }`}
-                    title={t.notifications}
-                  >
-                    <div className="relative">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                      </svg>
-                      {unreadNotifCount > 0 && (
-                        <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center animate-bounce shadow">
-                          {unreadNotifCount}
-                        </span>
-                      )}
-                    </div>
-                  </button>
-
-                  {/* Dark Mode toggle button */}
-                  <button
-                    onClick={() => setIsDarkMode(!isDarkMode)}
-                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 group ${isDarkMode ? "hover:bg-slate-800 text-yellow-300" : "hover:bg-green-50 text-amber-500"
-                      }`}
-                    title={isDarkMode ? "Light Mode" : "Dark Mode"}
-                  >
-                    {isDarkMode ? (
-                      <div className="relative w-5 h-5 flex items-center justify-center">
-                        <svg className="w-4 h-4 text-yellow-300 drop-shadow-[0_0_5px_rgba(253,224,71,0.6)] transition-all duration-300 transform group-hover:rotate-12 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-                        </svg>
-                        <span className="absolute -top-1 -right-0.5 text-[8px] text-yellow-200 animate-pulse select-none">✦</span>
-                      </div>
-                    ) : (
-                      <div className="relative w-5 h-5 flex items-center justify-center">
-                        <svg className="w-4 h-4 text-amber-500 drop-shadow-[0_0_4px_rgba(245,158,11,0.4)] transition-all duration-300 transform group-hover:rotate-45 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m0 13.5V21M4.93 4.93l1.59 1.59m10.96 10.96l1.59 1.59M3 12h2.25m13.5 0H21m-16.07 7.07l1.59-1.59M16.93 7.07l1.59-1.59M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                        </svg>
-                      </div>
-                    )}
-                  </button>
-
-                  {/* Hamburger Menu Button (3 lines) */}
-                  <button
-                    onClick={() => setShowMenu(!showMenu)}
-                    className={`w-9 h-9 rounded-full flex flex-col justify-center items-center gap-1.5 transition-all duration-300 ${
-                      isDarkMode ? "hover:bg-slate-800 text-slate-300" : "hover:bg-green-50 text-green-800"
-                    }`}
-                    title="Menu"
-                  >
-                    <span className={`w-5 h-0.5 transition-all duration-300 ${isDarkMode ? "bg-slate-300" : "bg-green-800"} ${showMenu ? "rotate-45 translate-y-2" : ""}`} />
-                    <span className={`w-5 h-0.5 transition-all duration-300 ${isDarkMode ? "bg-slate-300" : "bg-green-800"} ${showMenu ? "opacity-0" : ""}`} />
-                    <span className={`w-5 h-0.5 transition-all duration-300 ${isDarkMode ? "bg-slate-300" : "bg-green-800"} ${showMenu ? "-rotate-45 -translate-y-2" : ""}`} />
-                  </button>
-
-                  {/* Dropdown Menu Popup */}
-                  {showMenu && (
-                    <div className={`absolute top-11 right-0 w-48 rounded-2xl shadow-xl border p-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200 z-50 ${
-                      isDarkMode ? "bg-slate-900 border-slate-800 text-white" : "bg-white border-gray-150 text-gray-800"
-                    }`}>
-                      {/* Language Selection */}
-                      <div>
-                        <p className="text-[9px] uppercase tracking-wider font-extrabold opacity-60 mb-1.5">
-                          {language === "mr" ? "भाषा / Language" : "Language"}
-                        </p>
-                        <div className={`flex rounded-lg p-0.5 ${isDarkMode ? "bg-slate-950" : "bg-slate-100"}`}>
-                          <button
-                            onClick={() => {
-                              setLanguage("mr");
-                              setShowMenu(false);
-                            }}
-                            className={`flex-1 py-1 rounded text-[10px] font-black transition ${
-                              language === "mr" 
-                                ? "bg-green-700 text-white shadow-sm" 
-                                : isDarkMode ? "text-slate-400 hover:text-slate-200" : "text-gray-650 hover:text-gray-900"
-                            }`}
-                          >
-                            मराठी
-                          </button>
-                          <button
-                            onClick={() => {
-                              setLanguage("en");
-                              setShowMenu(false);
-                            }}
-                            className={`flex-1 py-1 rounded text-[10px] font-black transition ${
-                              language === "en" 
-                                ? "bg-green-700 text-white shadow-sm" 
-                                : isDarkMode ? "text-slate-400 hover:text-slate-200" : "text-gray-650 hover:text-gray-900"
-                            }`}
-                          >
-                            En
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className={`border-t ${isDarkMode ? "border-slate-800" : "border-gray-100"}`} />
-
-                      {/* Logout Action */}
-                      <button
-                        onClick={() => {
-                          setShowMenu(false);
-                          setShowLogoutConfirm(true);
-                        }}
-                        className="w-full text-left py-1 flex items-center gap-2 text-[11px] font-bold text-red-500 hover:text-red-605 transition"
-                      >
-                        <span>🚪</span>
-                        <span>{language === "mr" ? "बाहेर पडा (Logout)" : "Logout"}</span>
-                      </button>
-                    </div>
-                  )}
+              <div className={`relative z-10 flex items-center gap-4 border-b pb-4 mb-4 ${isDarkMode ? "border-slate-800" : "border-green-100"}`}>
+                <img
+                  src="/images/satyamev.jpg"
+                  alt="GP Logo"
+                  className="h-16 w-16 rounded-full border-2 border-white shadow object-cover shrink-0"
+                />
+                <div>
+                  <h2 className={`text-xl md:text-2xl font-black tracking-tight ${isDarkMode ? "text-green-400" : "text-green-800"}`}>
+                    {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
+                  </h2>
+                  <p className={`text-xs font-semibold mt-0.5 ${isDarkMode ? "text-slate-400" : "text-gray-555"}`}>
+                    {config?.taluka && `ता. ${config.taluka}`}{config?.district && ` | जि. ${config.district}`}
+                  </p>
                 </div>
               </div>
 
