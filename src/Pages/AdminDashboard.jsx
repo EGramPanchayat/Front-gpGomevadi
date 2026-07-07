@@ -94,7 +94,7 @@ export default function AdminDashboard() {
   const NavButton = ({ tabKey, label }) => (
     <button
       onClick={() => handleNavClick(tabKey)}
-      className={`w-full text-left p-3 rounded-xl font-bold text-sm flex items-center gap-3 transition ${
+      className={`w-full text-left py-2 px-3.5 rounded-xl font-bold text-sm flex items-center gap-2.5 transition ${
         activeTab === tabKey
           ? "bg-orange-500 text-white shadow-lg"
           : isDarkMode
@@ -116,9 +116,9 @@ export default function AdminDashboard() {
         {/* SIDEBAR */}
         <aside className={`hidden md:flex md:w-64 p-6 flex-col justify-between shadow-2xl relative transition-colors duration-300 ${isDarkMode ? "bg-slate-900 border-r border-slate-800 text-white" : "bg-green-900 text-white"
           }`}>
-          <div className="space-y-8">
+          <div className="space-y-4">
 
-            <div className={`flex flex-col border-b pb-4 gap-3 ${isDarkMode ? "border-slate-800" : "border-green-800"}`}>
+            <div className={`flex flex-col border-b pb-2.5 gap-2 ${isDarkMode ? "border-slate-800" : "border-green-800"}`}>
               {/* Row for Logo Circle + Grampanchayat Name */}
               {(() => {
                 const gpVillageName = config?.gpName ? config.gpName.replace(/ग्रामपंचायत/g, "").trim() : "गोमेवाडी";
@@ -146,12 +146,12 @@ export default function AdminDashboard() {
             </div>
 
             {/* NAVIGATION */}
-            <nav className="flex flex-col gap-2">
+            <nav className="flex flex-col gap-1">
               {navItems.map((item) => (
                 <NavButton key={item.key} tabKey={item.key} label={navLabel(item)} />
               ))}
 
-              <div className={`border-t my-2 pt-2 text-[10px] font-bold tracking-wider uppercase ${isDarkMode ? "border-slate-800 text-slate-500" : "border-green-800 text-green-400"}`}>
+              <div className={`border-t my-1 pt-1 text-[10px] font-bold tracking-wider uppercase ${isDarkMode ? "border-slate-800 text-slate-500" : "border-green-800 text-green-400"}`}>
                 {lang === "mr" ? "कुटुंब व कर" : "Family & Tax"}
               </div>
 
@@ -159,7 +159,7 @@ export default function AdminDashboard() {
                 <NavButton key={item.key} tabKey={item.key} label={navLabel(item)} />
               ))}
 
-              <div className={`border-t my-2 pt-2 text-[10px] font-bold tracking-wider uppercase ${isDarkMode ? "border-slate-800 text-slate-500" : "border-green-800 text-green-400"}`}>
+              <div className={`border-t my-1 pt-1 text-[10px] font-bold tracking-wider uppercase ${isDarkMode ? "border-slate-800 text-slate-500" : "border-green-800 text-green-400"}`}>
                 {lang === "mr" ? "संस्था व रचना" : "Board & Structure"}
               </div>
 
@@ -172,7 +172,7 @@ export default function AdminDashboard() {
           {/* LOGOUT */}
              <button
                onClick={handleLogout}
-               className="w-full mt-8 bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl font-bold transition border border-white/20 shadow-md flex items-center justify-center gap-2"
+               className="w-full mt-4 bg-white/10 hover:bg-white/20 text-white py-2.5 rounded-xl font-bold transition border border-white/20 shadow-md flex items-center justify-center gap-2"
              >
                {lang === "mr" ? "बाहेर पडा" : "Logout"}
              </button>
