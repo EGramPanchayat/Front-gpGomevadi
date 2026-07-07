@@ -164,10 +164,10 @@ export default function ELibraryPage() {
 
           {/* Title & Subtitle */}
           <div className="min-w-0">
-            <p className="text-[10px] font-bold tracking-wider uppercase opacity-90 truncate leading-tight">
+            <p className="text-xs lg:text-[10px] font-bold tracking-wider uppercase opacity-90 truncate leading-tight">
               {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
             </p>
-            <h2 className="text-xs font-black tracking-tight mt-1 leading-tight">
+            <h2 className="text-sm lg:text-xs font-black tracking-tight mt-1 leading-tight">
               {lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary"}
             </h2>
           </div>
@@ -199,17 +199,17 @@ export default function ELibraryPage() {
 
           {/* Second line: Grampanchayat Name */}
           <div className="relative z-10">
-            <h2 className="text-sm font-bold tracking-wider text-emerald-100 uppercase opacity-95">
+            <h2 className="text-base lg:text-sm font-bold tracking-wider text-emerald-100 uppercase opacity-95">
               {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
             </h2>
           </div>
 
           {/* Third line: eLibrary Title */}
           <div className="relative z-10">
-            <h1 className="text-2xl font-black text-white tracking-tight leading-none">
+            <h1 className="text-3xl lg:text-2xl font-black text-white tracking-tight leading-none">
               {lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary"}
             </h1>
-            <p className="text-slate-200 text-xs md:text-sm font-semibold mt-1">
+            <p className="text-slate-200 text-sm lg:text-xs font-semibold mt-1.5">
               {lang === "mr" ? "वाचनातून विचार, विचारातून विकास." : "Read to Think, Think to Progress."}
             </p>
           </div>
@@ -222,8 +222,8 @@ export default function ELibraryPage() {
                 <BiSolidBook className="text-lg" />
               </div>
               <div className="min-w-0">
-                <p className="text-[9px] uppercase tracking-wider font-extrabold text-gray-400 leading-none truncate">{lang === "mr" ? "एकूण पुस्तके" : "Books"}</p>
-                <p className="text-sm font-black text-slate-800 mt-0.5 leading-none">{books.length}</p>
+                <p className="text-xs lg:text-[9px] uppercase tracking-wider font-extrabold text-gray-400 leading-none truncate">{lang === "mr" ? "एकूण पुस्तके" : "Books"}</p>
+                <p className="text-base lg:text-sm font-black text-slate-800 mt-1 leading-none">{books.length}</p>
               </div>
             </div>
 
@@ -233,7 +233,7 @@ export default function ELibraryPage() {
               <div className="flex items-center gap-0.5">
                 <button
                   onClick={() => setLang("mr")}
-                  className={`px-3 py-1 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
+                  className={`px-3 py-1 rounded-xl text-xs lg:text-[10px] font-black transition-all duration-200 cursor-pointer ${
                     lang === "mr"
                       ? "bg-emerald-700 text-white shadow-sm"
                       : "text-gray-550 hover:text-gray-900"
@@ -243,7 +243,7 @@ export default function ELibraryPage() {
                 </button>
                 <button
                   onClick={() => setLang("en")}
-                  className={`px-3 py-1 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
+                  className={`px-3 py-1 rounded-xl text-xs lg:text-[10px] font-black transition-all duration-200 cursor-pointer ${
                     lang === "en"
                       ? "bg-emerald-700 text-white shadow-sm"
                       : "text-gray-555 hover:text-gray-900"
@@ -388,7 +388,7 @@ export default function ELibraryPage() {
                 placeholder={lang === "mr" ? "पुस्तकाचे नाव, लेखक किंवा प्रकार शोधा..." : "Search title, author or genre..."}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className={`w-full rounded-2xl py-3.5 pl-12 pr-4 text-xs font-bold outline-none transition-all shadow-inner border ${
+                className={`w-full rounded-2xl py-3.5 pl-12 pr-4 text-sm lg:text-xs font-bold outline-none transition-all shadow-inner border ${
                   isDarkMode 
                     ? "bg-[#01221a] border-emerald-800/30 text-slate-200 focus:border-orange-500 focus:bg-[#01221a]/80" 
                     : "bg-emerald-50/30 border-emerald-100 text-slate-800 focus:bg-white focus:border-orange-500"
@@ -399,7 +399,7 @@ export default function ELibraryPage() {
 
           {/* Bottom Row: Category Separation Tab Bar */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-1.5">
-            <p className={`text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 shrink-0 ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+            <p className={`text-xs lg:text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 shrink-0 ${isDarkMode ? "text-slate-400" : "text-slate-555"}`}>
               <BiCategory className="text-sm" />
               <span>{lang === "mr" ? "श्रेणीनुसार वर्गीकरण" : "Category Wise Separation"}</span>
             </p>
@@ -430,7 +430,7 @@ export default function ELibraryPage() {
                   <button
                     key={cat}
                     onClick={() => setSelectedCategory(cat === "All" ? "" : cat)}
-                    className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                    className={`px-4 py-2 rounded-xl text-sm lg:text-xs font-black transition-all cursor-pointer ${
                       isSelected
                         ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md"
                         : isDarkMode
@@ -462,7 +462,7 @@ export default function ELibraryPage() {
                 {lang === "mr" ? "सर्व पुस्तके" : "सर्व पुस्तके"}
               </h3>
             </div>
-            <div className={`text-[10px] font-black tracking-wider ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+            <div className={`text-xs lg:text-[10px] font-black tracking-wider ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
               TOTAL BOOKS : {filteredBooks.length}
             </div>
           </div>
@@ -506,10 +506,10 @@ export default function ELibraryPage() {
 
                   {/* DETAILS (BELOW COVER) - ONLY NAME & AUTHOR */}
                   <div className="pt-3 pb-1 text-center flex-1 flex flex-col justify-start bg-transparent">
-                    <h4 className={`font-black text-xs sm:text-sm line-clamp-1 leading-snug tracking-tight ${isDarkMode ? "text-white" : "text-slate-800"}`} title={book.title}>
+                    <h4 className={`font-black text-sm lg:text-xs line-clamp-1 leading-snug tracking-tight ${isDarkMode ? "text-white" : "text-slate-800"}`} title={book.title}>
                       {book.title}
                     </h4>
-                    <p className={`text-[10px] sm:text-xs font-semibold truncate mt-1 ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+                    <p className={`text-xs lg:text-[10px] font-semibold truncate mt-1 ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
                       {lang === "mr" ? "Author : " : "Author : "}{book.author}
                     </p>
                   </div>
@@ -521,7 +521,7 @@ export default function ELibraryPage() {
           {/* Pagination controls */}
           {totalPages > 1 && (
             <div className="flex justify-between items-center mt-8 pt-4 border-t border-slate-700/20">
-              <p className="text-xs text-slate-400 font-bold">
+              <p className="text-sm lg:text-xs text-slate-400 font-bold">
                 {lang === "mr"
                   ? `एकूण ${filteredBooks.length} पैकी ${startIndex + 1} ते ${Math.min(startIndex + itemsPerPage, filteredBooks.length)} पुस्तके`
                   : `Showing ${startIndex + 1}-${Math.min(startIndex + itemsPerPage, filteredBooks.length)} of ${filteredBooks.length}`}
@@ -530,14 +530,14 @@ export default function ELibraryPage() {
                 <button
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                  className="px-3.5 py-2 rounded-xl text-xs font-black border border-slate-700/20 hover:bg-white dark:hover:bg-[#01221a] disabled:opacity-50 disabled:cursor-not-allowed transition bg-transparent text-slate-400"
+                  className="px-3.5 py-2 rounded-xl text-sm lg:text-xs font-black border border-slate-700/20 hover:bg-white dark:hover:bg-[#01221a] disabled:opacity-50 disabled:cursor-not-allowed transition bg-transparent text-slate-400"
                 >
                   {lang === "mr" ? "← मागील" : "← Previous"}
                 </button>
                 <button
                   disabled={currentPage === totalPages}
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                  className="px-3.5 py-2 rounded-xl text-xs font-black border border-slate-700/20 hover:bg-white dark:hover:bg-[#01221a] disabled:opacity-50 disabled:cursor-not-allowed transition bg-transparent text-slate-400"
+                  className="px-3.5 py-2 rounded-xl text-sm lg:text-xs font-black border border-slate-700/20 hover:bg-white dark:hover:bg-[#01221a] disabled:opacity-50 disabled:cursor-not-allowed transition bg-transparent text-slate-400"
                 >
                   {lang === "mr" ? "पुढील →" : "Next →"}
                 </button>
@@ -583,25 +583,25 @@ export default function ELibraryPage() {
               {/* Right Column: Title, Author, Genre Info */}
               <div className="flex flex-col justify-center space-y-3">
                 <div>
-                  <h3 className="text-sm sm:text-base font-black text-slate-800 leading-snug tracking-tight">
+                  <h3 className="text-base lg:text-xs font-black text-slate-800 leading-snug tracking-tight">
                     {selectedBookDetail.title}
                   </h3>
                 </div>
 
                 <div>
-                  <p className="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider text-gray-400 leading-none">
+                  <p className="text-xs lg:text-[8px] font-extrabold uppercase tracking-wider text-gray-400 leading-none">
                     {lang === "mr" ? "लेखक" : "Author"}
                   </p>
-                  <p className="text-xs sm:text-sm font-extrabold text-slate-700 mt-1">
+                  <p className="text-sm lg:text-xs font-extrabold text-slate-700 mt-1">
                     {selectedBookDetail.author}
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider text-gray-400 leading-none mb-1">
+                  <p className="text-xs lg:text-[8px] font-extrabold uppercase tracking-wider text-gray-400 leading-none mb-1">
                     {lang === "mr" ? "प्रकार" : "Genre"}
                   </p>
-                  <span className="text-[8px] sm:text-[9px] font-black px-2 py-0.5 rounded-md border uppercase tracking-wider bg-orange-500/10 text-orange-600 border-orange-500/20 inline-block">
+                  <span className="text-xs lg:text-[8px] font-black px-2 py-0.5 rounded-md border uppercase tracking-wider bg-orange-500/10 text-orange-600 border-orange-500/20 inline-block">
                     {getCategoryBaseName(selectedBookDetail.category)}
                   </span>
                 </div>
@@ -616,7 +616,7 @@ export default function ELibraryPage() {
                   setSelectedBookDetail(null);
                   navigate(`/elibrary/read/${selectedBookDetail._id}`);
                 }}
-                className="py-3.5 rounded-2xl text-center text-xs font-black bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white transition-all shadow-md shadow-orange-500/15 flex items-center justify-center gap-1.5 cursor-pointer"
+                className="py-3.5 rounded-2xl text-center text-sm lg:text-xs font-black bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white transition-all shadow-md shadow-orange-500/15 flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <BiBookOpen className="text-base" />
                 <span>{lang === "mr" ? "वाचन सुरू करा" : "Start Reading"}</span>
@@ -625,7 +625,7 @@ export default function ELibraryPage() {
                 onClick={() => {
                   handleDownloadBook(selectedBookDetail._id, selectedBookDetail.title);
                 }}
-                className="py-3.5 rounded-2xl text-center text-xs font-black bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white transition-all shadow-md shadow-orange-600/15 flex items-center justify-center gap-1.5 cursor-pointer"
+                className="py-3.5 rounded-2xl text-center text-sm lg:text-xs font-black bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white transition-all shadow-md shadow-orange-600/15 flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <BiDownload className="text-base" />
                 <span>{lang === "mr" ? "डाउनलोड" : "Download"}</span>
