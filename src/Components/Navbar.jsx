@@ -10,7 +10,6 @@ const NAV_LINKS = [
   { href: "#certificates", key: "certs_link", en: "Certificates", mr: "प्रमाणपत्रे", section: "certificates" },
   { href: "#tax", key: "tax_link", en: "Pay Taxes", mr: "कर भरणा", section: "tax" },
   { href: "#members", key: "board_link", en: "Executive Board", mr: "कार्यकारी मंडळ", section: "members" },
-  { href: "#officials", key: "officials_link", en: "Officials", mr: "कर्मचारी", section: "officials" },
   { href: "#places", key: "tourism_link", en: "Tourism", mr: "पर्यटन", section: "places" },
   { href: "#contact", key: "contact_link", en: "Contact", mr: "संपर्क", section: "contact" },
 ];
@@ -71,7 +70,7 @@ const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => {
             </li>
           ))}
           <li>
-            <a href="/elibrary" className="bg-orange-550 hover:bg-orange-600 text-white font-bold px-3.5 py-1.5 rounded-xl ml-2 shadow transition text-sm">
+            <a href="/elibrary" className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-3.5 py-1.5 rounded-xl ml-2 shadow transition text-sm">
               {lang === "mr" ? "ई-वाचनालय" : "eLibrary"}
             </a>
           </li>
@@ -109,7 +108,7 @@ const Navbar = ({ activeSection, mobileNavOpen, setMobileNavOpen }) => {
             ))}
             <a
               href="/elibrary"
-              className="bg-orange-550 hover:bg-orange-600 text-white font-bold text-center py-2.5 rounded-xl text-lg mt-2 shadow transition"
+              className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-center py-2.5 rounded-xl text-lg mt-2 shadow transition"
               onClick={() => setMobileNavOpen(false)}
             >
               {lang === "mr" ? "ई-वाचनालय" : "eLibrary"}

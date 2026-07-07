@@ -29,7 +29,6 @@ const sectionIds = [
   "certificates",
   "tax",
   "members",
-  "officials",
   "places",
   "contact",
 ];
