@@ -26,12 +26,8 @@ const NewsSection = () => {
     fetchNews();
   }, []);
 
-  if (newsItems === null) {
-    return null;
-  }
-
   // Limit home grid view to latest 2 news items
-  const latestNews = newsItems.slice(0, 2);
+  const latestNews = newsItems ? newsItems.slice(0, 2) : [];
 
   useEffect(() => {
     if (!latestNews.length) return;
@@ -57,6 +53,10 @@ const NewsSection = () => {
     if (sectionEl) observer.observe(sectionEl);
     return () => sectionEl && observer.unobserve(sectionEl);
   }, [newsItems]);
+
+  if (newsItems === null) {
+    return null;
+  }
 
   const formatDate = (dateString) => {
     if (!dateString) return "";
