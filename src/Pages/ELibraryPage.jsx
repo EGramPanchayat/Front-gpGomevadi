@@ -533,17 +533,6 @@ export default function ELibraryPage() {
                   </span>
                 </div>
 
-                {/* Additional Quick Stats */}
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-[9px] font-bold text-slate-400 pt-2.5 border-t border-gray-100">
-                  <span className="flex items-center gap-1">
-                    <BiDownload className="text-xs text-orange-500" />
-                    <span>{selectedBookDetail.downloads || 0} {lang === "mr" ? "डा." : "DLs"}</span>
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <BiCalendar className="text-xs text-emerald-600" />
-                    <span>{new Date(selectedBookDetail.createdAt).toLocaleDateString(lang === "mr" ? "mr-IN" : "en-IN")}</span>
-                  </span>
-                </div>
               </div>
             </div>
 
