@@ -331,6 +331,35 @@ export default function QrPartialPage() {
           name: family?.mainMemberName,
           email: family?.email,
         },
+        // UPI Intent: opens Google Pay / PhonePe / Paytm / BHIM directly on mobile
+        config: {
+          display: {
+            blocks: {
+              upi: {
+                name: "UPI से भुगतान करें / Pay via UPI",
+                instruments: [
+                  {
+                    method: "upi",
+                    flows: ["intent", "collect", "qr"],
+                    apps: ["google_pay", "phonepe", "paytm", "bhim"],
+                  },
+                ],
+              },
+              other: {
+                name: "अन्य विकल्प / Other Options",
+                instruments: [
+                  { method: "card" },
+                  { method: "netbanking" },
+                  { method: "wallet" },
+                ],
+              },
+            },
+            sequence: ["block.upi", "block.other"],
+            preferences: {
+              show_default_blocks: false,
+            },
+          },
+        },
         theme: {
           color: "#15803d",
         },
