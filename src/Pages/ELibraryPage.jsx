@@ -148,31 +148,31 @@ export default function ELibraryPage() {
           showStickyMobileHeader ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
         }`}
       >
-        <div className="h-16 px-4 flex items-center gap-3">
+        <div className="h-20 px-5 flex items-center gap-4">
           {/* Back button */}
           <button
             onClick={() => navigate("/")}
-            className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white shrink-0 active:scale-90 transition cursor-pointer"
+            className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center text-white shrink-0 active:scale-90 transition cursor-pointer"
           >
-            <BiArrowBack className="text-lg" />
+            <BiArrowBack className="text-2xl" />
           </button>
 
           {/* Book Stack Logo */}
-          <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
-            <BiBookOpen className="text-base text-orange-300" />
+          <div className="w-11 h-11 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
+            <BiBookOpen className="text-2xl text-orange-300" />
           </div>
 
           {/* Title & Subtitle */}
-          <div className="min-w-0 flex items-center gap-2">
+          <div className="min-w-0 flex items-center gap-3">
             {/* Logo in circle (mobile only) */}
-            <div className="w-8 h-8 rounded-full border border-white/20 bg-white overflow-hidden shrink-0 lg:hidden">
+            <div className="w-10 h-10 rounded-full border border-white/20 bg-white overflow-hidden shrink-0 lg:hidden">
               <img src="/images/satyamev.jpg" alt="Satyamev Jayate" className="w-full h-full object-cover" />
             </div>
             <div>
-              <p className="text-xs lg:text-[10px] font-bold tracking-wider uppercase opacity-90 truncate leading-tight">
+              <p className="text-sm lg:text-[10px] font-bold tracking-wider uppercase opacity-90 truncate leading-tight">
                 {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
               </p>
-              <h2 className="text-sm lg:text-xs font-black tracking-tight mt-0.5 leading-tight">
+              <h2 className="text-lg lg:text-xs font-black tracking-tight mt-1 leading-tight">
                 {lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary"}
               </h2>
             </div>
