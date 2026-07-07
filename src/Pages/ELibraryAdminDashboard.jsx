@@ -512,7 +512,7 @@ const ELibraryAdminDashboard = () => {
             </p>
             
             {/* Unified Tabs Pill Container */}
-            <div className={`flex flex-wrap items-center gap-1 p-1 rounded-2xl border ${
+            <div className={`flex flex-wrap items-center gap-1 p-1 rounded-2xl border w-full flex-1 ${
               isDarkMode 
                 ? "bg-emerald-950/40 border-emerald-800/20" 
                 : "bg-slate-100/80 border-slate-200/50"
