@@ -4,10 +4,21 @@ import axioesInstance from "../utils/axioesInstance";
 import { useLanguage } from "../utils/LanguageContext";
 import { useSiteConfig } from "../utils/SiteConfigContext";
 import { toast } from "react-hot-toast";
-import { BookOpen, Search, Download, Calendar, Filter, Library, ArrowLeft } from "lucide-react";
+
+// Icon imports to match ELibraryAdminDashboard
+import { 
+  BiBookOpen, 
+  BiSearch, 
+  BiCategory, 
+  BiCalendar, 
+  BiDownload, 
+  BiSolidBook, 
+  BiArrowBack 
+} from "react-icons/bi";
+import { FiFileText } from "react-icons/fi";
 
 export default function ELibraryPage() {
-  const { lang } = useLanguage();
+  const { lang, setLang } = useLanguage();
   const { config } = useSiteConfig();
   const navigate = useNavigate();
 
@@ -20,6 +31,15 @@ export default function ELibraryPage() {
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
+
+  // Dark/Light theme state (synced with localStorage)
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return localStorage.getItem("elibraryTheme") === "dark";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("elibraryTheme", isDarkMode ? "dark" : "light");
+  }, [isDarkMode]);
 
   useEffect(() => {
     fetchBooks();
@@ -61,8 +81,17 @@ export default function ELibraryPage() {
     }
   };
 
-  // Get unique categories for dropdown filter
-  const categories = [...new Set(books.map(b => b.category))];
+  const getCategoryBaseName = (cat) => {
+    if (!cat) return lang === "mr" ? "इतर" : "Other";
+    const mapping = {
+      "Educational": lang === "mr" ? "शिक्षण" : "Educational",
+      "Historical": lang === "mr" ? "इतिहास" : "Historical",
+      "Literature": lang === "mr" ? "साहित्य" : "Literature",
+      "Science": lang === "mr" ? "विज्ञान" : "Science",
+      "Other": lang === "mr" ? "इतर" : "Other"
+    };
+    return mapping[cat] || cat;
+  };
 
   // Filtering books
   const filteredBooks = books.filter(book => {
@@ -78,205 +107,318 @@ export default function ELibraryPage() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedBooks = filteredBooks.slice(startIndex, startIndex + itemsPerPage);
 
-  const getCategoryBadgeColor = (cat) => {
-    const term = cat.toLowerCase();
-    if (term.includes("educat") || term.includes("शिक्षण")) return "bg-green-50 text-green-700 border-green-200";
-    if (term.includes("hist") || term.includes("इतिहास")) return "bg-orange-50 text-orange-700 border-orange-200";
-    if (term.includes("sci") || term.includes("विज्ञान")) return "bg-teal-50 text-teal-700 border-teal-200";
-    return "bg-slate-50 text-slate-700 border-slate-200";
-  };
-
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Main content wrapper */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8 md:py-12">
-        {/* Page Identity Header */}
-        <div className="bg-gradient-to-r from-green-800 to-green-700 rounded-3xl p-6 md:p-8 text-white shadow-lg relative overflow-hidden mb-8">
-          <div className="absolute right-0 bottom-0 translate-x-12 translate-y-12 w-64 h-64 rounded-full bg-white/5 blur-2xl pointer-events-none" />
-          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-white/10 rounded-2xl">
-                <Library className="w-8 h-8 text-orange-400" />
-              </div>
-              <div>
-                <h1 className="text-2xl md:text-3xl font-black tracking-tight">
-                  {lang === "mr" ? "ग्रामपंचायत ई-वाचनालय" : "Gram Panchayat eLibrary"}
-                </h1>
-                <p className="text-green-150 text-xs md:text-sm font-semibold mt-1">
-                  {lang === "mr"
-                    ? `${config?.gpName || "गोमेवाडी"} गावाची डिजिटल लायब्ररी - ज्ञान सर्वांसाठी मोफत`
-                    : `Digital library collection of ${config?.gpName || "Gomevadi"} - Free knowledge for everyone`}
-                </p>
-              </div>
-            </div>
+    <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? "bg-emerald-950 text-slate-100" : "bg-slate-50 text-slate-800"} font-sans flex flex-col`}>
+      {/* HEADER SECTION (SOLID DARK EMERALD BACKGROUND WITH DECORATIVE CIRCLES) */}
+      <header className="relative bg-[#022c22] text-white p-6 md:p-8 rounded-b-[40px] shadow-lg overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+        
+        {/* Subtle Decorative Solid Color Corner Circles (10% opacity, no blur) */}
+        <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-green-500/10 pointer-events-none transform translate-x-10 -translate-y-10" />
+        <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full bg-orange-500/10 pointer-events-none transform -translate-x-6 translate-y-6" />
 
-            {/* Back to Website Button */}
-            <button
-              onClick={() => navigate("/")}
-              className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-extrabold px-5 py-2.5 rounded-2xl shadow-lg border border-orange-400/20 text-xs transition cursor-pointer shrink-0"
-            >
-              <ArrowLeft className="w-4.5 h-4.5" />
-              <span>{lang === "mr" ? "मुख्यपृष्ठावर जा" : "Back to Home"}</span>
-            </button>
+        {/* TITLE AND LOGO */}
+        <div className="flex items-center gap-4 relative z-10">
+          <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center shadow-inner shrink-0">
+            <BiBookOpen className="text-3xl text-orange-400" />
           </div>
-        </div>
-
-        {/* Search, Filter controls */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 mb-8 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
-          <div className="relative w-full md:max-w-md">
-            <span className="absolute inset-y-0 left-3 flex items-center text-slate-400 pointer-events-none">
-              <Search className="w-4.5 h-4.5" />
-            </span>
-            <input
-              type="text"
-              placeholder={lang === "mr" ? "पुस्तके किंवा लेखक शोधा..." : "Search books or authors..."}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs font-semibold text-slate-800 outline-none focus:bg-white focus:border-green-700 focus:ring-1 focus:ring-green-700 transition"
-            />
-          </div>
-
-          <div className="relative w-full md:w-56">
-            <span className="absolute inset-y-0 left-3 flex items-center text-slate-400 pointer-events-none">
-              <Filter className="w-4 h-4" />
-            </span>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 p-2.5 pl-9 pr-6 rounded-xl text-xs font-bold text-slate-700 outline-none cursor-pointer focus:bg-white focus:border-green-700 transition"
-            >
-              <option value="">{lang === "mr" ? "सर्व श्रेणी" : "All Categories"}</option>
-              {categories.map((cat, idx) => (
-                <option key={idx} value={cat}>{cat}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {/* Books Listing Grid */}
-        {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {[1, 2, 3, 4].map(n => (
-              <div key={n} className="bg-white border border-slate-200 rounded-2xl p-4 space-y-4 shadow-sm animate-pulse">
-                <div className="aspect-[3/4] bg-slate-100 rounded-xl" />
-                <div className="space-y-2">
-                  <div className="h-4 bg-slate-100 rounded w-5/6" />
-                  <div className="h-3 bg-slate-100 rounded w-1/2" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : filteredBooks.length === 0 ? (
-          <div className="text-center py-20 bg-white border border-slate-200 rounded-3xl space-y-3">
-            <BookOpen className="w-16 h-16 text-slate-300 mx-auto stroke-[1.5]" />
-            <h3 className="font-extrabold text-slate-700 text-sm">
-              {lang === "mr" ? "कोणतीही पुस्तके आढळली नाहीत" : "No books found"}
-            </h3>
-            <p className="text-xs text-slate-450 font-semibold max-w-xs mx-auto">
-              {lang === "mr"
-                ? "शोध शब्द किंवा श्रेणी बदलून पुन्हा प्रयत्न करा."
-                : "Please try adjusting your search terms or filters."}
+          <div>
+            <h1 className="text-xl md:text-2xl font-black text-white tracking-tight">
+              {config?.gpName 
+                ? (lang === "mr" ? `${config.gpName} डिजिटल ई-वाचनालय` : `${config.gpName} Digital eLibrary`)
+                : (lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary")}
+            </h1>
+            <p className="text-slate-350 text-xs md:text-sm font-semibold mt-0.5">
+              {lang === "mr" ? "वाचनातून विचार, विचारातून विकास." : "Read to Think, Think to Progress."}
             </p>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {paginatedBooks.map((book) => (
-              <div
-                key={book._id}
-                className="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col h-full"
+        </div>
+
+        {/* HEADER CONTROLS AND ACTION BUTTON */}
+        <div className="flex items-center flex-wrap gap-4 shrink-0 relative z-10">
+          {/* STATS CAPSULES */}
+          <div className="flex items-center gap-3">
+            <div className="h-14 px-4 rounded-2xl flex items-center gap-3 shadow-inner bg-emerald-955 bg-[#01221a] border border-emerald-800/30 text-white">
+              <div className="p-2 bg-green-500/10 rounded-xl text-[#34d399]">
+                <BiSolidBook className="text-xl" />
+              </div>
+              <div>
+                <p className="text-[10px] uppercase tracking-wider font-bold text-slate-400">{lang === "mr" ? "एकूण पुस्तके" : "Books"}</p>
+                <p className="text-base font-black text-white">{books.length}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* UNIFIED CONTROLS CAPSULE */}
+          <div className="h-14 flex items-center gap-3 border rounded-2xl px-4 bg-emerald-955 bg-[#01221a] border-emerald-800/30">
+            {/* Language Switcher */}
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setLang("mr")}
+                className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
+                  lang === "mr"
+                    ? "bg-green-700 text-white shadow-sm"
+                    : "text-slate-400 hover:text-white"
+                }`}
               >
-                {/* Cover Frame */}
-                <div className="relative aspect-[3/4] w-full bg-slate-100 overflow-hidden border-b border-slate-100 flex items-center justify-center">
-                  {book.coverImage ? (
-                    <img
-                      src={book.coverImage}
-                      alt={book.title}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                    />
-                  ) : (
-                    <div className="flex flex-col items-center justify-center text-slate-350 p-4">
-                      <BookOpen className="w-10 h-10 stroke-[1.5] mb-1.5" />
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">No Image</span>
-                    </div>
-                  )}
+                मराठी
+              </button>
+              <button
+                onClick={() => setLang("en")}
+                className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
+                  lang === "en"
+                    ? "bg-green-700 text-white shadow-sm"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                En
+              </button>
+            </div>
 
-                  <span className={`absolute top-3 left-3 px-2 py-0.5 rounded-lg text-[9px] font-black border uppercase tracking-wider shadow-sm bg-white/95 ${getCategoryBadgeColor(book.category)}`}>
-                    {book.category}
-                  </span>
-                </div>
+            {/* Divider */}
+            <div className="w-px h-4 bg-slate-700/40" />
 
-                {/* Metadata content */}
-                <div className="p-4 flex-1 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-extrabold text-slate-800 text-xs line-clamp-2 leading-snug" title={book.title}>
-                      {book.title}
-                    </h3>
-                    <p className="text-[10px] text-slate-500 font-bold mt-1" title={book.author}>
-                      {lang === "mr" ? "द्वारा:" : "By:"} {book.author}
-                    </p>
+            {/* Theme Toggle */}
+            <button
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              className="p-1 text-[#f59e0b] hover:text-amber-400 transition-transform hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
+              title={lang === "mr" ? "थीम बदला" : "Toggle Theme"}
+            >
+              {isDarkMode ? (
+                <svg className="w-4 h-4 fill-amber-455 text-amber-450" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4 text-[#f59e0b] stroke-current fill-none" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                </svg>
+              )}
+            </button>
+          </div>
+
+          {/* BACK TO WEBSITE HOME */}
+          <button
+            onClick={() => navigate("/")}
+            className="w-full md:w-auto h-14 px-5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-455 hover:to-amber-550 text-white font-extrabold rounded-2xl shadow-lg hover:shadow-orange-555/20 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 cursor-pointer text-xs uppercase tracking-wider shrink-0"
+          >
+            <BiArrowBack className="text-base" />
+            <span>{lang === "mr" ? "मुख्यपृष्ठावर जा" : "Back to Home"}</span>
+          </button>
+        </div>
+      </header>
+
+      {/* MAIN CONTAINER */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8 space-y-8">
+        
+        {/* SEARCH & FILTER BAR */}
+        <div className={`rounded-3xl p-6 border transition-all duration-300 ${
+          isDarkMode 
+            ? "bg-emerald-955/20 bg-[#01221a]/20 border-emerald-800/30 shadow-[0_8px_30px_rgb(0,0,0,0.3)]" 
+            : "bg-white border-emerald-800/20 shadow-[0_8px_30px_rgb(2,44,34,0.04)]"
+        } space-y-5`}>
+          
+          {/* Top Row: Search Input */}
+          <div className="flex flex-col md:flex-row items-center gap-4">
+            <div className="relative flex-1 w-full">
+              <span className={`absolute inset-y-0 left-4 flex items-center pointer-events-none ${isDarkMode ? "text-emerald-500/80" : "text-emerald-700/60"}`}>
+                <BiSearch className="text-xl" />
+              </span>
+              <input
+                type="text"
+                placeholder={lang === "mr" ? "पुस्तकाचे नाव, लेखक किंवा प्रकार शोधा..." : "Search title, author or genre..."}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className={`w-full rounded-2xl py-3.5 pl-12 pr-4 text-xs font-bold outline-none transition-all shadow-inner border ${
+                  isDarkMode 
+                    ? "bg-[#01221a] border-emerald-800/30 text-slate-200 focus:border-orange-500 focus:bg-[#01221a]/80" 
+                    : "bg-emerald-50/30 border-emerald-100 text-slate-800 focus:bg-white focus:border-orange-500"
+                }`}
+              />
+            </div>
+          </div>
+
+          {/* Bottom Row: Category Separation Tab Bar */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-1.5 border-t border-slate-700/10 dark:border-emerald-800/20">
+            <p className={`text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 shrink-0 ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+              <BiCategory className="text-sm" />
+              <span>{lang === "mr" ? "श्रेणीनुसार वर्गीकरण" : "Category Wise Separation"}</span>
+            </p>
+            
+            {/* Unified Tabs Pill Container */}
+            <div className={`flex flex-wrap items-center gap-1 p-1 rounded-2xl border ${
+              isDarkMode 
+                ? "bg-[#01221a]/40 border-emerald-800/20" 
+                : "bg-slate-100/80 border-slate-200/50"
+            }`}>
+              {["All", "Educational", "Historical", "Literature", "Science", "Other"].map((cat) => {
+                const isSelected = selectedCategory === (cat === "All" ? "" : cat);
+                const label = lang === "mr" ? (
+                  cat === "All" ? "सर्व पुस्तके" :
+                  cat === "Educational" ? "शिक्षण" :
+                  cat === "Historical" ? "इतिहास" :
+                  cat === "Literature" ? "साहित्य" :
+                  cat === "Science" ? "विज्ञान" : "इतर"
+                ) : cat;
+
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat === "All" ? "" : cat)}
+                    className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                      isSelected
+                        ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md"
+                        : isDarkMode
+                          ? "text-slate-400 hover:text-white hover:bg-emerald-800/20"
+                          : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* BOOKS GRID DIRECTORY */}
+        <div className={`rounded-3xl border p-6 shadow-2xl transition-colors min-h-[500px] flex flex-col ${
+          isDarkMode 
+            ? "bg-[#01221a]/20 border-emerald-800/30" 
+            : "bg-white border-emerald-800/20 shadow-md"
+        }`}>
+          
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-850/20 border-emerald-800/20">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
+                <BiBookOpen className="text-lg" />
+              </div>
+              <h3 className={`text-base font-bold ${isDarkMode ? "text-white" : "text-slate-800"}`}>
+                {lang === "mr" ? "एकत्रित पुस्तक सूची" : "Shared Books Directory"}
+              </h3>
+            </div>
+            <div className={`text-[10px] font-bold ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+              {lang === "mr" ? `${filteredBooks.length} आढळले` : `${filteredBooks.length} Books Found`}
+            </div>
+          </div>
+
+          {/* GRID RENDER */}
+          {loading ? (
+            <div className="flex-1 flex flex-col items-center justify-center py-20 space-y-3">
+              <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+              <p className={`text-xs font-semibold ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>{lang === "mr" ? "पुस्तक सूची लोड होत आहे..." : "Loading books directory..."}</p>
+            </div>
+          ) : filteredBooks.length === 0 ? (
+            <div className="flex-1 flex flex-col items-center justify-center py-20 text-slate-500 space-y-3">
+              <BiBookOpen className="text-6xl opacity-40 text-orange-500" />
+              <div className="text-center">
+                <p className="text-xs font-bold text-slate-450">{lang === "mr" ? "लायब्ररीमध्ये कोणतीही पुस्तके आढळली नाहीत" : "No uploaded books found"}</p>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {paginatedBooks.map((book) => (
+                <div 
+                  key={book._id} 
+                  className={`rounded-2xl border transition-all duration-300 overflow-hidden flex flex-col h-full hover:scale-[1.01] ${
+                    isDarkMode 
+                      ? "bg-[#01221a] border-emerald-800/35 hover:border-emerald-500/40 hover:shadow-2xl shadow-emerald-950/50" 
+                      : "bg-white border-emerald-800/20 hover:border-emerald-800/35 shadow-md hover:shadow-xl"
+                  }`}
+                >
+                  {/* COVER FRAME */}
+                  <div className="relative aspect-[3/4] w-full bg-slate-100 dark:bg-[#01221a]/50 overflow-hidden flex items-center justify-center border-b border-slate-850/10 dark:border-emerald-800/20">
+                    {book.coverImage ? (
+                      <img
+                        src={book.coverImage}
+                        alt={book.title}
+                        className="w-full h-full object-fill"
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center text-slate-500 p-4">
+                        <FiFileText className="text-3xl stroke-[1.5]" />
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mt-2">No Cover</span>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Actions row */}
-                  <div className="mt-4 pt-3 border-t border-slate-100">
-                    <div className="flex items-center justify-between text-[9px] text-slate-400 font-bold mb-3">
-                      <span className="flex items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5" />
-                        {new Date(book.createdAt).toLocaleDateString(lang === "mr" ? "mr-IN" : "en-IN")}
+                  {/* DETAILS (BELOW COVER) */}
+                  <div className="p-4 flex-1 flex flex-col justify-between space-y-4">
+                    <div>
+                      <h4 className={`font-extrabold text-sm line-clamp-1 leading-snug tracking-tight ${isDarkMode ? "text-white" : "text-slate-800"}`} title={book.title}>
+                        {book.title}
+                      </h4>
+                      <div className="mt-1.5 space-y-1.5">
+                        <p className={`text-xs font-semibold truncate ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+                          {lang === "mr" ? "लेखक:" : "Author:"} {book.author}
+                        </p>
+                        <div>
+                          <span className="text-[8px] font-black px-2 py-0.5 rounded-md border uppercase tracking-wider bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/25 inline-block">
+                            {getCategoryBaseName(book.category)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[10px] font-bold text-slate-400">
+                      <span className="flex items-center gap-1 text-orange-600 dark:text-orange-400 font-bold">
+                        <BiDownload />
+                        <span>{book.downloads || 0} {lang === "mr" ? "डाउनलोड" : "downloads"}</span>
                       </span>
-                      <span>
-                        {book.downloads || 0} {lang === "mr" ? "डाउनलोड" : "downloads"}
+                      <span className="flex items-center gap-1">
+                        <BiCalendar />
+                        <span>{new Date(book.createdAt).toLocaleDateString(lang === "mr" ? "mr-IN" : "en-IN")}</span>
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2">
+                    {/* CARD FOOTER WITH EXPLICIT CTA ACTIONS */}
+                    <div className={`pt-3 border-t grid grid-cols-2 gap-2 ${isDarkMode ? "border-slate-800/80" : "border-slate-100"}`}>
                       <button
                         onClick={() => navigate(`/elibrary/read/${book._id}`)}
-                        className="flex items-center justify-center gap-1 py-2 bg-orange-500 hover:bg-orange-600 text-white font-extrabold rounded-xl text-[11px] transition shadow-md shadow-orange-500/10 cursor-pointer"
+                        className="py-2 rounded-xl text-center text-[10px] font-extrabold bg-orange-550 bg-orange-500 hover:bg-orange-600 text-white transition shadow-md shadow-orange-500/10 flex items-center justify-center gap-1 cursor-pointer"
                       >
-                        <BookOpen className="w-3.5 h-3.5" />
+                        <BiBookOpen className="text-sm" />
                         <span>{lang === "mr" ? "वाचा" : "Read"}</span>
                       </button>
                       <button
                         onClick={() => handleDownloadBook(book._id, book.title)}
-                        className="flex items-center justify-center gap-1 py-2 bg-green-700 hover:bg-green-800 text-white font-extrabold rounded-xl text-[11px] transition shadow-md shadow-green-700/10 cursor-pointer"
+                        className="py-2 rounded-xl text-center text-[10px] font-bold bg-orange-600/10 hover:bg-orange-600/20 text-orange-600 dark:text-orange-400 transition-colors border border-orange-600/20 flex items-center justify-center gap-1.5 cursor-pointer"
                       >
-                        <Download className="w-3.5 h-3.5" />
+                        <BiDownload className="text-sm" />
                         <span>{lang === "mr" ? "डाउनलोड" : "Download"}</span>
                       </button>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Pagination controls */}
-        {totalPages > 1 && (
-          <div className="flex justify-between items-center mt-8 pt-4 border-t border-slate-200">
-            <p className="text-xs text-slate-450 font-bold">
-              {lang === "mr"
-                ? `एकूण ${filteredBooks.length} पैकी ${startIndex + 1} ते ${Math.min(startIndex + itemsPerPage, filteredBooks.length)} पुस्तके`
-                : `Showing ${startIndex + 1}-${Math.min(startIndex + itemsPerPage, filteredBooks.length)} of ${filteredBooks.length}`}
-            </p>
-            <div className="flex gap-2">
-              <button
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                className="px-3.5 py-2 rounded-xl text-xs font-black border border-slate-200 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition bg-white text-slate-650"
-              >
-                {lang === "mr" ? "← मागील" : "← Previous"}
-              </button>
-              <button
-                disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                className="px-3.5 py-2 rounded-xl text-xs font-black border border-slate-200 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition bg-white text-slate-650"
-              >
-                {lang === "mr" ? "पुढील →" : "Next →"}
-              </button>
+              ))}
             </div>
-          </div>
-        )}
+          )}
+
+          {/* Pagination controls */}
+          {totalPages > 1 && (
+            <div className="flex justify-between items-center mt-8 pt-4 border-t border-slate-700/20">
+              <p className="text-xs text-slate-400 font-bold">
+                {lang === "mr"
+                  ? `एकूण ${filteredBooks.length} पैकी ${startIndex + 1} ते ${Math.min(startIndex + itemsPerPage, filteredBooks.length)} पुस्तके`
+                  : `Showing ${startIndex + 1}-${Math.min(startIndex + itemsPerPage, filteredBooks.length)} of ${filteredBooks.length}`}
+              </p>
+              <div className="flex gap-2">
+                <button
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  className="px-3.5 py-2 rounded-xl text-xs font-black border border-slate-700/20 hover:bg-white dark:hover:bg-[#01221a] disabled:opacity-50 disabled:cursor-not-allowed transition bg-transparent text-slate-400"
+                >
+                  {lang === "mr" ? "← मागील" : "← Previous"}
+                </button>
+                <button
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  className="px-3.5 py-2 rounded-xl text-xs font-black border border-slate-700/20 hover:bg-white dark:hover:bg-[#01221a] disabled:opacity-50 disabled:cursor-not-allowed transition bg-transparent text-slate-400"
+                >
+                  {lang === "mr" ? "पुढील →" : "Next →"}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </main>
     </div>
   );

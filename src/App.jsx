@@ -17,6 +17,7 @@ import QrPartialPage from './Pages/QrPartialPage.jsx';
 // eLibrary pages
 import ELibraryPage from './Pages/ELibraryPage.jsx';
 import ReadBookPage from './Pages/ReadBookPage.jsx';
+import ELibraryAdminDashboard from './Pages/ELibraryAdminDashboard.jsx';
 
 function App() {
   return (
@@ -40,6 +41,14 @@ function App() {
             <Route path="/qr-partial" element={<QrPartialPage />} />
 
             {/* Standalone eLibrary pages */}
+            <Route
+              path="/admin/elibrary-dashboard"
+              element={
+                <RequireAuth>
+                  <ELibraryAdminDashboard />
+                </RequireAuth>
+              }
+            />
             <Route path="/elibrary" element={<ELibraryPage />} />
             <Route path="/elibrary/read/:id" element={<ReadBookPage />} />
           </Routes>

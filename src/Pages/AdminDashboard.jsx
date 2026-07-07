@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axioesInstance from "../utils/axioesInstance";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,6 +24,7 @@ import VmsELibraryAdmin from "../AdminComponents/VmsELibraryAdmin";
 export default function AdminDashboard() {
   const { config } = useSiteConfig();
   const { lang, setLang } = useLanguage();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [openSection, setOpenSection] = useState(null);
   const [preselectedFamilyForTax, setPreselectedFamilyForTax] = useState(null);
@@ -81,9 +83,17 @@ export default function AdminDashboard() {
   const T = (key) => tabTitles[key]?.[lang] || tabTitles[key]?.mr || key;
   const navLabel = (item) => item[lang] || item.mr;
 
+  const handleNavClick = (key) => {
+    if (key === "elibrary") {
+      navigate("/admin/elibrary-dashboard");
+    } else {
+      setActiveTab(key);
+    }
+  };
+
   const NavButton = ({ tabKey, label }) => (
     <button
-      onClick={() => setActiveTab(tabKey)}
+      onClick={() => handleNavClick(tabKey)}
       className={`w-full text-left p-3 rounded-xl font-bold text-sm flex items-center gap-3 transition ${
         activeTab === tabKey
           ? "bg-orange-500 text-white shadow-lg"
@@ -370,11 +380,12 @@ export default function AdminDashboard() {
                       { key: "submissions", label: "दाखला अर्ज", desc: "नागरिक अर्ज पहा" },
                       { key: "families", label: "कुटुंब नोंदणी", desc: "कुटुंब माहिती व्यवस्थापन" },
                       { key: "taxes", label: "कर विवरण", desc: "कर आकारणी व वसुली" },
+                      { key: "elibrary", label: "ई-वाचनालय", desc: "वाचनालय व्यवस्थापन" },
                       { key: "members", label: "सदस्य / अधिकारी", desc: "संस्था व रचना" },
                     ].map((item) => (
                       <button
                         key={item.key}
-                        onClick={() => setActiveTab(item.key)}
+                        onClick={() => handleNavClick(item.key)}
                         className="text-left p-5 bg-gradient-to-br from-orange-50/80 to-amber-50/40 border border-orange-200/50 rounded-2xl hover:shadow-md hover:border-orange-400 hover:-translate-y-0.5 transition-all duration-300 flex justify-between items-center group"
                       >
                         <div>
