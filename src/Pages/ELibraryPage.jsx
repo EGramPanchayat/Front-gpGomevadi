@@ -28,10 +28,24 @@ export default function ELibraryPage() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [loading, setLoading] = useState(true);
   const [selectedBookDetail, setSelectedBookDetail] = useState(null);
+  const [showStickyMobileHeader, setShowStickyMobileHeader] = useState(false);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
+
+  // Scroll detection for sticky mobile header
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 200) {
+        setShowStickyMobileHeader(true);
+      } else {
+        setShowStickyMobileHeader(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Dark/Light theme state (synced with localStorage)
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -110,6 +124,37 @@ export default function ELibraryPage() {
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? "bg-emerald-950/90 text-slate-100" : "bg-slate-50 text-slate-800"} font-sans flex flex-col`}>
+      {/* STICKY COMPACT MOBILE HEADER */}
+      <div 
+        className={`fixed top-0 left-0 right-0 z-40 lg:hidden bg-green-700 text-white shadow-md transition-all duration-300 transform ${
+          showStickyMobileHeader ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
+        }`}
+      >
+        <div className="h-14 px-4 flex items-center gap-3">
+          {/* Back button */}
+          <button
+            onClick={() => navigate("/")}
+            className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white shrink-0 active:scale-90 transition cursor-pointer"
+          >
+            <BiArrowBack className="text-lg" />
+          </button>
+
+          {/* Book Stack Logo */}
+          <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+            <BiBookOpen className="text-base text-orange-300" />
+          </div>
+
+          {/* Title & Subtitle */}
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold tracking-wider uppercase opacity-90 truncate leading-none">
+              {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
+            </p>
+            <h2 className="text-xs font-black tracking-tight mt-0.5 leading-none">
+              {lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary"}
+            </h2>
+          </div>
+        </div>
+      </div>
       {/* HEADER SECTION */}
       <header className="relative bg-green-700 text-white rounded-b-3xl md:rounded-b-[40px] shadow-lg overflow-hidden">
         
