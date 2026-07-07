@@ -75,9 +75,9 @@ const NewsSection = () => {
     <section
       id="news-section"
       ref={sectionRef}
-      className="w-full bg-gradient-to-b from-orange-50/20 to-white py-16 px-4 md:px-20 border-t border-gray-100 overflow-hidden"
+      className="w-full bg-gradient-to-b from-orange-50/20 to-white pt-16 border-t border-gray-100 overflow-hidden"
     >
-      <div className="max-w-6xl mx-auto flex flex-col items-center">
+      <div className="max-w-6xl mx-auto flex flex-col items-center px-4 md:px-20 mb-12">
         {/* Section Heading */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-extrabold text-green-800 relative inline-block">
@@ -88,77 +88,75 @@ const NewsSection = () => {
 
         {/* 2-column Grid for Latest 2 News */}
         {latestNews.length > 0 ? (
-          <div className="flex flex-col items-center w-full gap-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-              {latestNews.map((item, idx) => (
-                <div
-                  key={item._id || idx}
-                  className={`flex gap-4 p-5 bg-white border border-green-100 hover:border-green-300 rounded-2xl shadow-sm hover:shadow-md transition-all duration-700 ease-out transform ${
-                    visibleItems.includes(idx)
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 -translate-y-10"
-                  }`}
-                >
-                  {/* News Icon/Badge */}
-                  <div className="h-12 w-12 bg-green-50 text-green-700 flex items-center justify-center rounded-xl shrink-0">
-                    <BiNews className="text-2xl" />
-                  </div>
-
-                  {/* News Content */}
-                  <div className="flex flex-col justify-between flex-grow min-w-0">
-                    <p className="text-gray-800 text-base font-semibold leading-relaxed mb-3 break-words whitespace-pre-line">
-                      {item.text}
-                    </p>
-
-                    {item.createdAt && (
-                      <span className="flex items-center gap-1.5 text-xs text-gray-500 font-medium mt-auto">
-                        <BiCalendar className="text-sm text-orange-500" />
-                        {formatDate(item.createdAt)}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Bottom Ribbon Bar */}
-            {newsItems.length > 0 && (
-              <div className="w-full mt-4 bg-green-900 text-white rounded-2xl p-2.5 flex items-center shadow-lg relative overflow-hidden gap-3">
-                {/* Ribbon Label Badge */}
-                <div className="bg-orange-500 text-white text-xs font-black px-3.5 py-2 rounded-xl shrink-0 uppercase tracking-wider select-none animate-pulse">
-                  महत्वाचे
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+            {latestNews.map((item, idx) => (
+              <div
+                key={item._id || idx}
+                className={`flex gap-4 p-5 bg-white border border-green-100 hover:border-green-300 rounded-2xl shadow-sm hover:shadow-md transition-all duration-700 ease-out transform ${
+                  visibleItems.includes(idx)
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 -translate-y-10"
+                }`}
+              >
+                {/* News Icon/Badge */}
+                <div className="h-12 w-12 bg-green-50 text-green-700 flex items-center justify-center rounded-xl shrink-0">
+                  <BiNews className="text-2xl" />
                 </div>
 
-                {/* Moving News Marquee */}
-                <marquee className="flex-grow text-white font-bold text-sm" scrollamount="4">
-                  {newsItems.map((item, idx) => (
-                    <span key={item._id || idx} className="mx-6">
-                      • {item.text}
+                {/* News Content */}
+                <div className="flex flex-col justify-between flex-grow min-w-0">
+                  <p className="text-gray-800 text-base font-semibold leading-relaxed mb-3 break-words whitespace-pre-line">
+                    {item.text}
+                  </p>
+
+                  {item.createdAt && (
+                    <span className="flex items-center gap-1.5 text-xs text-gray-500 font-medium mt-auto">
+                      <BiCalendar className="text-sm text-orange-500" />
+                      {formatDate(item.createdAt)}
                     </span>
-                  ))}
-                </marquee>
-
-                {/* View All Button at the end of the ribbon */}
-                {newsItems.length > 2 && (
-                  <button
-                    onClick={() => {
-                      setModalIndex(0);
-                      setShowModal(true);
-                    }}
-                    className="bg-orange-500 hover:bg-orange-600 text-white font-black text-xs px-4 py-2 rounded-xl shadow-md shrink-0 whitespace-nowrap transition duration-300 transform hover:scale-105"
-                  >
-                    सर्व बातम्या पहा
-                  </button>
-                )}
+                  )}
+                </div>
               </div>
-            )}
+            ))}
           </div>
         ) : (
-          <div className="text-center py-8 text-gray-500 font-medium text-lg">
+          <div className="text-center py-8 text-gray-500 font-medium text-lg w-full">
             कोणतीही बातमी उपलब्ध नाही.
           </div>
         )}
       </div>
+
+      {/* Bottom Ribbon Bar - 100% Width */}
+      {newsItems.length > 0 && (
+        <div className="w-full bg-green-905 bg-green-900 text-white py-4 px-6 md:px-20 flex items-center shadow-lg relative overflow-hidden gap-4 min-h-[68px]">
+          {/* Ribbon Label Badge */}
+          <div className="bg-orange-500 text-white text-xs font-black px-4 py-2.5 rounded-xl shrink-0 uppercase tracking-wider select-none animate-pulse">
+            महत्वाचे
+          </div>
+
+          {/* Moving News Marquee */}
+          <marquee className="flex-grow text-white font-bold text-base" scrollamount="4">
+            {newsItems.map((item, idx) => (
+              <span key={item._id || idx} className="mx-6">
+                • {item.text}
+              </span>
+            ))}
+          </marquee>
+
+          {/* View All Button at the end of the ribbon */}
+          {newsItems.length > 2 && (
+            <button
+              onClick={() => {
+                setModalIndex(0);
+                setShowModal(true);
+              }}
+              className="bg-orange-500 hover:bg-orange-600 text-white font-black text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-md shrink-0 whitespace-nowrap transition duration-300 transform hover:scale-105"
+            >
+              सर्व बातम्या पहा
+            </button>
+          )}
+        </div>
+      )}
 
       {/* One-by-one News Modal */}
       {showModal && newsItems.length > 0 && (
