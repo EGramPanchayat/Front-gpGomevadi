@@ -169,10 +169,10 @@ export default function ELibraryPage() {
               <img src="/images/satyamev.jpg" alt="Satyamev Jayate" className="w-full h-full object-cover" />
             </div>
             <div>
-              <p className="text-sm lg:text-[10px] font-bold tracking-wider uppercase opacity-90 truncate leading-tight">
+              <p className="text-xs lg:text-[10px] font-bold tracking-wider uppercase opacity-90 truncate leading-tight">
                 {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
               </p>
-              <h2 className="text-xs lg:text-xs font-black tracking-tight mt-0.5 leading-tight">
+              <h2 className="text-sm lg:text-xs font-black tracking-tight mt-0.5 leading-tight">
                 {lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary"}
               </h2>
             </div>
@@ -209,7 +209,7 @@ export default function ELibraryPage() {
             <div className="w-9 h-9 rounded-full border border-white/20 bg-white overflow-hidden shrink-0 lg:hidden">
               <img src="/images/satyamev.jpg" alt="Satyamev Jayate" className="w-full h-full object-cover" />
             </div>
-            <h2 className="text-lg lg:text-sm font-bold tracking-wider text-emerald-100 uppercase opacity-95">
+            <h2 className="text-xl lg:text-sm font-bold tracking-wider text-emerald-100 uppercase opacity-95">
               {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
             </h2>
           </div>
