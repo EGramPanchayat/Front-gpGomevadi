@@ -1076,10 +1076,10 @@ export default function UserDashboard() {
             const totals = billTotals(categoryBills);
             const isFine = category.id === "fine";
             const cardTone = isDarkMode
-              ? "bg-slate-950/50 border-slate-800"
+              ? "bg-slate-950/50 border-slate-700 md:border-slate-800"
               : isFine
-                ? "bg-orange-50/30 border-orange-100"
-                : "bg-emerald-50/30 border-emerald-100";
+                ? "bg-orange-50/30 border-orange-300/80 md:border-orange-100"
+                : "bg-emerald-50/30 border-emerald-300/80 md:border-emerald-100";
 
             return (
               <article key={category.id} className={`rounded-2xl border p-4 ${cardTone}`}>
