@@ -490,7 +490,7 @@ export default function ELibraryPage() {
             </button>
 
             {/* Split Content: Left Cover, Right Info */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-4">
+            <div className="grid grid-cols-2 gap-4 pt-4">
               {/* Left Column: Cover Image */}
               <div className="aspect-[3/4] w-full rounded-2xl overflow-hidden bg-slate-50 flex items-center justify-center border border-gray-100 shadow-sm">
                 {selectedBookDetail.coverImage ? (
@@ -500,46 +500,46 @@ export default function ELibraryPage() {
                     className="w-full h-full object-fill"
                   />
                 ) : (
-                  <div className="flex flex-col items-center justify-center text-slate-400 p-4">
-                    <FiFileText className="text-4xl stroke-[1.5]" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider mt-2">No Cover</span>
+                  <div className="flex flex-col items-center justify-center text-slate-400 p-3">
+                    <FiFileText className="text-3xl stroke-[1.5]" />
+                    <span className="text-[9px] font-bold uppercase tracking-wider mt-1">No Cover</span>
                   </div>
                 )}
               </div>
 
               {/* Right Column: Title, Author, Genre Info */}
-              <div className="flex flex-col justify-center space-y-4">
+              <div className="flex flex-col justify-center space-y-3">
                 <div>
-                  <h3 className="text-lg sm:text-xl font-black text-slate-800 leading-snug tracking-tight">
+                  <h3 className="text-sm sm:text-base font-black text-slate-800 leading-snug tracking-tight">
                     {selectedBookDetail.title}
                   </h3>
                 </div>
 
                 <div>
-                  <p className="text-[9px] font-extrabold uppercase tracking-wider text-gray-400 leading-none">
+                  <p className="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider text-gray-400 leading-none">
                     {lang === "mr" ? "लेखक" : "Author"}
                   </p>
-                  <p className="text-sm font-extrabold text-slate-700 mt-1.5">
+                  <p className="text-xs sm:text-sm font-extrabold text-slate-700 mt-1">
                     {selectedBookDetail.author}
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-[9px] font-extrabold uppercase tracking-wider text-gray-400 leading-none mb-1.5">
+                  <p className="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider text-gray-400 leading-none mb-1">
                     {lang === "mr" ? "प्रकार" : "Genre"}
                   </p>
-                  <span className="text-[9px] font-black px-2.5 py-1 rounded-md border uppercase tracking-wider bg-orange-500/10 text-orange-600 border-orange-500/20 inline-block">
+                  <span className="text-[8px] sm:text-[9px] font-black px-2 py-0.5 rounded-md border uppercase tracking-wider bg-orange-500/10 text-orange-600 border-orange-500/20 inline-block">
                     {getCategoryBaseName(selectedBookDetail.category)}
                   </span>
                 </div>
 
                 {/* Additional Quick Stats */}
-                <div className="flex items-center gap-4 text-[10px] font-bold text-slate-400 pt-3 border-t border-gray-100">
-                  <span className="flex items-center gap-1.5">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-[9px] font-bold text-slate-400 pt-2.5 border-t border-gray-100">
+                  <span className="flex items-center gap-1">
                     <BiDownload className="text-xs text-orange-500" />
-                    <span>{selectedBookDetail.downloads || 0} {lang === "mr" ? "डाउनलोड" : "downloads"}</span>
+                    <span>{selectedBookDetail.downloads || 0} {lang === "mr" ? "डा." : "DLs"}</span>
                   </span>
-                  <span className="flex items-center gap-1.5">
+                  <span className="flex items-center gap-1">
                     <BiCalendar className="text-xs text-emerald-600" />
                     <span>{new Date(selectedBookDetail.createdAt).toLocaleDateString(lang === "mr" ? "mr-IN" : "en-IN")}</span>
                   </span>
