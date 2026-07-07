@@ -75,7 +75,7 @@ const NewsSection = () => {
     <section
       id="news-section"
       ref={sectionRef}
-      className="w-full bg-gradient-to-b from-orange-50/20 to-white pt-16 border-t border-gray-100 overflow-hidden"
+      className="w-full bg-gradient-to-b from-orange-50/20 to-white pt-16 border-[3px] border-green-900 border-b-0 rounded-t-[36px] overflow-hidden"
     >
       <div className="max-w-6xl mx-auto flex flex-col items-center px-4 md:px-20 mb-12">
         {/* Section Heading */}
