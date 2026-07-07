@@ -121,17 +121,36 @@ const NewsSection = () => {
               ))}
             </div>
 
-            {/* View All Button */}
-            {newsItems.length > 2 && (
-              <button
-                onClick={() => {
-                  setModalIndex(0);
-                  setShowModal(true);
-                }}
-                className="mt-4 bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-2.5 rounded-xl shadow transition duration-300 transform hover:-translate-y-0.5"
-              >
-                सर्व बातम्या पहा
-              </button>
+            {/* Bottom Ribbon Bar */}
+            {newsItems.length > 0 && (
+              <div className="w-full mt-4 bg-green-900 text-white rounded-2xl p-2.5 flex items-center shadow-lg relative overflow-hidden gap-3">
+                {/* Ribbon Label Badge */}
+                <div className="bg-orange-500 text-white text-xs font-black px-3.5 py-2 rounded-xl shrink-0 uppercase tracking-wider select-none animate-pulse">
+                  महत्वाचे
+                </div>
+
+                {/* Moving News Marquee */}
+                <marquee className="flex-grow text-white font-bold text-sm" scrollamount="4">
+                  {newsItems.map((item, idx) => (
+                    <span key={item._id || idx} className="mx-6">
+                      • {item.text}
+                    </span>
+                  ))}
+                </marquee>
+
+                {/* View All Button at the end of the ribbon */}
+                {newsItems.length > 2 && (
+                  <button
+                    onClick={() => {
+                      setModalIndex(0);
+                      setShowModal(true);
+                    }}
+                    className="bg-orange-500 hover:bg-orange-600 text-white font-black text-xs px-4 py-2 rounded-xl shadow-md shrink-0 whitespace-nowrap transition duration-300 transform hover:scale-105"
+                  >
+                    सर्व बातम्या पहा
+                  </button>
+                )}
+              </div>
             )}
           </div>
         ) : (
@@ -139,9 +158,6 @@ const NewsSection = () => {
             कोणतीही बातमी उपलब्ध नाही.
           </div>
         )}
-
-        {/* Animation Div at Bottom */}
-        <div className="w-16 h-1 bg-orange-400 mx-auto rounded-full mt-12 transition-all duration-300 hover:w-28"></div>
       </div>
 
       {/* One-by-one News Modal */}
