@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axioesInstance from "../utils/axioesInstance";
 import { useLanguage } from "../utils/LanguageContext";
@@ -13,7 +13,8 @@ import {
   BiCalendar, 
   BiDownload, 
   BiSolidBook, 
-  BiArrowBack 
+  BiArrowBack,
+  BiChevronDown
 } from "react-icons/bi";
 import { FiFileText } from "react-icons/fi";
 
@@ -33,6 +34,20 @@ export default function ELibraryPage() {
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
+
+  // Custom Dropdown for mobile genre selection
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, []);
 
   // Scroll detection for sticky mobile header
   useEffect(() => {
@@ -412,37 +427,87 @@ export default function ELibraryPage() {
             </p>
             
             {/* Mobile Dropdown Select (visible on mobile only) */}
-            <div className="block sm:hidden w-full">
-              <select
-                value={selectedCategory === "" ? "All" : selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value === "All" ? "" : e.target.value)}
-                className={`w-full rounded-2xl py-3 px-4 text-sm font-black outline-none transition-all border cursor-pointer ${
+            <div className="block sm:hidden w-full relative z-30" ref={dropdownRef}>
+              <button
+                type="button"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className={`w-full flex items-center justify-between rounded-2xl py-3 px-4 text-sm font-black transition-all border shadow-sm outline-none cursor-pointer ${
                   isDarkMode 
-                    ? "bg-[#01221a] border-emerald-800/30 text-slate-200 focus:border-orange-500" 
-                    : "bg-white border-slate-250 text-slate-800 focus:border-orange-500"
+                    ? "bg-[#01221a] border-emerald-805/30 text-slate-205 hover:border-orange-550/40" 
+                    : "bg-white border-slate-200 text-slate-800 hover:border-orange-500/40"
                 }`}
               >
-                {["All", "Agriculture", "Autobiography", "Culinary", "History", "Music", "Mythology", "Personal Essays", "Physical Education", "Short Stories", "Travel", "Other"].map((cat) => {
-                  const label = lang === "mr" ? (
-                    cat === "All" ? "सर्व पुस्तके" :
-                    cat === "Agriculture" ? "शेती" :
-                    cat === "Autobiography" ? "आत्मचरित्र" :
-                    cat === "Culinary" ? "पाककला" :
-                    cat === "History" ? "इतिहास" :
-                    cat === "Music" ? "संगीत" :
-                    cat === "Mythology" ? "पुराणकथा" :
-                    cat === "Personal Essays" ? "वैयक्तिक लेख" :
-                    cat === "Physical Education" ? "शारीरिक शिक्षण" :
-                    cat === "Short Stories" ? "लघुकथा" :
-                    cat === "Travel" ? "प्रवास" : "इतर"
-                  ) : cat;
-                  return (
-                    <option key={cat} value={cat}>
-                      {label}
-                    </option>
-                  );
-                })}
-              </select>
+                <span>
+                  {(() => {
+                    const cat = selectedCategory === "" ? "All" : selectedCategory;
+                    return lang === "mr" ? (
+                      cat === "All" ? "सर्व पुस्तके" :
+                      cat === "Agriculture" ? "शेती" :
+                      cat === "Autobiography" ? "आत्मचरित्र" :
+                      cat === "Culinary" ? "पाककला" :
+                      cat === "History" ? "इतिहास" :
+                      cat === "Music" ? "संगीत" :
+                      cat === "Mythology" ? "पुराणकथा" :
+                      cat === "Personal Essays" ? "वैयक्तिक लेख" :
+                      cat === "Physical Education" ? "शारीरिक शिक्षण" :
+                      cat === "Short Stories" ? "लघुकथा" :
+                      cat === "Travel" ? "प्रवास" : "इतर"
+                    ) : cat;
+                  })()}
+                </span>
+                <BiChevronDown className={`text-xl transition-transform duration-200 ${isDropdownOpen ? "transform rotate-180 text-orange-500" : "text-slate-400"}`} />
+              </button>
+
+              {/* Designer Options Popover List */}
+              {isDropdownOpen && (
+                <div className={`absolute top-full left-0 right-0 mt-2 z-50 max-h-72 overflow-y-auto rounded-2xl border shadow-2xl transition-all p-1.5 ${
+                  isDarkMode 
+                    ? "bg-[#01221a]/95 border-emerald-800/40 text-slate-200 backdrop-blur-md" 
+                    : "bg-white/95 border-slate-200/90 text-slate-800 backdrop-blur-md"
+                }`}>
+                  {["All", "Agriculture", "Autobiography", "Culinary", "History", "Music", "Mythology", "Personal Essays", "Physical Education", "Short Stories", "Travel", "Other"].map((cat) => {
+                    const isSelected = selectedCategory === (cat === "All" ? "" : cat);
+                    const label = lang === "mr" ? (
+                      cat === "All" ? "सर्व पुस्तके" :
+                      cat === "Agriculture" ? "शेती" :
+                      cat === "Autobiography" ? "आत्मचरित्र" :
+                      cat === "Culinary" ? "पाककला" :
+                      cat === "History" ? "इतिहास" :
+                      cat === "Music" ? "संगीत" :
+                      cat === "Mythology" ? "पुराणकथा" :
+                      cat === "Personal Essays" ? "वैयक्तिक लेख" :
+                      cat === "Physical Education" ? "शारीरिक शिक्षण" :
+                      cat === "Short Stories" ? "लघुकथा" :
+                      cat === "Travel" ? "प्रवास" : "इतर"
+                    ) : cat;
+
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => {
+                          setSelectedCategory(cat === "All" ? "" : cat);
+                          setIsDropdownOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between rounded-xl px-4 py-2.5 text-sm font-bold text-left transition-all cursor-pointer ${
+                          isSelected 
+                            ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white font-extrabold shadow-sm"
+                            : isDarkMode 
+                              ? "hover:bg-emerald-950/50 text-slate-350 hover:text-white" 
+                              : "hover:bg-slate-100 text-slate-650 hover:text-slate-900"
+                        }`}
+                      >
+                        <span>{label}</span>
+                        {isSelected && (
+                          <svg className="w-4 h-4 fill-current shrink-0 ml-2 animate-fadeIn" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                          </svg>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Desktop Unified Tabs Pill Container (hidden on mobile) */}
