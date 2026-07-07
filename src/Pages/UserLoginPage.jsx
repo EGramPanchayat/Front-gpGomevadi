@@ -11,7 +11,7 @@ export default function UserLoginPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
-  const [otpValues, setOtpValues] = useState(Array(6).fill(""));
+  const [otpValues, setOtpValues] = useState(Array(4).fill(""));
   const [checkingSession, setCheckingSession] = useState(true);
   
   const inputRefs = useRef([]);
@@ -74,8 +74,8 @@ export default function UserLoginPage() {
 
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
-    if (!otp || otp.length !== 6) {
-      return toast.error("Please enter a valid 6-digit OTP code");
+    if (!otp || otp.length !== 4) {
+      return toast.error("Please enter a valid 4-digit OTP code");
     }
 
     setLoading(true);
@@ -106,7 +106,7 @@ export default function UserLoginPage() {
     setOtp(newOtp.join(""));
 
     // Focus next box if filled
-    if (cleanValue && index < 5) {
+    if (cleanValue && index < 3) {
       inputRefs.current[index + 1].focus();
     }
   };
@@ -120,11 +120,11 @@ export default function UserLoginPage() {
   const handleOtpPaste = (e) => {
     e.preventDefault();
     const data = e.clipboardData.getData("text").replace(/\D/g, "");
-    if (!/^\d{6}$/.test(data)) return;
+    if (!/^\d{4}$/.test(data)) return;
     const newOtp = data.split("");
     setOtpValues(newOtp);
     setOtp(data);
-    inputRefs.current[5].focus();
+    inputRefs.current[3].focus();
   };
 
   if (checkingSession) {
@@ -208,7 +208,7 @@ export default function UserLoginPage() {
                       type="button"
                       onClick={() => {
                         setOtpSent(false);
-                        setOtpValues(Array(6).fill(""));
+                        setOtpValues(Array(4).fill(""));
                         setOtp("");
                       }}
                       className="text-xs font-bold text-orange-600 hover:text-orange-755 hover:underline transition"
