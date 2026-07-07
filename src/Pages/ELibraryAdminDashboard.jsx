@@ -251,11 +251,6 @@ const ELibraryAdminDashboard = () => {
             <BiArrowBack className="text-2xl" />
           </button>
 
-          {/* Book Logo */}
-          <div className="w-11 h-11 rounded-xl bg-orange-500/10 flex items-center justify-center shrink-0">
-            <BiBookOpen className="text-2xl text-orange-300" />
-          </div>
-
           {/* Title & Subtitle */}
           <div className="min-w-0 flex items-center gap-3">
             {/* Logo in circle (mobile only) */}

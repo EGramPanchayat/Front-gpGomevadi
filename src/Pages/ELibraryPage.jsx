@@ -172,11 +172,6 @@ export default function ELibraryPage() {
             <BiArrowBack className="text-2xl" />
           </button>
 
-          {/* Book Stack Logo */}
-          <div className="w-11 h-11 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
-            <BiBookOpen className="text-2xl text-orange-300" />
-          </div>
-
           {/* Title & Subtitle */}
           <div className="min-w-0 flex items-center gap-3">
             {/* Logo in circle (mobile only) */}
