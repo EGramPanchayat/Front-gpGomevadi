@@ -667,28 +667,84 @@ export default function QrPartialPage() {
                       </div>
 
                       {group.remaining > 0 && (
-                        <div className="flex items-center gap-2 mt-1">
-                          <input
-                            type="number"
-                            value={payAmounts[group.id] || ""}
-                            onChange={(e) => setPayAmounts({ ...payAmounts, [group.id]: e.target.value })}
-                            placeholder={language === "mr" ? "रक्कम प्रविष्ट करा" : "Enter amount"}
-                            className="flex-1 px-4 py-2.5 bg-emerald-950/80 text-white border border-emerald-800/40 rounded-xl focus:ring focus:ring-green-500 focus:outline-none text-sm font-semibold"
-                          />
-                          <button
-                            onClick={() => handlePayCategory(group)}
-                            disabled={processingId === group.id}
-                            className="bg-green-650 hover:bg-green-700 text-white px-4 py-2.5 rounded-xl transition disabled:opacity-50 flex items-center gap-1.5 text-sm font-bold shadow-md active:scale-95 whitespace-nowrap cursor-pointer"
-                          >
-                            {processingId === group.id ? (
-                              <>
-                                <div className="animate-spin rounded-full h-3.5 w-3.5 border-2 border-white border-t-transparent"></div>
-                                <span>{language === "mr" ? "प्रक्रिया..." : "Processing..."}</span>
-                              </>
-                            ) : (
-                              <span>{language === "mr" ? "ऑनलाइन भरा" : "Pay Online"}</span>
-                            )}
-                          </button>
+                        <div className="flex flex-col gap-3 mt-1">
+                          
+                          {/* Amount Input Row */}
+                          <div>
+                            <div className="flex items-center justify-between mb-1.5">
+                              <label className="text-xs font-bold text-emerald-300 uppercase tracking-wider">
+                                {language === "mr" ? "भरण्याची रक्कम" : "Amount to Pay"}
+                              </label>
+                              {/* Pay Full quick button */}
+                              <button
+                                type="button"
+                                onClick={() => setPayAmounts({ ...payAmounts, [group.id]: group.remaining })}
+                                className="text-xs font-black text-orange-400 hover:text-orange-300 border border-orange-500/30 hover:border-orange-400/50 px-2.5 py-1 rounded-lg transition cursor-pointer bg-orange-500/5 hover:bg-orange-500/10"
+                              >
+                                {language === "mr" ? "पूर्ण रक्कम" : "Full Amount"} {money(group.remaining)}
+                              </button>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <div className="relative flex-1">
+                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-emerald-400 font-black text-base pointer-events-none">₹</span>
+                                <input
+                                  type="number"
+                                  value={payAmounts[group.id] || ""}
+                                  onChange={(e) => setPayAmounts({ ...payAmounts, [group.id]: e.target.value })}
+                                  placeholder="0"
+                                  min={Math.min(500, group.remaining)}
+                                  max={group.remaining}
+                                  className="w-full pl-8 pr-4 py-3 bg-emerald-950/80 text-white border border-emerald-700/50 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 focus:outline-none text-base font-black"
+                                />
+                              </div>
+                              <button
+                                onClick={() => handlePayCategory(group)}
+                                disabled={processingId === group.id}
+                                className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-xl transition disabled:opacity-50 flex items-center gap-2 text-sm font-black shadow-lg shadow-orange-500/20 active:scale-95 whitespace-nowrap cursor-pointer"
+                              >
+                                {processingId === group.id ? (
+                                  <>
+                                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                                    <span>{language === "mr" ? "प्रक्रिया..." : "Processing..."}</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <IndianRupee className="w-4 h-4" />
+                                    <span>{language === "mr" ? "भरा" : "Pay"}</span>
+                                  </>
+                                )}
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Quick amount chips */}
+                          <div className="flex flex-wrap gap-1.5">
+                            <span className="text-xs text-emerald-400/70 font-semibold self-center mr-0.5">
+                              {language === "mr" ? "जलद निवड:" : "Quick:"}
+                            </span>
+                            {[500, 1000, 2000, 5000].filter(v => v < group.remaining).map(v => (
+                              <button
+                                key={v}
+                                type="button"
+                                onClick={() => setPayAmounts({ ...payAmounts, [group.id]: v })}
+                                className={`px-3 py-1 rounded-lg text-xs font-black border transition cursor-pointer ${
+                                  Number(payAmounts[group.id]) === v
+                                    ? "bg-emerald-700 text-white border-emerald-600"
+                                    : "bg-emerald-950/60 text-emerald-300 border-emerald-800/40 hover:bg-emerald-900/60 hover:text-white"
+                                }`}
+                              >
+                                ₹{v.toLocaleString("en-IN")}
+                              </button>
+                            ))}
+                          </div>
+
+                          {/* Hint */}
+                          <p className="text-xs text-emerald-400/60 leading-relaxed">
+                            {language === "mr"
+                              ? `किमान ₹${Math.min(500, group.remaining).toLocaleString("en-IN")} आणि जास्तीत जास्त ${money(group.remaining)} भरता येईल. आंशिक भरणा स्वीकार्य आहे.`
+                              : `Min ₹${Math.min(500, group.remaining).toLocaleString("en-IN")} · Max ${money(group.remaining)}. Partial payment accepted.`}
+                          </p>
                         </div>
                       )}
                     </div>
