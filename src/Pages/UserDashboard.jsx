@@ -1360,6 +1360,10 @@ export default function UserDashboard() {
               {/* Multi-angle Designer Circles */}
               <div className="absolute -top-24 -left-24 w-48 h-48 rounded-full bg-green-500/5 blur-sm pointer-events-none"></div>
               <div className="absolute top-1/2 -translate-y-1/2 -right-16 w-36 h-36 rounded-full bg-green-100/50 pointer-events-none"></div>
+              
+              {/* Mobile Decorative Circles (Without blur, low opacity, different colors from corners) */}
+              <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-orange-500/10 pointer-events-none md:hidden"></div>
+              <div className="absolute -bottom-10 -left-10 w-28 h-28 rounded-full bg-teal-500/10 pointer-events-none md:hidden"></div>
 
               {/* GP Logo & Name Section */}
               <div className={`relative z-30 border-b pb-4 mb-4 space-y-3 ${isDarkMode ? "border-slate-800" : "border-green-100"}`}>
