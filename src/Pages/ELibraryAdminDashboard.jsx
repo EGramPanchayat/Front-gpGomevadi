@@ -217,7 +217,7 @@ const ELibraryAdminDashboard = () => {
     });
 
     // Books always shown at the top row (in this order)
-    const PINNED_TITLES = ["लिश्टेनस्टाईन", "ययाति", "खिडकी", "अभिव्यक्ती"];
+    const PINNED_TITLES = ["आठवणींचा हिंदोळा", "ययाति", "खिडकी", "अभिव्यक्ती"];
 
     // Pin featured books to top (in specified order), rest follow
     const pinned = PINNED_TITLES
