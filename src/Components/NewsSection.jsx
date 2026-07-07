@@ -80,7 +80,7 @@ const NewsSection = () => {
     <section
       id="news-section"
       ref={sectionRef}
-      className="max-w-[1200px] mx-4 md:mx-8 xl:mx-auto bg-white pt-16 border-[3px] border-green-900 rounded-[28px] overflow-hidden shadow-lg my-12"
+      className="max-w-[1200px] mx-4 md:mx-8 xl:mx-auto bg-white pt-16 border-[3px] border-green-700 rounded-[28px] overflow-hidden shadow-lg my-12"
     >
       <div className="max-w-6xl mx-auto flex flex-col items-center px-4 md:px-20 mb-12">
         {/* Section Heading */}
