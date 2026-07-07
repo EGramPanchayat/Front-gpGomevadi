@@ -109,35 +109,128 @@ export default function ELibraryPage() {
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? "bg-emerald-950/90 text-slate-100" : "bg-slate-50 text-slate-800"} font-sans flex flex-col`}>
-      {/* HEADER SECTION (SOLID DARK EMERALD BACKGROUND WITH DECORATIVE CIRCLES) */}
-      <header className="relative bg-gradient-to-r from-emerald-700 via-emerald-800 to-green-700 text-white p-5 md:p-8 rounded-b-3xl md:rounded-b-[40px] shadow-lg overflow-hidden flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+      {/* HEADER SECTION */}
+      <header className="relative bg-green-700 text-white rounded-b-3xl md:rounded-b-[40px] shadow-lg overflow-hidden">
         
         {/* Subtle Decorative Solid Color Corner Circles (10% opacity, no blur) */}
         <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-green-500/10 pointer-events-none transform translate-x-10 -translate-y-10" />
         <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full bg-orange-500/10 pointer-events-none transform -translate-x-6 translate-y-6" />
 
-        {/* TITLE AND LOGO */}
-        <div className="flex items-center gap-4 relative z-10">
-          <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center shadow-inner shrink-0">
-            <BiBookOpen className="text-3xl text-orange-355" />
+        {/* 1. MOBILE HEADER LAYOUT (lg:hidden) */}
+        <div className="lg:hidden p-5 flex flex-col gap-4">
+          {/* Top line: Back Arrow */}
+          <div className="relative z-10 flex items-center">
+            <button
+              onClick={() => navigate("/")}
+              className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition active:scale-95 cursor-pointer shadow-sm"
+              title={lang === "mr" ? "मुख्यपृष्ठावर जा" : "Back to Home"}
+            >
+              <BiArrowBack className="text-xl" />
+            </button>
           </div>
-          <div>
-            <h1 className="text-lg md:text-2xl font-black text-white tracking-tight leading-tight">
-              {config?.gpName 
-                ? (lang === "mr" ? `${config.gpName} डिजिटल ई-वाचनालय` : `${config.gpName} Digital eLibrary`)
-                : (lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary")}
+
+          {/* Second line: Grampanchayat Name */}
+          <div className="relative z-10">
+            <h2 className="text-sm font-bold tracking-wider text-emerald-100 uppercase opacity-95">
+              {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
+            </h2>
+          </div>
+
+          {/* Third line: eLibrary Title */}
+          <div className="relative z-10">
+            <h1 className="text-2xl font-black text-white tracking-tight leading-none">
+              {lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary"}
             </h1>
-            <p className="text-slate-200 text-xs md:text-sm font-semibold mt-0.5">
+            <p className="text-slate-200 text-xs md:text-sm font-semibold mt-1">
               {lang === "mr" ? "वाचनातून विचार, विचारातून विकास." : "Read to Think, Think to Progress."}
             </p>
           </div>
+
+          {/* Fourth line: Total Books and Settings Capsule with WHITE background */}
+          <div className="relative z-10 flex items-center gap-3 mt-2 w-full">
+            {/* Total Books Capsule (White Background) */}
+            <div className="h-12 px-4 rounded-2xl flex items-center gap-3 bg-white text-slate-800 border border-gray-100 shadow-sm flex-1 min-w-0">
+              <div className="p-1.5 bg-emerald-50 rounded-xl text-emerald-700 shrink-0">
+                <BiSolidBook className="text-lg" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[9px] uppercase tracking-wider font-extrabold text-gray-400 leading-none truncate">{lang === "mr" ? "एकूण पुस्तके" : "Books"}</p>
+                <p className="text-sm font-black text-slate-800 mt-0.5 leading-none">{books.length}</p>
+              </div>
+            </div>
+
+            {/* Unified Controls Capsule (White Background) */}
+            <div className="h-12 flex items-center justify-between gap-3 border border-gray-100 rounded-2xl px-4 bg-white text-slate-800 shadow-sm flex-1 min-w-0">
+              {/* Language Switcher */}
+              <div className="flex items-center gap-0.5">
+                <button
+                  onClick={() => setLang("mr")}
+                  className={`px-3 py-1 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
+                    lang === "mr"
+                      ? "bg-emerald-700 text-white shadow-sm"
+                      : "text-gray-550 hover:text-gray-900"
+                  }`}
+                >
+                  मराठी
+                </button>
+                <button
+                  onClick={() => setLang("en")}
+                  className={`px-3 py-1 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
+                    lang === "en"
+                      ? "bg-emerald-700 text-white shadow-sm"
+                      : "text-gray-555 hover:text-gray-900"
+                  }`}
+                >
+                  En
+                </button>
+              </div>
+
+              {/* Divider */}
+              <div className="w-px h-4 bg-gray-200" />
+
+              {/* Theme Toggle */}
+              <button
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className="p-1 text-amber-500 hover:text-amber-600 transition-transform hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
+                title={lang === "mr" ? "थीम बदला" : "Toggle Theme"}
+              >
+                {isDarkMode ? (
+                  <svg className="w-4 h-4 fill-amber-500 text-amber-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4 text-amber-500 stroke-current fill-none" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                  </svg>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* HEADER CONTROLS AND ACTION BUTTON */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full lg:w-auto relative z-10">
-          {/* STATS CAPSULES */}
-          <div className="flex items-center gap-3">
-            <div className="h-14 px-4 rounded-2xl flex items-center gap-3 shadow-inner bg-emerald-900/50 border border-emerald-700/30 text-white flex-1 sm:flex-initial">
+        {/* 2. DESKTOP HEADER LAYOUT (hidden lg:flex) */}
+        <div className="hidden lg:flex p-8 flex-row items-center justify-between gap-6 w-full">
+          {/* TITLE AND LOGO */}
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center shadow-inner shrink-0">
+              <BiBookOpen className="text-3xl text-orange-355" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-black text-white tracking-tight leading-tight">
+                {config?.gpName 
+                  ? (lang === "mr" ? `${config.gpName} डिजिटल ई-वाचनालय` : `${config.gpName} Digital eLibrary`)
+                  : (lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary")}
+              </h1>
+              <p className="text-slate-200 text-sm font-semibold mt-0.5">
+                {lang === "mr" ? "वाचनातून विचार, विचारातून विकास." : "Read to Think, Think to Progress."}
+              </p>
+            </div>
+          </div>
+
+          {/* HEADER CONTROLS AND ACTION BUTTON */}
+          <div className="flex flex-row items-center gap-4 relative z-10 shrink-0">
+            {/* STATS CAPSULES */}
+            <div className="h-14 px-4 rounded-2xl flex items-center gap-3 shadow-inner bg-emerald-900/50 border border-emerald-700/30 text-white">
               <div className="p-2 bg-green-500/10 rounded-xl text-[#34d399]">
                 <BiSolidBook className="text-xl" />
               </div>
@@ -146,63 +239,63 @@ export default function ELibraryPage() {
                 <p className="text-base font-black text-white">{books.length}</p>
               </div>
             </div>
-          </div>
 
-          {/* UNIFIED CONTROLS CAPSULE */}
-          <div className="h-14 flex items-center justify-between sm:justify-start gap-3 border rounded-2xl px-4 bg-emerald-900/50 border-emerald-700/30 flex-1 sm:flex-initial">
-            {/* Language Switcher */}
-            <div className="flex items-center gap-1">
+            {/* UNIFIED CONTROLS CAPSULE */}
+            <div className="h-14 flex items-center gap-3 border rounded-2xl px-4 bg-emerald-900/50 border-emerald-700/30 text-white">
+              {/* Language Switcher */}
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setLang("mr")}
+                  className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
+                    lang === "mr"
+                      ? "bg-green-700 text-white shadow-sm"
+                      : "text-slate-350 hover:text-white"
+                  }`}
+                >
+                  मराठी
+                </button>
+                <button
+                  onClick={() => setLang("en")}
+                  className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
+                    lang === "en"
+                      ? "bg-green-700 text-white shadow-sm"
+                      : "text-slate-350 hover:text-white"
+                  }`}
+                >
+                  En
+                </button>
+              </div>
+
+              {/* Divider */}
+              <div className="w-px h-4 bg-slate-700/40" />
+
+              {/* Theme Toggle */}
               <button
-                onClick={() => setLang("mr")}
-                className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
-                  lang === "mr"
-                    ? "bg-green-700 text-white shadow-sm"
-                    : "text-slate-400 hover:text-white"
-                }`}
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className="p-1 text-[#f59e0b] hover:text-amber-400 transition-transform hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
+                title={lang === "mr" ? "थीम बदला" : "Toggle Theme"}
               >
-                मराठी
-              </button>
-              <button
-                onClick={() => setLang("en")}
-                className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all duration-200 cursor-pointer ${
-                  lang === "en"
-                    ? "bg-green-700 text-white shadow-sm"
-                    : "text-slate-400 hover:text-white"
-                }`}
-              >
-                En
+                {isDarkMode ? (
+                  <svg className="w-4 h-4 fill-amber-455 text-amber-450" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707 .707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4 text-[#f59e0b] stroke-current fill-none" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                  </svg>
+                )}
               </button>
             </div>
 
-            {/* Divider */}
-            <div className="w-px h-4 bg-slate-700/40" />
-
-            {/* Theme Toggle */}
+            {/* BACK TO WEBSITE HOME */}
             <button
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              className="p-1 text-[#f59e0b] hover:text-amber-400 transition-transform hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
-              title={lang === "mr" ? "थीम बदला" : "Toggle Theme"}
+              onClick={() => navigate("/")}
+              className="h-14 px-5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-455 hover:to-amber-550 text-white font-extrabold rounded-2xl shadow-lg hover:shadow-orange-555/20 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 cursor-pointer text-xs uppercase tracking-wider"
             >
-              {isDarkMode ? (
-                <svg className="w-4 h-4 fill-amber-455 text-amber-450" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
-                </svg>
-              ) : (
-                <svg className="w-4 h-4 text-[#f59e0b] stroke-current fill-none" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-                </svg>
-              )}
+              <BiArrowBack className="text-base" />
+              <span>{lang === "mr" ? "मुख्यपृष्ठावर जा" : "Back to Home"}</span>
             </button>
           </div>
-
-          {/* BACK TO WEBSITE HOME */}
-          <button
-            onClick={() => navigate("/")}
-            className="w-full md:w-auto h-14 px-5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-455 hover:to-amber-550 text-white font-extrabold rounded-2xl shadow-lg hover:shadow-orange-555/20 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 cursor-pointer text-xs uppercase tracking-wider shrink-0"
-          >
-            <BiArrowBack className="text-base" />
-            <span>{lang === "mr" ? "मुख्यपृष्ठावर जा" : "Back to Home"}</span>
-          </button>
         </div>
       </header>
 
