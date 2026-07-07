@@ -1361,26 +1361,11 @@ export default function UserDashboard() {
               <div className="absolute -top-24 -left-24 w-48 h-48 rounded-full bg-green-500/5 blur-sm pointer-events-none"></div>
               <div className="absolute top-1/2 -translate-y-1/2 -right-16 w-36 h-36 rounded-full bg-green-100/50 pointer-events-none"></div>
 
-              {/* GP Logo & Name Row */}
-              <div className={`relative z-10 flex items-center justify-between gap-3 border-b pb-4 mb-4 ${isDarkMode ? "border-slate-800" : "border-green-100"}`}>
-                <div className="flex items-center gap-4 min-w-0">
-                  <img
-                    src="/images/satyamev.jpg"
-                    alt="GP Logo"
-                    className="h-14 w-14 md:h-16 md:w-16 rounded-full border-2 border-white shadow object-cover shrink-0"
-                  />
-                  <div className="min-w-0">
-                    <h2 className={`text-lg md:text-2xl font-black tracking-tight truncate ${isDarkMode ? "text-green-400" : "text-green-800"}`}>
-                      {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
-                    </h2>
-                    <p className={`text-[10px] md:text-xs font-semibold mt-0.5 ${isDarkMode ? "text-slate-400" : "text-gray-555"}`}>
-                      {config?.taluka && `ता. ${config.taluka}`}{config?.district && ` | जि. ${config.district}`}
-                    </p>
-                  </div>
-                </div>
+              {/* GP Logo & Name Section */}
+              <div className={`relative z-10 border-b pb-4 mb-4 space-y-3 ${isDarkMode ? "border-slate-800" : "border-green-100"}`}>
 
-                {/* Header Actions: Notifications, Theme, and Hamburger Menu */}
-                <div className="flex items-center gap-1.5 shrink-0 relative z-30 select-none">
+                {/* Line 1: Action icons at the right */}
+                <div className="flex items-center justify-end gap-1.5 relative z-30 select-none">
                   {/* Bell Notification Button */}
                   <button
                     onClick={() => {
@@ -1432,7 +1417,7 @@ export default function UserDashboard() {
                     <span className={`w-5 h-0.5 transition-all duration-300 ${isDarkMode ? "bg-slate-300" : "bg-green-800"} ${showMenu ? "-rotate-45 -translate-y-2" : ""}`} />
                   </button>
 
-                  {/* Dropdown Menu Popup - white bg, full phone width on mobile */}
+                  {/* Dropdown Menu Popup */}
                   {showMenu && (
                     <div className={`absolute top-11 right-0 w-48 rounded-2xl shadow-xl border p-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200 z-50 ${
                       isDarkMode ? "bg-slate-900 border-slate-800 text-white" : "bg-white border-gray-200 text-gray-800"
@@ -1487,6 +1472,23 @@ export default function UserDashboard() {
                       </button>
                     </div>
                   )}
+                </div>
+
+                {/* Line 2: GP Logo & Name */}
+                <div className="flex items-center gap-4">
+                  <img
+                    src="/images/satyamev.jpg"
+                    alt="GP Logo"
+                    className="h-14 w-14 md:h-16 md:w-16 rounded-full border-2 border-white shadow object-cover shrink-0"
+                  />
+                  <div>
+                    <h2 className={`text-lg md:text-2xl font-black tracking-tight ${isDarkMode ? "text-green-400" : "text-green-800"}`}>
+                      {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
+                    </h2>
+                    <p className={`text-[10px] md:text-xs font-semibold mt-0.5 ${isDarkMode ? "text-slate-400" : "text-gray-555"}`}>
+                      {config?.taluka && `ता. ${config.taluka}`}{config?.district && ` | जि. ${config.district}`}
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -2400,13 +2402,6 @@ export default function UserDashboard() {
         >
           <span className="text-lg">📄</span>
           <span>{language === "mr" ? "दाखला अर्ज" : "Certificates"}</span>
-        </button>
-        <button
-          onClick={() => setShowLogoutConfirm(true)}
-          className="flex flex-col items-center gap-0.5 text-[10px] font-extrabold text-red-500 opacity-80 hover:opacity-100 transition"
-        >
-          <span className="text-lg">🚪</span>
-          <span>{language === "mr" ? "बाहेर पडा" : "Logout"}</span>
         </button>
       </div>
 
