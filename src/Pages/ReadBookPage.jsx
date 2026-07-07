@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Document, Page, pdfjs } from "react-pdf";
 import { ArrowLeft, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Loader2 } from "lucide-react";
+import { BiBookOpen } from "react-icons/bi";
 import axioesInstance from "../utils/axioesInstance";
 import { useLanguage } from "../utils/LanguageContext";
+import { useSiteConfig } from "../utils/SiteConfigContext";
 import { toast } from "react-hot-toast";
 
 // Configure PDFJS worker from cdnjs
@@ -12,6 +14,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pd
 export default function ReadBookPage() {
   const { id } = useParams();
   const { lang } = useLanguage();
+  const { config } = useSiteConfig();
   const navigate = useNavigate();
 
   const [book, setBook] = useState(null);
@@ -156,110 +159,75 @@ export default function ReadBookPage() {
   };
 
   return (
-    <div className="h-screen bg-[#022c22] flex flex-col font-sans overflow-hidden">
-      {/* Main Reader Wrapper */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 pt-4 pb-4 flex flex-col h-full overflow-hidden">
-        {/* Header toolbar styled in green and orange */}
-        <div className="bg-green-800 border-b border-green-955 rounded-t-3xl px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-white shadow-md relative overflow-hidden">
-          {/* Geometric corner circles without blur but low opacity */}
-          <div className="absolute -top-16 -right-16 w-48 h-48 bg-orange-600/25 rounded-full pointer-events-none" />
-          <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-orange-700/20 rounded-full pointer-events-none" />
+    <div className="h-screen bg-slate-50 text-slate-800 flex flex-col font-sans overflow-hidden">
+      {/* 1. TOP COMPACT NAVBAR */}
+      <div className="h-14 px-4 bg-white border-b border-gray-150 flex items-center justify-between shadow-sm relative z-10 shrink-0">
+        <div className="flex items-center gap-3">
+          {/* Back button */}
+          <button
+            onClick={() => navigate("/elibrary")}
+            className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center shrink-0 transition active:scale-90 cursor-pointer"
+            title={lang === "mr" ? "परत जा" : "Go Back"}
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </button>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto relative z-10">
-            <button
-              onClick={() => navigate("/elibrary")}
-              className="p-2 hover:bg-green-700/50 rounded-xl text-green-200 hover:text-white transition cursor-pointer"
-              title={lang === "mr" ? "परत जा" : "Go Back"}
-            >
-              <ArrowLeft className="w-4.5 h-4.5" />
-            </button>
-            <div className="truncate">
-              <h3 className="font-extrabold text-xs truncate max-w-[250px]" title={book?.title}>
-                {loading ? "..." : book?.title}
-              </h3>
-              <p className="text-[10px] text-green-200 font-bold leading-none mt-0.5">
-                {lang === "mr" ? "लेखक:" : "Author:"} {loading ? "..." : book?.author}
-              </p>
-            </div>
+          {/* Book Stack Logo */}
+          <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
+            <BiBookOpen className="text-base text-orange-500" />
           </div>
 
-          {/* Page navigator & zoom controls */}
-          {!loading && book && (
-            <div className="flex items-center gap-4 relative z-10">
-              {/* Zoom */}
-              <div className="flex items-center bg-green-900/60 border border-green-900 rounded-xl p-0.5">
-                <button
-                  onClick={handleZoomOut}
-                  className="p-1.5 hover:bg-green-800 rounded-lg text-green-200 hover:text-white transition cursor-pointer"
-                  title="Zoom Out"
-                >
-                  <ZoomOut className="w-4 h-4" />
-                </button>
-                <span className="text-[10px] font-mono font-bold w-12 text-center text-orange-400">
-                  {Math.round(scale * 100)}%
-                </span>
-                <button
-                  onClick={handleZoomIn}
-                  className="p-1.5 hover:bg-green-800 rounded-lg text-green-200 hover:text-white transition cursor-pointer"
-                  title="Zoom In"
-                >
-                  <ZoomIn className="w-4 h-4" />
-                </button>
-              </div>
-
-              {/* Page controls */}
-              <div className="flex items-center gap-2 bg-green-900/60 border border-green-900 rounded-xl p-0.5">
-                <button
-                  disabled={pageNumber <= 1}
-                  onClick={handlePrevPage}
-                  className="p-1.5 hover:bg-green-850 disabled:opacity-30 disabled:hover:bg-transparent rounded-lg text-green-200 hover:text-white transition cursor-pointer"
-                  title="Previous Page"
-                >
-                  <ChevronLeft className="w-4.5 h-4.5" />
-                </button>
-                <span className="text-[10px] font-bold text-orange-400 px-1 font-mono">
-                  {getPageRangeLabel()}
-                </span>
-                <button
-                  disabled={isMobile ? pageNumber >= (numPages || 1) : pageNumber + 1 >= (numPages || 1)}
-                  onClick={handleNextPage}
-                  className="p-1.5 hover:bg-green-850 disabled:opacity-30 disabled:hover:bg-transparent rounded-lg text-green-200 hover:text-white transition cursor-pointer"
-                  title="Next Page"
-                >
-                  <ChevronRight className="w-4.5 h-4.5" />
-                </button>
-              </div>
-            </div>
-          )}
+          {/* Title & Subtitle */}
+          <div className="min-w-0">
+            <p className="text-[9px] font-bold tracking-wider uppercase text-slate-400 leading-none">
+              {config?.gpName || "ग्रामपंचायत गोमेवाडी"}
+            </p>
+            <h2 className="text-xs font-black tracking-tight text-slate-800 mt-0.5 leading-none">
+              {lang === "mr" ? "डिजिटल ई-वाचनालय" : "Digital eLibrary"}
+            </h2>
+          </div>
         </div>
 
+        {/* Book Title */}
+        <div className="text-right min-w-0 max-w-[250px] sm:max-w-[400px]">
+          <p className="text-xs font-black text-slate-800 truncate leading-none" title={book?.title}>
+            {loading ? "..." : book?.title}
+          </p>
+          <p className="text-[9px] font-bold text-slate-400 leading-none mt-1">
+            {lang === "mr" ? "लेखक:" : "Author:"} {loading ? "..." : book?.author}
+          </p>
+        </div>
+      </div>
+
+      {/* Main Reader Wrapper */}
+      <main className="flex-1 w-full mx-auto flex flex-col h-full overflow-hidden relative">
         {/* View container */}
         <div 
           ref={containerRef}
-          className="flex-1 bg-[#03362a] border-x border-b border-emerald-900/40 rounded-b-3xl flex items-center justify-center p-2 sm:p-6 shadow-md overflow-hidden"
+          className="flex-1 bg-slate-100/50 flex items-center justify-center p-2 sm:p-6 overflow-hidden"
         >
           {loading || !pdfFileUrl ? (
-            <div className="flex flex-col items-center space-y-2 text-white">
-              <Loader2 className="w-8 h-8 animate-spin text-orange-400" />
-              <span className="text-xs font-bold text-emerald-250">
+            <div className="flex flex-col items-center space-y-2 text-slate-500">
+              <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+              <span className="text-xs font-bold">
                 {lang === "mr" ? "पुस्तक फाईल लोड होत आहे..." : "Loading book file..."}
               </span>
             </div>
           ) : (
-            <div className="shadow-2xl border border-emerald-600/40 bg-[#022c22] p-4 rounded-2xl overflow-hidden transition-all duration-200">
+            <div className="shadow-lg border border-gray-150 bg-white p-3 rounded-2xl overflow-hidden transition-all duration-200">
               <Document
                 file={pdfFileUrl}
                 onLoadSuccess={onDocumentLoadSuccess}
                 loading={
-                  <div className="w-64 h-80 flex flex-col items-center justify-center bg-slate-900 text-slate-400 gap-3">
-                    <Loader2 className="w-6 h-6 animate-spin text-orange-400" />
+                  <div className="w-64 h-80 flex flex-col items-center justify-center bg-slate-50 text-slate-400 gap-3 rounded-xl">
+                    <Loader2 className="w-6 h-6 animate-spin text-orange-500" />
                     <span className="text-[10px] font-bold">Rendering PDF Page...</span>
                   </div>
                 }
               >
                 <div className="flex flex-col md:flex-row items-stretch justify-center gap-6">
                   {/* Left Page */}
-                  <div className="shadow-xl bg-white border border-slate-200 rounded-lg overflow-hidden shrink-0">
+                  <div className="shadow-md bg-white border border-slate-150 rounded-lg overflow-hidden shrink-0">
                     <Page
                       pageNumber={pageNumber}
                       width={getPageWidth()}
@@ -270,7 +238,7 @@ export default function ReadBookPage() {
                   </div>
                   {/* Right Page */}
                   {!isMobile && pageNumber + 1 <= numPages && (
-                    <div className="shadow-xl bg-white border border-slate-200 rounded-lg overflow-hidden shrink-0">
+                    <div className="shadow-md bg-white border border-slate-150 rounded-lg overflow-hidden shrink-0">
                       <Page
                         pageNumber={pageNumber + 1}
                         width={getPageWidth()}
@@ -285,6 +253,55 @@ export default function ReadBookPage() {
             </div>
           )}
         </div>
+
+        {/* 2. BOTTOM CONTROLS BAR (ZOOM & PAGE NAVIGATOR) */}
+        {!loading && book && (
+          <div className="bg-white border-t border-gray-150 px-4 py-3 flex items-center justify-between gap-4 shadow-inner shrink-0 relative z-10">
+            {/* Zoom Controls */}
+            <div className="flex items-center bg-slate-50 rounded-xl p-0.5 border border-gray-200">
+              <button
+                onClick={handleZoomOut}
+                className="p-1.5 hover:bg-white rounded-lg text-slate-500 hover:text-slate-800 transition active:scale-95 cursor-pointer"
+                title="Zoom Out"
+              >
+                <ZoomOut className="w-4 h-4" />
+              </button>
+              <span className="text-[10px] font-mono font-black w-12 text-center text-orange-600">
+                {Math.round(scale * 100)}%
+              </span>
+              <button
+                onClick={handleZoomIn}
+                className="p-1.5 hover:bg-white rounded-lg text-slate-500 hover:text-slate-800 transition active:scale-95 cursor-pointer"
+                title="Zoom In"
+              >
+                <ZoomIn className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Page Navigator */}
+            <div className="flex items-center gap-2 bg-slate-50 rounded-xl p-0.5 border border-gray-200">
+              <button
+                disabled={pageNumber <= 1}
+                onClick={handlePrevPage}
+                className="p-1.5 hover:bg-white disabled:opacity-30 disabled:hover:bg-transparent rounded-lg text-slate-500 hover:text-slate-800 transition active:scale-90 cursor-pointer"
+                title="Previous Page"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <span className="text-[10px] font-black text-orange-600 px-1 font-mono">
+                {getPageRangeLabel()}
+              </span>
+              <button
+                disabled={isMobile ? pageNumber >= (numPages || 1) : pageNumber + 1 >= (numPages || 1)}
+                onClick={handleNextPage}
+                className="p-1.5 hover:bg-white disabled:opacity-30 disabled:hover:bg-transparent rounded-lg text-slate-500 hover:text-slate-800 transition active:scale-90 cursor-pointer"
+                title="Next Page"
+              >
+                <ChevronRight className="w-4.5 h-4.5" />
+              </button>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
