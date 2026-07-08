@@ -1144,31 +1144,20 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
 
                         <div className="space-y-4">
                           {/* Next schedule display */}
-                          <div className={`p-4 rounded-2xl border transition ${schedule?.isPaused
-                              ? "bg-rose-50/50 border-rose-100 text-rose-950"
-                              : "bg-emerald-50/50 border-emerald-100 text-emerald-950"
-                            }`}>
+                          <div className="bg-emerald-50/50 border border-emerald-100 text-emerald-950 p-4 rounded-2xl transition">
                             <div className="flex items-center gap-2 mb-1.5">
-                              <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${schedule?.isPaused ? "bg-rose-500" : "bg-emerald-500 animate-pulse"
-                                }`} />
+                              <span className="w-2.5 h-2.5 rounded-full shrink-0 bg-emerald-500 animate-pulse" />
                               <p className="text-xs font-black uppercase tracking-wider">
-                                {schedule?.isPaused 
-                                  ? (lang === "mr" ? "तात्पुरता थांबवला" : "PAUSED") 
-                                  : (lang === "mr" ? "सक्रिय आणि नियोजित" : "ACTIVE")}
+                                {lang === "mr" ? "सक्रिय आणि नियोजित" : "ACTIVE"}
                               </p>
                             </div>
                             <p className="text-lg font-black font-sans mt-2">
                               {lang === "mr" ? "वर्ष" : "Year"} {schedule?.nextReleaseYear} - {schedule?.nextReleaseYear ? schedule.nextReleaseYear + 1 : ""}
                             </p>
                             <p className="text-[10px] text-gray-450 mt-1 font-bold">
-                              {schedule?.isPaused
-                                ? (lang === "mr" 
-                                    ? "स्वयंचलित कर आकारणी थांबवली आहे. १ एप्रिल रोजी कर आपोआप लागू होणार नाही." 
-                                    : "Automatic tax assessment is paused. Taxes will not be released automatically on April 1st.")
-                                : (lang === "mr" 
-                                    ? "१ एप्रिल रोजी मागील वर्षाच्या चालू दरानुसार सर्व कुटुंबांना कर आपोआप लागू होईल." 
-                                    : "Taxes will be automatically released to all families on April 1st based on the previous year's current rates.")
-                              }
+                              {lang === "mr" 
+                                ? "१ एप्रिल रोजी मागील वर्षाच्या चालू दरानुसार सर्व कुटुंबांना कर आपोआप लागू होईल." 
+                                : "Taxes will be automatically released to all families on April 1st based on the previous year's current rates."}
                             </p>
                           </div>
 
@@ -1178,42 +1167,26 @@ export default function VmsTaxesAdmin({ preselectedFamily, clearPreselectedFamil
                               {lang === "mr" ? "मागील वर्षांचे प्रकाशन:" : "Release History:"}
                             </p>
                             {(!schedule?.history || schedule.history.length === 0) ? (
-                              <p className="text-[11px] text-gray-450 italic">
-                                {lang === "mr" ? "इतिहास उपलब्ध नाही." : "No history available."}
-                              </p>
+                               <p className="text-[11px] text-gray-450 italic">
+                                 {lang === "mr" ? "इतिहास उपलब्ध नाही." : "No history available."}
+                               </p>
                             ) : (
-                              <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
-                                {schedule.history.slice().reverse().map((h) => (
-                                  <div key={h._id} className="flex justify-between items-center bg-gray-50/60 p-2.5 rounded-xl border border-gray-100 hover:bg-gray-50 transition">
-                                    <span className="text-xs font-bold text-gray-700">
-                                      {lang === "mr" ? "वर्ष" : "Year"} {h.year} - {h.year + 1}
-                                    </span>
-                                    <span className="text-[10px] text-gray-400 font-sans font-semibold">
-                                      {lang === "mr" ? `${new Date(h.releasedAt).toLocaleDateString()} रोजी लागू` : `Released on ${new Date(h.releasedAt).toLocaleDateString()}`}
-                                    </span>
-                                  </div>
-                                ))}
-                              </div>
+                               <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+                                 {schedule.history.slice().reverse().map((h) => (
+                                   <div key={h._id} className="flex justify-between items-center bg-gray-50/60 p-2.5 rounded-xl border border-gray-100 hover:bg-gray-50 transition">
+                                     <span className="text-xs font-bold text-gray-700">
+                                       {lang === "mr" ? "वर्ष" : "Year"} {h.year} - {h.year + 1}
+                                     </span>
+                                     <span className="text-[10px] text-gray-400 font-sans font-semibold">
+                                       {lang === "mr" ? `${new Date(h.releasedAt).toLocaleDateString()} रोजी लागू` : `Released on ${new Date(h.releasedAt).toLocaleDateString()}`}
+                                     </span>
+                                   </div>
+                                 ))}
+                               </div>
                             )}
                           </div>
                         </div>
                       </div>
-
-                      <button
-                        onClick={handleToggleSchedule}
-                        disabled={togglingSchedule}
-  className={`w-full mt-4 font-black py-3 rounded-xl shadow transition duration-300 ${schedule?.isPaused
-      ? "bg-orange-500 hover:bg-orange-600 text-white"
-      : "bg-green-700 hover:bg-green-800 text-white"
-    }`}
-                      >
-                        {togglingSchedule
-                          ? (lang === "mr" ? "प्रक्रिया सुरू..." : "Processing...")
-                          : schedule?.isPaused
-                            ? (lang === "mr" ? "स्वयंचलित कर सुरू करा / Resume" : "Resume Auto-Release")
-                            : (lang === "mr" ? "स्वयंचलित कर थांबवा / Pause" : "Pause Auto-Release")
-                        }
-                      </button>
                     </div>
                   </div>
                 </>
